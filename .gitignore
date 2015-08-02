@@ -10,3 +10,6 @@ profiles.clj
 /.env
 *.log
 resources/public/js
+.idea/workspace.xml
+.idea/tasks.xml
+.nrepl-port
