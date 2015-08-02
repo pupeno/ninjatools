@@ -1,8 +1,12 @@
--- name: create-user!
--- creates a new user record
-INSERT INTO users
-(id, first_name, last_name, email, pass)
-VALUES (:id, :first_name, :last_name, :email, :pass)
+-- name: delete-all!
+-- deletes everything in the database
+DELETE FROM tools
+
+-- name: create-tool<!
+-- creates a new tool
+INSERT INTO tools
+(name, slug, url, description)
+VALUES (:name, :slug, :url, :description)
 
 -- name: update-user!
 -- update an existing user record

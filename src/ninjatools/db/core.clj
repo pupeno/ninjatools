@@ -3,11 +3,11 @@
 (ns ninjatools.db.core
   (:require
     [cheshire.core :refer [generate-string parse-string]]
-    [taoensso.timbre :as timbre]
+    ;[taoensso.timbre :as timbre]
     [clojure.java.jdbc :as jdbc]
-    [yesql.core :as yesql]
+    ;[yesql.core :as yesql]
     [luminus-db.core :as db]
-    [clj-dbcp.core :as dbcp]
+    ;[clj-dbcp.core :as dbcp]
     [to-jdbc-uri.core :refer [to-jdbc-uri]]
     [environ.core :refer [env]])
   (:import org.postgresql.util.PGobject
@@ -31,11 +31,7 @@
    :max-active 32})
 
 (defn connect! []
-  (db/connect!
-   conn
-   (assoc
-     pool-spec
-     :jdbc-url (to-jdbc-uri (env :database-url)))))
+  (db/connect! conn (assoc pool-spec :jdbc-url (to-jdbc-uri (env :database-url)))))
 
 (defn disconnect! []
   (db/disconnect! conn))
