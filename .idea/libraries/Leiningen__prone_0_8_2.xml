@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: prone:0.8.2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/prone/prone/0.8.2/prone-0.8.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

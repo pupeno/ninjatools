@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: fs:1.1.2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/fs/fs/1.1.2/fs-1.1.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

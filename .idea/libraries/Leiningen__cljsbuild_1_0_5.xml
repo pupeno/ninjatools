@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: cljsbuild:1.0.5">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/cljsbuild/cljsbuild/1.0.5/cljsbuild-1.0.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

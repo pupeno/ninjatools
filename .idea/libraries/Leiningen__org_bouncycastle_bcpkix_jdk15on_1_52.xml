@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: org.bouncycastle/bcpkix-jdk15on:1.52">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/bouncycastle/bcpkix-jdk15on/1.52/bcpkix-jdk15on-1.52.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

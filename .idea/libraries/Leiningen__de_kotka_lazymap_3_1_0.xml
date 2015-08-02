@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: de.kotka/lazymap:3.1.0">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/de/kotka/lazymap/3.1.0/lazymap-3.1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: org.projectodd.wunderboss/wunderboss-core:0.8.1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/projectodd/wunderboss/wunderboss-core/0.8.1/wunderboss-core-0.8.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

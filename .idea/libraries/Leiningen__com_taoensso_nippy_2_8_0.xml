@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: com.taoensso/nippy:2.8.0">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/taoensso/nippy/2.8.0/nippy-2.8.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

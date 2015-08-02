@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: cats:0.4.0">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/cats/cats/0.4.0/cats-0.4.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

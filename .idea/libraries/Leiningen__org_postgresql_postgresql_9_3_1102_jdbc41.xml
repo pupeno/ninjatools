@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: org.postgresql/postgresql:9.3-1102-jdbc41">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/postgresql/postgresql/9.3-1102-jdbc41/postgresql-9.3-1102-jdbc41.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

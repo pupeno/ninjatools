@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: funcool/cuerdas:0.5.0">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/funcool/cuerdas/0.5.0/cuerdas-0.5.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

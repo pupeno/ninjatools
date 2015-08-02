@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: robert/bruce:0.7.1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/robert/bruce/0.7.1/bruce-0.7.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

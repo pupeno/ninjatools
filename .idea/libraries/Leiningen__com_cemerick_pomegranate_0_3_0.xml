@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: com.cemerick/pomegranate:0.3.0">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/cemerick/pomegranate/0.3.0/pomegranate-0.3.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

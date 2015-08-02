@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: com.taoensso/tower:3.0.2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/taoensso/tower/3.0.2/tower-3.0.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
