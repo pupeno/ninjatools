@@ -1,3 +1,5 @@
+;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
+
 (ns ninjatools.handler
   (:require [compojure.core :refer [defroutes routes wrap-routes]]
             [ninjatools.routes.home :refer [home-routes]]
@@ -22,7 +24,7 @@
     (cond
       (string? port) (Integer/parseInt port)
       (number? port) port
-      :else          (throw (Exception. (str "invalid port value: " port))))))
+      :else (throw (Exception. (str "invalid port value: " port))))))
 
 (defn start-nrepl
   "Start a network repl for debugging when the :nrepl-port is set in the environment."
@@ -51,9 +53,9 @@
   (timbre/merge-config!
     {:level     (if (env :dev) :trace :info)
      :appenders {:rotor (rotor/rotor-appender
-                          {:path "ninjatools.log"
+                          {:path     "ninjatools.log"
                            :max-size (* 512 1024)
-                           :backlog 10})}})
+                           :backlog  10})}})
 
   (if (env :dev) (parser/cache-off!))
   (start-nrepl)

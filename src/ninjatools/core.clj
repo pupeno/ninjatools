@@ -1,3 +1,5 @@
+;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
+
 (ns ninjatools.core
   (:require [ninjatools.handler :refer [app init destroy parse-port]]
             [immutant.web :as immutant]

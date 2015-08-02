@@ -1,3 +1,5 @@
+;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
+
 (ns ninjatools.db.migrations
   (:require
     [migratus.core :as migratus]
@@ -9,7 +11,7 @@
 
 (defn migrate [args]
   (let [config {:store :database
-                :db {:connection-uri (to-jdbc-uri (:database-url env))}}]
+                :db    {:connection-uri (to-jdbc-uri (:database-url env))}}]
     (case (first args)
       "migrate"
       (if (> (count args) 1)

@@ -1,3 +1,5 @@
+;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
+
 (defproject ninjatools "0.1.0-SNAPSHOT"
 
   :description "FIXME: write description"
@@ -55,59 +57,45 @@
             [migratus-lein "0.1.5"]
             [lein-cljsbuild "1.0.6"]]
   :clean-targets ^{:protect false} [:target-path [:cljsbuild :builds :app :compiler :output-dir] [:cljsbuild :builds :app :compiler :output-to]]
-  :cljsbuild
-  {:builds
-   {:app
-    {:source-paths ["src-cljs"]
-     :compiler
-     {:output-dir "resources/public/js/out"
-      :externs ["react/externs/react.js"]
-      :optimizations :none
-      :output-to "resources/public/js/app.js"
-      :pretty-print true}}}}
-  
-  :profiles
-  {:uberjar {:omit-source true
-             :env {:production true}
-              :hooks [leiningen.cljsbuild]
-              :cljsbuild
-              {:jar true
-               :builds
-               {:app
-                {:source-paths ["env/prod/cljs"]
-                 :compiler {:optimizations :advanced :pretty-print false}}}} 
-             
-             :aot :all}
-   :dev           [:project/dev :profiles/dev]
-   :test          [:project/test :profiles/test]
-   :project/dev  {:dependencies [[ring/ring-mock "0.2.0"]
-                                 [ring/ring-devel "1.4.0"]
-                                 [pjstadig/humane-test-output "0.7.0"]
-                                 [org.clojure/tools.nrepl "0.2.10"]
-                                 [lein-figwheel "0.3.7"]
-                                 [mvxcvi/puget "0.8.1"]]
-                  :plugins [[lein-figwheel "0.3.7"]]
-                   :cljsbuild
-                   {:builds
-                    {:app
-                     {:source-paths ["env/dev/cljs"] :compiler {:source-map true}}}} 
-                  
-                  :figwheel
-                  {:http-server-root "public"
-                   :server-port 3449
-                   :nrepl-port 7002
-                   :css-dirs ["resources/public/css"]
-                   :ring-handler ninjatools.handler/app}
-                  
-                  :repl-options {:init-ns ninjatools.core}
-                  :injections [(require 'pjstadig.humane-test-output)
-                               (pjstadig.humane-test-output/activate!)]
-                  ;;when :nrepl-port is set the application starts the nREPL server on load
-                  :env {:dev        true
-                        :port       3000
-                        :nrepl-port 7000}}
-   :project/test {:env {:test       true
-                        :port       3001
-                        :nrepl-port 7001}}
-   :profiles/dev {}
-   :profiles/test {}})
+  :cljsbuild {:builds {:app {:source-paths ["src-cljs"]
+                             :compiler     {:output-dir    "resources/public/js/out"
+                                            :externs       ["react/externs/react.js"]
+                                            :optimizations :none
+                                            :output-to     "resources/public/js/app.js"
+                                            :pretty-print  true}}}}
+
+  :profiles {:uberjar       {:omit-source true
+                             :env         {:production true}
+                             :hooks       [leiningen.cljsbuild]
+                             :cljsbuild   {:jar    true
+                                           :builds {:app {:source-paths ["env/prod/cljs"]
+                                                          :compiler     {:optimizations :advanced :pretty-print false}}}}
+
+                             :aot         :all}
+             :dev           [:project/dev :profiles/dev]
+             :test          [:project/test :profiles/test]
+             :project/dev   {:dependencies [[ring/ring-mock "0.2.0"]
+                                            [ring/ring-devel "1.4.0"]
+                                            [pjstadig/humane-test-output "0.7.0"]
+                                            [org.clojure/tools.nrepl "0.2.10"]
+                                            [lein-figwheel "0.3.7"]
+                                            [mvxcvi/puget "0.8.1"]]
+                             :plugins      [[lein-figwheel "0.3.7"]]
+                             :cljsbuild    {:builds {:app {:source-paths ["env/dev/cljs"] :compiler {:source-map true}}}}
+                             :figwheel     {:http-server-root "public"
+                                            :server-port      3449
+                                            :nrepl-port       7002
+                                            :css-dirs         ["resources/public/css"]
+                                            :ring-handler     ninjatools.handler/app}
+                             :repl-options {:init-ns ninjatools.core}
+                             :injections   [(require 'pjstadig.humane-test-output)
+                                            (pjstadig.humane-test-output/activate!)]
+                             ;;when :nrepl-port is set the application starts the nREPL server on load
+                             :env          {:dev        true
+                                            :port       3000
+                                            :nrepl-port 7000}}
+             :project/test  {:env {:test       true
+                                   :port       3001
+                                   :nrepl-port 7001}}
+             :profiles/dev  {}
+             :profiles/test {}})

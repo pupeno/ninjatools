@@ -1,3 +1,5 @@
+;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
+
 (ns ninjatools.core
   (:require [reagent.core :as reagent :refer [atom]]
             [reagent.session :as session]
@@ -42,7 +44,7 @@
               {:__html (md->html docs)}}]]])])
 
 (def pages
-  {:home #'home-page
+  {:home  #'home-page
    :about #'about-page})
 
 (defn page []
@@ -53,21 +55,21 @@
 (secretary/set-config! :prefix "#")
 
 (secretary/defroute "/" []
-  (session/put! :page :home))
+                    (session/put! :page :home))
 
 (secretary/defroute "/about" []
-  (session/put! :page :about))
+                    (session/put! :page :about))
 
 ;; -------------------------
 ;; History
 ;; must be called after routes have been defined
 (defn hook-browser-navigation! []
   (doto (History.)
-        (events/listen
-          EventType/NAVIGATE
-          (fn [event]
-              (secretary/dispatch! (.-token event))))
-        (.setEnabled true)))
+    (events/listen
+      EventType/NAVIGATE
+      (fn [event]
+        (secretary/dispatch! (.-token event))))
+    (.setEnabled true)))
 
 ;; -------------------------
 ;; Initialize app

@@ -1,3 +1,5 @@
+;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
+
 (ns ninjatools.routes.home
   (:require [ninjatools.layout :as layout]
             [compojure.core :refer [defroutes GET]]
@@ -8,6 +10,6 @@
   (layout/render "home.html"))
 
 (defroutes home-routes
-  (GET "/" [] (home-page))
-  (GET "/docs" [] (ok (-> "docs/docs.md" io/resource slurp))))
+           (GET "/" [] (home-page))
+           (GET "/docs" [] (ok (-> "docs/docs.md" io/resource slurp))))
 

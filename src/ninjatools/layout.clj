@@ -1,3 +1,5 @@
+;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
+
 (ns ninjatools.layout
   (:require [selmer.parser :as parser]
             [selmer.filters :as filters]
@@ -10,7 +12,7 @@
 
 (declare ^:dynamic *identity*)
 (declare ^:dynamic *servlet-context*)
-(parser/set-resource-path!  (clojure.java.io/resource "templates"))
+(parser/set-resource-path! (clojure.java.io/resource "templates"))
 (parser/add-tag! :csrf-field (fn [_ _] (anti-forgery-field)))
 (filters/add-filter! :markdown (fn [content] [:safe (md-to-html-string content)]))
 

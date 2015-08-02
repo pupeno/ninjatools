@@ -1,3 +1,5 @@
+;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
+
 (ns ninjatools.middleware
   (:require [ninjatools.session :as session]
             [ninjatools.layout :refer [*servlet-context*]]
@@ -36,9 +38,9 @@
       (handler req)
       (catch Throwable t
         (timbre/error t)
-        {:status 500
+        {:status  500
          :headers {"Content-Type" "text/html"}
-         :body (-> "templates/error.html" io/resource slurp)}))))
+         :body    (-> "templates/error.html" io/resource slurp)}))))
 
 (defn wrap-dev [handler]
   (if (env :dev)
@@ -60,7 +62,7 @@
    :body    (str "Access to " (:uri request) " is not authorized")})
 
 (defn wrap-restricted [handler]
-  (restrict handler {:handler authenticated?
+  (restrict handler {:handler  authenticated?
                      :on-error on-error}))
 
 (defn wrap-identity [handler]
@@ -81,7 +83,7 @@
       (wrap-defaults
         (-> site-defaults
             (assoc-in [:security :anti-forgery] false)
-            (assoc-in  [:session :store] session/ttl-mem)))
+            (assoc-in [:session :store] session/ttl-mem)))
       wrap-webjars
       wrap-servlet-context
       wrap-internal-error))

@@ -1,3 +1,5 @@
+;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
+
 (ns ninjatools.test.handler
   (:require [clojure.test :refer :all]
             [ring.mock.request :refer :all]

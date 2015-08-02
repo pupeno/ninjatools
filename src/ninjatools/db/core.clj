@@ -1,3 +1,5 @@
+;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
+
 (ns ninjatools.db.core
   (:require
     [cheshire.core :refer [generate-string parse-string]]
@@ -12,9 +14,9 @@
            clojure.lang.IPersistentMap
            clojure.lang.IPersistentVector
            [java.sql BatchUpdateException
-            Date
-            Timestamp
-            PreparedStatement]))
+                     Date
+                     Timestamp
+                     PreparedStatement]))
 
 (defonce ^:dynamic conn (atom nil))
 
@@ -32,13 +34,13 @@
     (doseq [filename filenames]
       (let [yesql-queries (yesql/defqueries filename)]
         (doall
-         (for [yesql-query yesql-queries]
-           (intern base-namespace
-                   (with-meta (:name (meta yesql-query)) (meta yesql-queries))
-                   (fn
-                     ([] (yesql-query {} {:connection @conn}))
-                     ([args] (yesql-query args {:connection @conn}))
-                     ([args conn] (yesql-query args {:connection conn}))))))))
+          (for [yesql-query yesql-queries]
+            (intern base-namespace
+                    (with-meta (:name (meta yesql-query)) (meta yesql-queries))
+                    (fn
+                      ([] (yesql-query {} {:connection @conn}))
+                      ([args] (yesql-query args {:connection @conn}))
+                      ([args conn] (yesql-query args {:connection conn}))))))))
     (in-ns (ns-name base-namespace))))
 
 (defmacro with-transaction
@@ -47,8 +49,8 @@
    connection"
   [t-conn & body]
   `(jdbc/with-db-transaction [~t-conn @ninjatools.db.core/conn]
-     (binding [ninjatools.db.core/conn (atom ~t-conn)]
-       ~@body)))
+                             (binding [ninjatools.db.core/conn (atom ~t-conn)]
+                               ~@body)))
 
 (init! "sql/queries.sql")
 
@@ -62,12 +64,12 @@
 (defn connect! []
   (try
     (reset!
-     conn
-     {:datasource
-      (dbcp/make-datasource
-       (assoc
-        pool-spec
-        :jdbc-url (to-jdbc-uri (env :database-url))))})
+      conn
+      {:datasource
+       (dbcp/make-datasource
+         (assoc
+           pool-spec
+           :jdbc-url (to-jdbc-uri (env :database-url))))})
     (catch Throwable t
       (throw (Exception. "Error occured while connecting to the database!" t)))))
 
@@ -92,7 +94,7 @@
 
   PGobject
   (result-set-read-column [pgobj _metadata _index]
-    (let [type  (.getType pgobj)
+    (let [type (.getType pgobj)
           value (.getValue pgobj)]
       (case type
         "json" (parse-string value true)
