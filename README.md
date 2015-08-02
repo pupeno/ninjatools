@@ -1,6 +1,23 @@
 # ninjatools
 
-FIXME
+## Databases
+
+Use these commands to create the databases:
+
+```sql
+CREATE DATABASE "ninjatools_dev" WITH OWNER "your-username" ENCODING 'UTF8';
+CREATE DATABASE "ninjatools_test" WITH OWNER "your-username" ENCODING 'UTF8';
+```
+
+## Updating
+
+To update to a more current luminus template, in a different directory run:
+
+```
+lein new luminus ninjatools +site +cljs +auth +postgres +swagger
+```
+
+and then diff the two directories and copy what you want.
 
 ## Prerequisites
 
