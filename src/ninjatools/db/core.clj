@@ -6,6 +6,7 @@
     [taoensso.timbre :as timbre]
     [clojure.java.jdbc :as jdbc]
     [yesql.core :as yesql]
+    [luminus-db.core :as db]
     [clj-dbcp.core :as dbcp]
     [to-jdbc-uri.core :refer [to-jdbc-uri]]
     [environ.core :refer [env]])
@@ -20,39 +21,7 @@
 
 (defonce ^:dynamic conn (atom nil))
 
-(defn init!
-  "initialize wrapper queries for Yesql connectionless queries
-   the wrappers will use the current connection defined in the conn atom
-   unless one is explicitly passed in"
-  [& filenames]
-  (let [base-namespace *ns*
-        queries-ns (-> *ns* ns-name name (str ".connectionless-queries") symbol)]
-    (create-ns queries-ns)
-    (in-ns queries-ns)
-    (require '[yesql.core :as yesql])
-    (defonce ^:dynamic conn (atom nil))
-    (doseq [filename filenames]
-      (let [yesql-queries (yesql/defqueries filename)]
-        (doall
-          (for [yesql-query yesql-queries]
-            (intern base-namespace
-                    (with-meta (:name (meta yesql-query)) (meta yesql-queries))
-                    (fn
-                      ([] (yesql-query {} {:connection @conn}))
-                      ([args] (yesql-query args {:connection @conn}))
-                      ([args conn] (yesql-query args {:connection conn}))))))))
-    (in-ns (ns-name base-namespace))))
-
-(defmacro with-transaction
-  "runs the body in a transaction where t-conn is the name of the transaction connection
-   the body will be evaluated within a binding where conn is set to the transactional
-   connection"
-  [t-conn & body]
-  `(jdbc/with-db-transaction [~t-conn @ninjatools.db.core/conn]
-                             (binding [ninjatools.db.core/conn (atom ~t-conn)]
-                               ~@body)))
-
-(init! "sql/queries.sql")
+(db/bind-connection conn "sql/queries.sql")
 
 (def pool-spec
   {:adapter    :postgresql
@@ -62,22 +31,14 @@
    :max-active 32})
 
 (defn connect! []
-  (try
-    (reset!
-      conn
-      {:datasource
-       (dbcp/make-datasource
-         (assoc
-           pool-spec
-           :jdbc-url (to-jdbc-uri (env :database-url))))})
-    (catch Throwable t
-      (throw (Exception. "Error occured while connecting to the database!" t)))))
+  (db/connect!
+   conn
+   (assoc
+     pool-spec
+     :jdbc-url (to-jdbc-uri (env :database-url)))))
 
-(defn disconnect! [conn]
-  (when-let [ds (:datasource @conn)]
-    (when-not (.isClosed ds)
-      (.close ds)
-      (reset! conn nil))))
+(defn disconnect! []
+  (db/disconnect! conn))
 
 (defn to-date [sql-date]
   (-> sql-date (.getTime) (java.util.Date.)))

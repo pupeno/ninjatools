@@ -26,6 +26,7 @@
                  [org.webjars/jquery "2.1.4"]
                  [buddy "0.6.0"]
                  [migratus "0.8.2"]
+                 [luminus-db "0.1.1"]
                  [clj-dbcp "0.8.1"]
                  [yesql "0.5.0-rc3"]
                  [instaparse "1.4.1"]
