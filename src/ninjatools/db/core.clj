@@ -3,11 +3,9 @@
 (ns ninjatools.db.core
   (:require
     [cheshire.core :refer [generate-string parse-string]]
-    ;[taoensso.timbre :as timbre]
+    [taoensso.timbre :as timbre]
     [clojure.java.jdbc :as jdbc]
-    ;[yesql.core :as yesql]
-    [luminus-db.core :as db]
-    ;[clj-dbcp.core :as dbcp]
+    [conman.core :as conman]
     [to-jdbc-uri.core :refer [to-jdbc-uri]]
     [environ.core :refer [env]])
   (:import org.postgresql.util.PGobject
@@ -21,7 +19,7 @@
 
 (defonce ^:dynamic conn (atom nil))
 
-(db/bind-connection conn "sql/queries.sql")
+(conman/bind-connection conn "sql/queries.sql")
 
 (def pool-spec
   {:adapter    :postgresql
@@ -31,10 +29,10 @@
    :max-active 32})
 
 (defn connect! []
-  (db/connect! conn (assoc pool-spec :jdbc-url (to-jdbc-uri (env :database-url)))))
+  (conman/connect! conn (assoc pool-spec :jdbc-url (to-jdbc-uri (env :database-url)))))
 
 (defn disconnect! []
-  (db/disconnect! conn))
+  (conman/disconnect! conn))
 
 (defn to-date [sql-date]
   (-> sql-date (.getTime) (java.util.Date.)))

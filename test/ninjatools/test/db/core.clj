@@ -5,7 +5,7 @@
             [ninjatools.db.migrations :as migrations]
             [clojure.test :refer :all]
             [clojure.java.jdbc :as jdbc]
-            [luminus-db.core :refer [with-transaction]]
+            [conman.core :refer [with-transaction]]
             [environ.core :refer [env]]))
 
 (use-fixtures
