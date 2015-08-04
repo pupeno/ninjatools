@@ -2,6 +2,9 @@
 <head>
     <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Welcome to ninjatools</title>
+    {% style "/assets/bootstrap/css/bootstrap.min.css" %}
+    {% style "/assets/bootstrap/css/bootstrap-theme.min.css" %}
+    {% style "/css/screen.css" %}
 </head>
 <body>
 <div id="app">
@@ -15,14 +18,8 @@
     </div>
 </div>
 
-<!-- scripts and styles -->
-{% style "/assets/bootstrap/css/bootstrap.min.css" %}
-{% style "/assets/bootstrap/css/bootstrap-theme.min.css" %}
-{% style "/css/screen.css" %}
-
 <script type="text/javascript">
-        var context = "{{servlet-context}}";
-
+var context = "{{servlet-context}}";
 </script>
 {% if dev %}
 {% script "/js/out/goog/base.js" %}
