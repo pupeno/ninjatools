@@ -3,7 +3,8 @@
 (ns ninjatools.routes.services
   (:require [ring.util.http-response :refer :all]
             [compojure.api.sweet :refer :all]
-            [schema.core :as s]))
+            [schema.core :as s]
+            [ninjatools.db.core :as db]))
 
 (s/defschema Thingie {:id    Long
                       :hot   Boolean
@@ -12,13 +13,14 @@
                                :type #{{:id String}}}]})
 
 (defapi service-routes
-        (ring.swagger.ui/swagger-ui
-          "/swagger-ui")
+        (ring.swagger.ui/swagger-ui "/swagger-ui")
         ;JSON docs available at the /swagger.json route
-        (swagger-docs
-          {:info {:title "Sample api"}})
+        (swagger-docs {:info {:title "Ninja Tools api"}})
         (context* "/api" []
                   :tags ["thingie"]
+                  (GET* "/tools" []
+                        :summary "Return all the tools."
+                        (ok (db/get-tools)))
 
                   (GET* "/plus" []
                         :return Long

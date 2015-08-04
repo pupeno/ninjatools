@@ -4,11 +4,14 @@
   (:require [re-frame.core :as re-frame]))
 
 ;; --------------------
-(defn home-panel []
-  (let [name (re-frame/subscribe [:name])]
+(defn tools-panel []
+  (let [tools (re-frame/subscribe [:tools])]
     (fn []
-      [:div (str "Hello from " @name ". This is the Home Page.")
-       [:div [:a {:href "#/about"} "go to About Page"]]])))
+      [:div
+       [:ul (for [tool @tools]
+              ^{:key (tool "id")} [:li (tool "name")])]
+       [:div [:a {:on-click #(re-frame/dispatch [:get-tools])}
+              "Refresh tools"]]])))
 
 (defn about-panel []
   (fn []
@@ -17,7 +20,7 @@
 
 ;; --------------------
 (defmulti panels identity)
-(defmethod panels :home-panel [] [home-panel])
+(defmethod panels :tools-panel [] [tools-panel])
 (defmethod panels :about-panel [] [about-panel])
 (defmethod panels :default [] [:div])
 

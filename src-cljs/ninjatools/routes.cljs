@@ -21,7 +21,7 @@
   ;; --------------------
   ;; define routes here
   (defroute "/" []
-    (re-frame/dispatch [:set-active-panel :home-panel]))
+    (re-frame/dispatch [:display-tools-panel]))
 
   (defroute "/about" []
     (re-frame/dispatch [:set-active-panel :about-panel]))
