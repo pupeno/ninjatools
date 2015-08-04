@@ -1,8 +1,5 @@
 /* Copyright © 2015 Carousel Apps, Ltd. All rights reserved. */
 
-html,
 body {
-	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    height: 100%;
-    padding-top: 40px;
+  padding-top: 50px;
 }

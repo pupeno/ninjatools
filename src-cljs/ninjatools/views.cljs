@@ -27,4 +27,21 @@
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [:active-panel])]
     (fn []
-      (panels @active-panel))))
+      [:div
+       [:nav.navbar.navbar-inverse.navbar-fixed-top
+        [:div.container
+         [:div.navbar-header
+          [:button.navbar-toggle.collapsed {:type "button", :data-toggle "collapse", :data-target "#navbar", :aria-expanded "false", :aria-controls "navbar"}
+           [:span.sr-only "Toggle navigation"]
+           [:span.icon-bar]
+           [:span.icon-bar]
+           [:span.icon-bar]]
+          [:a.navbar-brand {:href "#"} "Ninja Tools"]]
+         [:div#navbar.collapse.navbar-collapse
+          [:ul.nav.navbar-nav
+           #_[:li {:class "active"}
+              [:a {:href "#/"} "Tools"]]
+           #_[:li
+              [:a {:href "#/about"} "About"]]]]]]
+       [:main.container
+        (panels @active-panel)]])))
