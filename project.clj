@@ -67,7 +67,8 @@
                              :hooks       [leiningen.cljsbuild]
                              :cljsbuild   {:jar    true
                                            :builds {:app {:source-paths ["env/prod/cljs"]
-                                                          :compiler     {:optimizations :advanced :pretty-print false}}}}
+                                                          :compiler     {:optimizations :advanced
+                                                                         :pretty-print false}}}}
 
                              :aot         :all}
              :dev           [:project/dev :profiles/dev]
@@ -79,7 +80,8 @@
                                             [lein-figwheel "0.3.7"]
                                             [mvxcvi/puget "0.8.1"]]
                              :plugins      [[lein-figwheel "0.3.7"]]
-                             :cljsbuild    {:builds {:app {:source-paths ["env/dev/cljs"] :compiler {:source-map true}}}}
+                             :cljsbuild    {:builds {:app {:source-paths ["env/dev/cljs"]
+                                                           :compiler {:source-map true}}}}
                              :figwheel     {:http-server-root "public"
                                             :server-port      3449
                                             :nrepl-port       7002
