@@ -34,6 +34,13 @@
 (defn disconnect! []
   (conman/disconnect! conn))
 
+(defn delete-all! []
+  (delete-all-integrations!)
+  (delete-all-tools!))
+
+(defn get-tool-by-name [name]
+  (first (get-tool-by-name- {:name name})))
+
 (defn to-date [sql-date]
   (-> sql-date (.getTime) (java.util.Date.)))
 
