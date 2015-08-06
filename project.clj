@@ -46,30 +46,28 @@
   :min-lein-version "2.0.0"
   :uberjar-name "ninjatools.jar"
   :jvm-opts ["-server"]
-
   :main ninjatools.core
   :migratus {:store :database}
-
   :plugins [[lein-environ "1.0.0"]
             [lein-ancient "0.6.5"]
             [migratus-lein "0.1.5"]
             [lein-cljsbuild "1.0.6"]]
-  :clean-targets ^{:protect false} [:target-path [:cljsbuild :builds :app :compiler :output-dir] [:cljsbuild :builds :app :compiler :output-to]]
-  :cljsbuild {:builds {:app {:source-paths ["src-cljs"]
+  :clean-targets ^{:protect false} [:target-path [:clj :cljsbuild :builds :app :compiler :output-dir] [:clj :cljsbuild :builds :app :compiler :output-to]]
+  :source-paths ["src/clj"]
+  :test-paths ["test/clj"]
+  :cljsbuild {:builds {:app {:source-paths ["src/cljs"]
                              :compiler     {:output-dir    "resources/public/js/out"
                                             :externs       ["react/externs/react.js"]
                                             :optimizations :none
                                             :output-to     "resources/public/js/app.js"
                                             :pretty-print  true}}}}
-
   :profiles {:uberjar       {:omit-source true
                              :env         {:production true}
                              :hooks       [leiningen.cljsbuild]
                              :cljsbuild   {:jar    true
                                            :builds {:app {:source-paths ["env/prod/cljs"]
                                                           :compiler     {:optimizations :advanced
-                                                                         :pretty-print false}}}}
-
+                                                                         :pretty-print  false}}}}
                              :aot         :all}
              :dev           [:project/dev :profiles/dev]
              :test          [:project/test :profiles/test]
@@ -81,7 +79,7 @@
                                             [mvxcvi/puget "0.8.1"]]
                              :plugins      [[lein-figwheel "0.3.7"]]
                              :cljsbuild    {:builds {:app {:source-paths ["env/dev/cljs"]
-                                                           :compiler {:source-map true}}}}
+                                                           :compiler     {:source-map true}}}}
                              :figwheel     {:http-server-root "public"
                                             :server-port      3449
                                             :nrepl-port       7002
