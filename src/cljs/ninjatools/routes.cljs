@@ -1,19 +1,19 @@
 ;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
 
 (ns ninjatools.routes
-    (:require-macros [secretary.core :refer [defroute]])
-    (:import goog.History)
-    (:require [secretary.core :as secretary]
-              [goog.events :as events]
-              [goog.history.EventType :as EventType]
-              [re-frame.core :as re-frame]))
+  (:require-macros [secretary.core :refer [defroute]])
+  (:import goog.History)
+  (:require [secretary.core :as secretary]
+            [goog.events :as events]
+            [goog.history.EventType :as EventType]
+            [re-frame.core :as re-frame]))
 
 (defn hook-browser-navigation! []
   (doto (History.)
     (events/listen
-     EventType/NAVIGATE
-     (fn [event]
-       (secretary/dispatch! (.-token event))))
+      EventType/NAVIGATE
+      (fn [event]
+        (secretary/dispatch! (.-token event))))
     (.setEnabled true)))
 
 (defn app-routes []
@@ -21,10 +21,10 @@
   ;; --------------------
   ;; define routes here
   (defroute "/" []
-    (re-frame/dispatch [:display-tools-panel]))
+            (re-frame/dispatch [:display-tools-panel]))
 
   (defroute "/about" []
-    (re-frame/dispatch [:set-active-panel :about-panel]))
+            (re-frame/dispatch [:set-active-panel :about-panel]))
 
 
   ;; --------------------
