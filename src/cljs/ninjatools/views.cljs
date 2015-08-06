@@ -8,7 +8,7 @@
   (let [tools (re-frame/subscribe [:tools])]
     (fn []
       [:div
-       [:ul (for [tool @tools]
+       [:ul (for [tool (vals @tools)]
               ^{:key (tool "id")} [:li (tool "name")])]
        [:div [:a {:on-click #(re-frame/dispatch [:get-tools])}
               "Refresh tools"]]])))

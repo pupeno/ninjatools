@@ -24,7 +24,7 @@
 (re-frame/register-handler
   :got-tools
   (fn [db [_ tools]]
-    (assoc db :tools tools)))                               ;; TODO: remove loading page mark, once we started marking pages as loading.
+    (assoc db :tools (reduce #(assoc %1 (%2 "id") %2) {} tools))))                               ;; TODO: remove loading page mark, once we started marking pages as loading.
 
 (re-frame/register-handler
   :get-tools
