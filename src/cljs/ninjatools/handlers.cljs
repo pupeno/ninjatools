@@ -18,13 +18,24 @@
 (re-frame/register-handler
   :display-tools-panel
   (fn [db [_ active-panel]]
-    (re-frame/dispatch [:get-tools])
+    (when (not (contains? db :tools))
+      (re-frame/dispatch [:get-tools]))
     (assoc db :active-panel :tools-panel)))
 
 (re-frame/register-handler
+  :display-tool-panel
+  (fn [db [_ slug]]
+    (when (not (contains? db :tools))
+      (re-frame/dispatch [:get-tools]))
+    (-> db
+        (assoc :active-panel :tool-panel)
+        (assoc :current-tool-slug slug))))
+
+(re-frame/register-handler
   :got-tools
-  (fn [db [_ tools]]
-    (assoc db :tools (reduce #(assoc %1 (%2 "id") %2) {} tools))))                               ;; TODO: remove loading page mark, once we started marking pages as loading.
+  (fn [db [_ tools]]                                        ;; TODO: remove loading page mark, once we started marking pages as loading.
+    (assoc db :tools {:all     (reduce #(assoc %1 (%2 "id") %2) {} tools)
+                      :by-slug (reduce #(assoc %1 (%2 "slug") (%2 "id")) {} tools)})))
 
 (re-frame/register-handler
   :get-tools

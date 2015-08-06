@@ -23,6 +23,9 @@
   (defroute "/" []
             (re-frame/dispatch [:display-tools-panel]))
 
+  (defroute "/tool/:slug" [slug]
+            (re-frame/dispatch [:display-tool-panel slug]))
+
   (defroute "/about" []
             (re-frame/dispatch [:set-active-panel :about-panel]))
 
