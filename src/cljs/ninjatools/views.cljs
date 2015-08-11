@@ -7,7 +7,7 @@
   (let [tools (re-frame/subscribe [:tools])]
     (fn []
       [:div
-       [:ul (for [tool (vals (:all @tools))]
+       [:ul (for [tool (vals (:data @tools))]
               ^{:key (tool "id")} [:li [:a {:href (str "/#/tool/" (tool "slug"))} (tool "name")]])]
        [:div [:a {:on-click #(re-frame/dispatch [:get-tools])}
               "Refresh tools"]]])))
@@ -15,7 +15,9 @@
 (defn tool-panel []
   (let [current-tool (re-frame/subscribe [:current-tool])]
     (fn []
-      [:h1 (@current-tool "name")])))
+      (if @current-tool
+        [:h1 (@current-tool "name")]
+        [:p "Loading..."]))))
 
 (defn about-panel []
   (fn []

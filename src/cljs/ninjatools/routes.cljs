@@ -27,7 +27,7 @@
             (re-frame/dispatch [:display-tool-panel slug]))
 
   (defroute "/about" []
-            (re-frame/dispatch [:set-active-panel :about-panel]))
+            (re-frame/dispatch [:display-about-panel]))
 
 
   ;; --------------------

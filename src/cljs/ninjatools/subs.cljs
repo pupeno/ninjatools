@@ -2,7 +2,8 @@
 
 (ns ninjatools.subs
   (:require-macros [reagent.ratom :refer [reaction]])
-  (:require [re-frame.core :as re-frame]))
+  (:require [re-frame.core :as re-frame]
+            [ninjatools.db :as db]))
 
 (re-frame/register-sub
   :active-panel
@@ -17,5 +18,4 @@
 (re-frame/register-sub
   :current-tool
   (fn [db _]
-    (reaction (get (:all (:tools @db))
-                   (get (:by-slug (:tools @db)) (:current-tool-slug @db))))))
+    (reaction (db/get-tool-by-slug @db (get @db :current-tool-slug)))))
