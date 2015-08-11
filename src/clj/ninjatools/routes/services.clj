@@ -4,7 +4,8 @@
   (:require [ring.util.http-response :refer :all]
             [compojure.api.sweet :refer :all]
             [schema.core :as s]
-            [ninjatools.db.core :as db]))
+            [ninjatools.db.core :as db]
+            [ninjatools.models.tool :as tool]))
 
 (s/defschema Thingie {:id    Long
                       :hot   Boolean
@@ -21,6 +22,10 @@
                   (GET* "/tools" []
                         :summary "Return all the tools."
                         (ok (db/get-tools)))
+                  (GET* "/tools/:id/integrations" []
+                        :summary "Return all the integrated tools to a given tool."
+                        :path-params [id :- s/Uuid]
+                        (ok (tool/get-integrations-for id)))
 
                   (GET* "/plus" []
                         :return Long

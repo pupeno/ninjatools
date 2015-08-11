@@ -30,3 +30,8 @@ INSERT INTO integrations
 (tool_a_id, tool_b_id, comment)
 VALUES (:tool_a_id, :tool_b_id, :comment)
 
+-- name: get-integrations-for
+SELECT *
+FROM integrations
+WHERE tool_a_id = :tool_id
+   OR tool_b_id = :tool_id
