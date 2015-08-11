@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: luminus-db:0.1.1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/luminus-db/luminus-db/0.1.1/luminus-db-0.1.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

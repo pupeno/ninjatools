@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: re-frame:0.4.1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/re-frame/re-frame/0.4.1/re-frame-0.4.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
