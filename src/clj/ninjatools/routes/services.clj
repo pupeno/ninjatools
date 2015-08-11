@@ -16,9 +16,9 @@
 (defapi service-routes
         (ring.swagger.ui/swagger-ui "/swagger-ui")
         ;JSON docs available at the /swagger.json route
-        (swagger-docs {:info {:title "Ninja Tools api"}})
-        (context* "/api" []
-                  :tags ["thingie"]
+        (swagger-docs {:info {:title "Ninja Tools API"}})
+        (context* "" []
+                  :tags ["ninja"]
                   (GET* "/tools" []
                         :summary "Return all the tools."
                         (ok (db/get-tools)))
@@ -27,49 +27,49 @@
                         :path-params [id :- s/Uuid]
                         (ok (tool/get-integrations-for id)))
 
-                  (GET* "/plus" []
+                  #_(GET* "/plus" []
                         :return Long
                         :query-params [x :- Long, {y :- Long 1}]
                         :summary "x+y with query-parameters. y defaults to 1."
                         (ok (+ x y)))
 
-                  (POST* "/minus" []
+                  #_(POST* "/minus" []
                          :return Long
                          :body-params [x :- Long, y :- Long]
                          :summary "x-y with body-parameters."
                          (ok (- x y)))
 
-                  (GET* "/times/:x/:y" []
+                  #_(GET* "/times/:x/:y" []
                         :return Long
                         :path-params [x :- Long, y :- Long]
                         :summary "x*y with path-parameters"
                         (ok (* x y)))
 
-                  (POST* "/divide" []
+                  #_(POST* "/divide" []
                          :return Double
                          :form-params [x :- Long, y :- Long]
                          :summary "x/y with form-parameters"
                          (ok (/ x y)))
 
-                  (GET* "/power" []
+                  #_(GET* "/power" []
                         :return Long
                         :header-params [x :- Long, y :- Long]
                         :summary "x^y with header-parameters"
                         (ok (long (Math/pow x y))))
 
-                  (PUT* "/echo" []
+                  #_(PUT* "/echo" []
                         :return [{:hot Boolean}]
                         :body [body [{:hot Boolean}]]
                         :summary "echoes a vector of anonymous hotties"
                         (ok body))
 
-                  (POST* "/echo" []
+                  #_(POST* "/echo" []
                          :return (s/maybe Thingie)
                          :body [thingie (s/maybe Thingie)]
                          :summary "echoes a Thingie from json-body"
                          (ok thingie)))
 
-        (context* "/context" []
+        #_(context* "/context" []
                   :tags ["context*"]
                   :summary "summary inherited from context"
                   (context* "/:kikka" []
