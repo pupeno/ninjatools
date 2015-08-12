@@ -1,14 +1,15 @@
 ;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
 
 (ns ninjatools.views
-  (:require [re-frame.core :as re-frame]))
+  (:require [re-frame.core :as re-frame]
+            [ninjatools.routes :as routes]))
 
 (defn tools-panel []
   (let [tools (re-frame/subscribe [:tools])]
     (fn []
       [:div
        [:ul (for [tool (vals (:data @tools))]
-              ^{:key (tool "id")} [:li [:a {:href (str "/#/tool/" (tool "slug"))} (tool "name")]])]
+              ^{:key (tool "id")} [:li [:a {:href (routes/url-for :tool {:slug (tool "slug")})} (tool "name")]])]
        [:div [:a {:on-click #(re-frame/dispatch [:get-tools])}
               "Refresh tools"]]])))
 
@@ -21,8 +22,7 @@
 
 (defn about-panel []
   (fn []
-    [:div "This is the About Page."
-     [:div [:a {:href "#/"} "go to Home Page"]]]))
+    [:div "This is the About Page."]))
 
 ;; --------------------
 (defmulti panels identity)
@@ -43,12 +43,12 @@
            [:span.icon-bar]
            [:span.icon-bar]
            [:span.icon-bar]]
-          [:a.navbar-brand {:href "#"} "Ninja Tools"]]
+          [:a.navbar-brand {:href "/"} "Ninja Tools"]]
          [:div#navbar.collapse.navbar-collapse
           [:ul.nav.navbar-nav
            #_[:li {:class "active"}
               [:a {:href "#/"} "Tools"]]
-           #_[:li
-              [:a {:href "#/about"} "About"]]]]]]
+           [:li
+              [:a {:href (routes/url-for :about)} "About"]]]]]]
        [:main.container
         (panels @active-panel)]])))

@@ -75,14 +75,14 @@
       wrap-identity
       (wrap-authentication (session-backend))))
 
-(defn wrap-base [handler]
+(defn wrap-app [handler]
   (-> handler
       wrap-dev
       wrap-auth
       wrap-formats
       (wrap-defaults
         (-> site-defaults
-            (assoc-in [:security :anti-forgery] false)
+            (assoc-in [:security :anti-forgery] false)      ; Anti-forgery is only applied to the main app, search for uses of wrap-csfr. TODO: is this correct?
             (assoc-in [:session :store] session/ttl-mem)))
       wrap-webjars
       wrap-servlet-context

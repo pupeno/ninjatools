@@ -12,25 +12,25 @@
              :by-slug {}}}))
 
 (re-frame/register-handler
-  :display-about-panel
-  (fn [db [_]]
+  :display-page-about
+  (fn [db [_ _]]
     (assoc db :active-panel :about-panel)))
 
 (re-frame/register-handler
-  :display-tools-panel
-  (fn [db [_]]
+  :display-page-tools
+  (fn [db [_ _]]
     (when (empty? (get-in db [:tools :data]))
       (re-frame/dispatch [:get-tools]))
     (assoc db :active-panel :tools-panel)))
 
 (re-frame/register-handler
-  :display-tool-panel
-  (fn [db [_ slug]]
-    (when (nil? (db/get-tool-by-slug db slug))
+  :display-page-tool
+  (fn [db [_ args]]
+    (when (nil? (db/get-tool-by-slug db (:slug args)))
       (re-frame/dispatch [:get-tools]))
     (-> db
         (assoc :active-panel :tool-panel)
-        (assoc :current-tool-slug slug))))
+        (assoc :current-tool-slug (:slug args)))))
 
 (re-frame/register-handler
   :got-tools
@@ -41,9 +41,9 @@
 (re-frame/register-handler
   :get-tools
   (fn [db [_]]
-    (ajax/GET "/tools"
+    (ajax/GET "/api/v1/tools"
               {:handler       #(re-frame/dispatch [:got-tools %1])
-               :error-handler #(do
-                                (js/alert "There was an unexpected error.")
-                                (.log js/console (pr-str "Error" %1)))})
+               :error-handler (fn [{:keys [status status-text]}]
+                                (js/alert "We are sorry, there was an unexpected error.")
+                                (.log js/console (pr-str "Error: " status status-text)))})
     db))                                                    ;; TODO: mark the page as *loading*

@@ -1,8 +1,7 @@
 ;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
 
 (ns ninjatools.handler
-  (:require [compojure.core :refer [defroutes routes wrap-routes]]
-            [ninjatools.routes.home :refer [home-routes]]
+  (:require [compojure.core :refer [defroutes routes wrap-routes ANY context]]
             [ninjatools.routes.services :refer [service-routes]]
             [ninjatools.middleware :as middleware]
             [ninjatools.db.core :as db]
@@ -11,13 +10,10 @@
             [taoensso.timbre.appenders.3rd-party.rotor :as rotor]
             [selmer.parser :as parser]
             [environ.core :refer [env]]
-            [clojure.tools.nrepl.server :as nrepl]))
+            [clojure.tools.nrepl.server :as nrepl]
+            [ninjatools.layout :as layout]))
 
 (defonce nrepl-server (atom nil))
-
-(defroutes base-routes
-           (route/resources "/")
-           (route/not-found "Not Found"))
 
 (defn parse-port [port]
   (when port
@@ -74,10 +70,12 @@
   (db/disconnect!)
   (timbre/info "shutdown complete!"))
 
-(def app-base
-  (routes
-    (var service-routes)
-    (wrap-routes #'home-routes middleware/wrap-csrf)
-    #'base-routes))
+(defroutes
+  app-routes
+  (var service-routes)
+  (context "/api" [] (route/not-found "Not Found"))         ; Make sure requests to /api/whatever that haven't been handled by the API return a 404.
+  (wrap-routes (routes (ANY "*" [] (layout/render "app.html")))
+               middleware/wrap-csrf)
+  (route/not-found "Not Found"))
 
-(def app (middleware/wrap-base #'app-base))
+(def app (middleware/wrap-app #'app-routes))

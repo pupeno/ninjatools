@@ -1,34 +1,27 @@
 ;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
 
 (ns ninjatools.routes
-  (:require-macros [secretary.core :refer [defroute]])
-  (:import goog.History)
-  (:require [secretary.core :as secretary]
-            [goog.events :as events]
-            [goog.history.EventType :as EventType]
+  (:require [clojure.set :refer [rename-keys]]
+            [domkm.silk :as silk]
+            [pushy.core :as pushy]
             [re-frame.core :as re-frame]))
 
-(defn hook-browser-navigation! []
-  (doto (History.)
-    (events/listen
-      EventType/NAVIGATE
-      (fn [event]
-        (secretary/dispatch! (.-token event))))
-    (.setEnabled true)))
+(def routes (silk/routes [[:tools [[]]]
+                          [:tool [["tool" :slug]]]
+                          [:about [["about"]]]]))
 
-(defn app-routes []
-  (secretary/set-config! :prefix "#")
-  ;; --------------------
-  ;; define routes here
-  (defroute "/" []
-            (re-frame/dispatch [:display-tools-panel]))
+(def history
+  (pushy/pushy (fn [matched-route]
+                 (let [matched-route (rename-keys matched-route {:domkm.silk/name    :name
+                                                                 :domkm.silk/pattern :pattern
+                                                                 :domkm.silk/routes  :routes
+                                                                 :domkm.silk/url     :url})
+                       event-name (keyword (str "display-page-" (name (:name matched-route))))]
+                   (re-frame/dispatch [event-name matched-route])))
+               (fn [url]
+                 (silk/arrive routes url))))
 
-  (defroute "/tool/:slug" [slug]
-            (re-frame/dispatch [:display-tool-panel slug]))
+(defn start! []
+  (pushy/start! history))
 
-  (defroute "/about" []
-            (re-frame/dispatch [:display-about-panel]))
-
-
-  ;; --------------------
-  (hook-browser-navigation!))
+(def url-for (partial silk/depart routes))

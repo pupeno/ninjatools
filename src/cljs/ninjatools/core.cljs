@@ -13,6 +13,6 @@
                   (.getElementById js/document "app")))
 
 (defn ^:export init [] 
-  (routes/app-routes)
+  (routes/start!)
   (re-frame/dispatch-sync [:initialize-db])
   (mount-root))

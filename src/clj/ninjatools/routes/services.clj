@@ -14,11 +14,11 @@
                                :type #{{:id String}}}]})
 
 (defapi service-routes
-        (ring.swagger.ui/swagger-ui "/swagger-ui")
+        (ring.swagger.ui/swagger-ui "/api")
         ;JSON docs available at the /swagger.json route
         (swagger-docs {:info {:title "Ninja Tools API"}})
-        (context* "" []
-                  :tags ["ninja"]
+        (context* "/api/v1" []
+                  :tags ["v1"]
                   (GET* "/tools" []
                         :summary "Return all the tools."
                         (ok (db/get-tools)))
