@@ -2,10 +2,6 @@
 
 (ns ninjatools.db)
 
-(def default-db
-  {:tools {:data    {}
-           :by-slug {}}})
-
 (defn get-tool-by-slug [db slug]
   (when-let [tool-id (get-in db [:tools :by-slug slug])]
     (when-let [tool (get-in db [:tools :data tool-id])]

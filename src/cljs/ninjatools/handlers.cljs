@@ -8,7 +8,8 @@
 (re-frame/register-handler
   :initialize-db
   (fn [_ _]
-    db/default-db))
+    {:tools {:data    {}
+             :by-slug {}}}))
 
 (re-frame/register-handler
   :display-about-panel
