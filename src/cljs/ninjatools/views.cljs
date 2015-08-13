@@ -4,21 +4,28 @@
   (:require [re-frame.core :as re-frame]
             [ninjatools.routes :as routes]))
 
+(defn loading
+  "Display a loading panel"
+  []
+  [:div "Loading..."])
+
 (defn tools-panel []
   (let [tools (re-frame/subscribe [:tools])]
     (fn []
-      [:div
-       [:ul (for [tool (vals (:data @tools))]
-              ^{:key (tool "id")} [:li [:a {:href (routes/url-for :tool {:slug (tool "slug")})} (tool "name")]])]
-       [:div [:a {:on-click #(re-frame/dispatch [:get-tools])}
-              "Refresh tools"]]])))
+      (if (empty? (:data @tools))
+        [loading]
+        [:div
+         [:ul (for [tool (vals (:data @tools))]
+                ^{:key (tool "id")} [:li [:a {:href (routes/url-for :tool {:slug (tool "slug")})} (tool "name")]])]
+         [:div [:a {:on-click #(re-frame/dispatch [:get-tools])}
+                "Refresh tools"]]]))))
 
 (defn tool-panel []
   (let [current-tool (re-frame/subscribe [:current-tool])]
     (fn []
       (if @current-tool
         [:h1 (@current-tool "name")]
-        [:p "Loading..."]))))
+        [loading]))))
 
 (defn about-panel []
   (fn []
