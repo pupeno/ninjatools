@@ -57,7 +57,6 @@
     <orderEntry type="library" name="Leiningen: ring/ring-devel:1.4.0" level="project" />
     <orderEntry type="library" name="Leiningen: ring/ring-mock:0.2.0" level="project" />
     <orderEntry type="library" name="Leiningen: ring:1.4.0" level="project" />
-    <orderEntry type="library" name="Leiningen: secretary:1.2.3" level="project" />
     <orderEntry type="library" name="Leiningen: selmer:0.8.7" level="project" />
     <orderEntry type="library" name="Leiningen: to-jdbc-uri:0.2.0" level="project" />
     <orderEntry type="library" name="Leiningen: clj-time:0.9.0" level="project" />
@@ -218,7 +217,6 @@
     <orderEntry type="library" name="Leiningen: ns-tracker:0.3.0" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/tools.namespace:0.2.10" level="project" />
     <orderEntry type="library" name="Leiningen: ring/ring-servlet:1.4.0" level="project" />
-    <orderEntry type="library" name="Leiningen: com.cemerick/clojurescript.test:0.2.3-20140317.141743-3" level="project" />
     <orderEntry type="library" name="Leiningen: commons-codec:1.10" level="project" />
     <orderEntry type="library" name="Leiningen: joda-time:2.8.1" level="project" />
   </component>
