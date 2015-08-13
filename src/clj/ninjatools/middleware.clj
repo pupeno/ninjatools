@@ -42,6 +42,11 @@
          :headers {"Content-Type" "text/html"}
          :body    (-> "templates/error.html" io/resource slurp)}))))
 
+(defn wrap-delay [handler]
+  (fn [request]
+    (Thread/sleep 5000)
+    (handler request)))
+
 (defn wrap-dev [handler]
   (if (env :dev)
     (-> handler
