@@ -72,7 +72,8 @@
 
 (defroutes
   app-routes
-  (var service-routes)
+  #_(wrap-routes #'service-routes middleware/wrap-delay) ; Use this instead of just the service-routes to simulate slow connections
+  #'service-routes
   (context "/api" [] (route/not-found "Not Found"))         ; Make sure requests to /api/whatever that haven't been handled by the API return a 404.
   (wrap-routes (routes (ANY "*" [] (layout/render "app.html")))
                middleware/wrap-csrf)
