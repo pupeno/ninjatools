@@ -2,7 +2,8 @@
 
 (ns ninjatools.views
   (:require [re-frame.core :as re-frame]
-            [ninjatools.routes :as routes]))
+            [ninjatools.routes :as routes]
+            [ninjatools.util :refer [log]]))
 
 (defn loading
   "Display a loading panel"
@@ -16,15 +17,19 @@
         [loading]
         [:div
          [:ul (for [tool (vals (:data @tools))]
-                ^{:key (tool "id")} [:li [:a {:href (routes/url-for :tool {:slug (tool "slug")})} (tool "name")]])]
+                ^{:key (:id tool)} [:li [:a {:href (routes/url-for :tool {:slug (:slug tool)})} (:name tool)]])]
          [:div [:a {:on-click #(re-frame/dispatch [:get-tools])}
                 "Refresh tools"]]]))))
 
 (defn tool-panel []
-  (let [current-tool (re-frame/subscribe [:current-tool])]
+  (let [current-tool (re-frame/subscribe [:current-tool])
+        tools (re-frame/subscribe [:tools])]
     (fn []
       (if @current-tool
-        [:h1 (@current-tool "name")]
+        [:div
+         [:h1 (:name @current-tool)]
+         [:ul (for [integrated-tool (vals (select-keys (:data @tools) (:integration-ids @current-tool)))]
+                ^{:key (:id integrated-tool)} [:li [:a {:href (routes/url-for :tool {:slug (:slug integrated-tool)})} (:name integrated-tool)]])]]
         [loading]))))
 
 (defn about-panel []
