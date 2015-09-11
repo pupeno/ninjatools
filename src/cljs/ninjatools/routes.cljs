@@ -1,27 +1,25 @@
 ;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
 
 (ns ninjatools.routes
-  (:require [clojure.set :refer [rename-keys]]
-            [domkm.silk :as silk]
+  (:require [bidi.bidi :as bidi]
             [pushy.core :as pushy]
             [re-frame.core :as re-frame]))
 
-(def routes (silk/routes [[:tools [[]]]
-                          [:tool [["tool" :slug]]]
-                          [:about [["about"]]]]))
+(def routes ["/" {""              :tools
+                  ["tool/" :slug] :tool
+                  "about" :about}])
+
+(defn parse-path [path]
+  (bidi/match-route routes path))
 
 (def history
   (pushy/pushy (fn [matched-route]
-                 (let [matched-route (rename-keys matched-route {:domkm.silk/name    :name
-                                                                 :domkm.silk/pattern :pattern
-                                                                 :domkm.silk/routes  :routes
-                                                                 :domkm.silk/url     :url})
-                       event-name (keyword (str "display-page-" (name (:name matched-route))))]
-                   (re-frame/dispatch [event-name matched-route])))
-               (fn [url]
-                 (silk/arrive routes url))))
+                 (.log js/console (pr-str matched-route))
+                 (let [event-name (keyword (str "display-page-" (name (:handler matched-route))))]
+                   (re-frame/dispatch [event-name (:route-params matched-route)])))
+               parse-path))
 
 (defn start! []
   (pushy/start! history))
 
-(def url-for (partial silk/depart routes))
+(def url-for (partial bidi/path-for routes))

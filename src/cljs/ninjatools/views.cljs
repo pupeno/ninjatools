@@ -17,7 +17,7 @@
         [loading]
         [:div
          [:ul (for [tool (vals (:data @tools))]
-                ^{:key (:id tool)} [:li [:a {:href (routes/url-for :tool {:slug (:slug tool)})} (:name tool)]])]
+                ^{:key (:id tool)} [:li [:a {:href (routes/url-for :tool :slug (:slug tool))} (:name tool)]])]
          [:div [:a {:on-click #(re-frame/dispatch [:get-tools])}
                 "Refresh tools"]]]))))
 
@@ -29,7 +29,7 @@
         [:div
          [:h1 (:name @current-tool)]
          [:ul (for [integrated-tool (vals (select-keys (:data @tools) (:integration-ids @current-tool)))]
-                ^{:key (:id integrated-tool)} [:li [:a {:href (routes/url-for :tool {:slug (:slug integrated-tool)})} (:name integrated-tool)]])]]
+                ^{:key (:id integrated-tool)} [:li [:a {:href (routes/url-for :tool :slug (:slug integrated-tool))} (:name integrated-tool)]])]]
         [loading]))))
 
 (defn about-panel []
