@@ -7,19 +7,17 @@
 
 (def routes ["/" {""              :tools
                   ["tool/" :slug] :tool
-                  "about" :about}])
+                  "about"         :about}])
 
 (defn parse-path [path]
   (bidi/match-route routes path))
 
-(def history
-  (pushy/pushy (fn [matched-route]
-                 (.log js/console (pr-str matched-route))
-                 (let [event-name (keyword (str "display-page-" (name (:handler matched-route))))]
-                   (re-frame/dispatch [event-name (:route-params matched-route)])))
-               parse-path))
-
 (defn start! []
-  (pushy/start! history))
+  (pushy/start!
+    (pushy/pushy (fn [matched-route]
+                   (.log js/console (pr-str matched-route))
+                   (let [event-name (keyword (str "display-page-" (name (:handler matched-route))))]
+                     (re-frame/dispatch [event-name (:route-params matched-route)])))
+                 parse-path)))
 
 (def url-for (partial bidi/path-for routes))
