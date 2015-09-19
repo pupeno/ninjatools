@@ -1,23 +1,30 @@
 ;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
 
 (ns ninjatools.routes
-  (:require [bidi.bidi :as bidi]
+  (:require [clojure.set :refer [rename-keys]]
+            [domkm.silk :as silk]
             [pushy.core :as pushy]
             [re-frame.core :as re-frame]))
 
-(def routes ["/" {""              :tools
-                  ["tool/" :slug] :tool
-                  "about"         :about}])
+(def routes (silk/routes [[:tools [[]]]
+                          [:tool [["tools" :slug]]]
+                          [:about [["about"]]]]))
+
+(defn sanitize-silk-keywords [matched-route]
+  (rename-keys matched-route {:domkm.silk/name    :name
+                              :domkm.silk/pattern :pattern
+                              :domkm.silk/routes  :routes
+                              :domkm.silk/url     :url}))
 
 (defn parse-path [path]
-  (bidi/match-route routes path))
+  (sanitize-silk-keywords (silk/arrive routes path)))
+
+
+(defn dispatch-route [matched-route]
+  (let [event-name (keyword (str "display-page-" (name (:name matched-route))))]
+    (re-frame/dispatch [event-name matched-route])))
 
 (defn start! []
-  (pushy/start!
-    (pushy/pushy (fn [matched-route]
-                   (.log js/console (pr-str matched-route))
-                   (let [event-name (keyword (str "display-page-" (name (:handler matched-route))))]
-                     (re-frame/dispatch [event-name (:route-params matched-route)])))
-                 parse-path)))
+  (pushy/start! (pushy/pushy dispatch-route parse-path)))
 
-(def url-for (partial bidi/path-for routes))
+(def url-for (partial silk/depart routes))

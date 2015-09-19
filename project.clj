@@ -35,7 +35,7 @@
                  [cljsjs/react "0.13.3-1"]
                  [reagent-forms "0.5.9"]
                  [reagent-utils "0.1.5"]
-                 [bidi "1.21.0"]
+                 [com.domkm/silk "0.1.1"]
                  [kibu/pushy "0.3.3"]
                  [re-frame "0.4.1"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
