@@ -10,6 +10,9 @@ profiles.clj
 /.env
 *.log
 resources/public/js
+.nrepl-port
+
+# IntelliJ https://github.com/github/gitignore/blob/master/Global/JetBrains.gitignore
 .idea/workspace.xml
 .idea/tasks.xml
-.nrepl-port
+.idea/dictionaries
