@@ -17,7 +17,7 @@
 (parser/add-tag! :csrf-field (fn [_ _] (anti-forgery-field)))
 (filters/add-filter! :markdown (fn [content] [:safe (md-to-html-string content)]))
 
-#_(def engine (prerenderer/create (prerenderer/resource "public/js/server-side.js" (env :dev))))
+(def engine (prerenderer/create (prerenderer/resource "public/js/server-side.js" (env :dev))))
 
 (defn render [request]
   (-> "app.html"
@@ -27,6 +27,6 @@
           :csrf-token *anti-forgery-token*
           :servlet-context *servlet-context*
           :identity *identity*
-          #_:prerendered-content #_[:safe (prerenderer/render engine request)]))
+          :prerendered-content [:safe (prerenderer/render engine request)]))
       response
       (content-type "text/html; charset=utf-8")))
