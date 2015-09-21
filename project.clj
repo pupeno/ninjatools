@@ -82,8 +82,10 @@
                                            :builds {:app         {:source-paths ["env/prod/cljs"]
                                                                   :compiler     {:optimizations :advanced
                                                                                  :pretty-print  false}}
-                                                    :server-side {:compiler {:optimizations :advanced
-                                                                             :pretty-print  false}}}}
+                                                    :server-side {:compiler {:optimizations :none
+                                                                             :source-map    true
+                                                                             :pretty-print  true
+                                                                             :verbose       true}}}}
                              :aot         :all}
              :dev           [:project/dev :profiles/dev]
              :test          [:project/test :profiles/test]
