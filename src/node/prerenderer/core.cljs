@@ -56,9 +56,6 @@
                (let [app (-> (express)
                              (.use (cookie-parser))
                              (.get "/" (fn [_req res] (.send res "Universal JavaScript engine for server side pre-rendering single page applications.")))
-                             (.get "/render" render
-                                   #_(fn [req res]
-                                         (render req res)
-                                         #_(.send res (render (.-url (.-query req)))))))
+                             (.get "/render" render))
                      server (.createServer http app)]
                     (.listen server 0 (fn [] (.writeFile fs (:port-file options) (.-port (.address server)))))))))
