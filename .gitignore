@@ -16,3 +16,5 @@ resources/public/js
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/dictionaries
+
+node_modules

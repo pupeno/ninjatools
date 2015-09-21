@@ -8,7 +8,8 @@
             [compojure.response :refer [Renderable]]
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [ring.middleware.anti-forgery :refer [*anti-forgery-token*]]
-            [environ.core :refer [env]]))
+            [environ.core :refer [env]]
+            [prerenderer.core :as prerenderer]))
 
 (declare ^:dynamic *identity*)
 (declare ^:dynamic *servlet-context*)
@@ -16,14 +17,16 @@
 (parser/add-tag! :csrf-field (fn [_ _] (anti-forgery-field)))
 (filters/add-filter! :markdown (fn [content] [:safe (md-to-html-string content)]))
 
-(defn render [template & [params]]
-  (-> template
+(def engine (prerenderer/create (prerenderer/resource "public/js/server-side.js" (env :dev))))
+
+(defn render [request]
+  (-> "app.html"
       (parser/render-file
-        (assoc params
-          :page template
+        (assoc {}
           :dev (env :dev)
           :csrf-token *anti-forgery-token*
           :servlet-context *servlet-context*
-          :identity *identity*))
+          :identity *identity*
+          :prerendered-content [:safe (prerenderer/render engine request)]))
       response
       (content-type "text/html; charset=utf-8")))

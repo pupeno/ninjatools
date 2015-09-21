@@ -37,12 +37,15 @@
                  [reagent-utils "0.1.5"]
                  [com.domkm/silk "0.1.1"]
                  [kibu/pushy "0.3.3"]
-                 [re-frame "0.4.1"]
+                 [com.carouselapps/re-frame "0.4.1"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
                  [cljs-ajax "0.3.14"]
                  [metosin/compojure-api "0.23.1"]
                  [metosin/ring-swagger-ui "2.1.2"]
-                 [org.immutant/web "2.1.0"]]
+                 [org.immutant/web "2.1.0"]
+                 #_[com.carouselapps/prerenderer "0.1.0-SNAPSHOT"]
+                 [org.clojure/tools.cli "0.3.3"]
+                 [clj-http "2.0.0"]]
 
   :min-lein-version "2.0.0"
   :uberjar-name "ninjatools.jar"
@@ -52,23 +55,35 @@
   :plugins [[lein-environ "1.0.0"]
             [lein-ancient "0.6.5"]
             [migratus-lein "0.1.5"]
-            [lein-cljsbuild "1.0.6"]]
+            [lein-cljsbuild "1.0.6"]
+            [lein-npm "0.6.1"]]
   :clean-targets ^{:protect false} [:target-path [:clj :cljsbuild :builds :app :compiler :output-dir] [:clj :cljsbuild :builds :app :compiler :output-to]]
   :source-paths ["src/clj"]
   :test-paths ["test/clj"]
-  :cljsbuild {:builds {:app {:source-paths ["src/cljs"]
-                             :compiler     {:output-dir    "resources/public/js/out"
-                                            :externs       ["react/externs/react.js"]
-                                            :optimizations :none
-                                            :output-to     "resources/public/js/app.js"
-                                            :pretty-print  true}}}}
+  :cljsbuild {:builds {:app         {:source-paths ["src/cljs"]
+                                     :compiler     {:output-dir "resources/public/js/app"
+                                                    :output-to  "resources/public/js/app.js"
+                                                    :externs    ["react/externs/react.js"]}}
+                       :server-side {:source-paths ["src/cljs" "src/node"]
+                                     :compiler     {:output-dir "resources/public/js/server-side"
+                                                    :output-to  "resources/public/js/server-side.js"
+                                                    :externs    ["react/externs/react.js"]
+                                                    :main       "ninjatools.node"
+                                                    :target     :nodejs}}}}
+  :npm {:dependencies [["@pupeno/xmlhttprequest" "1.7.0"]
+                       [express "4.13.3"]
+                       [find-port "1.0.1"]
+                       [cookie-parser "1.4.0"]]}
+
   :profiles {:uberjar       {:omit-source true
                              :env         {:production true}
                              :hooks       [leiningen.cljsbuild]
                              :cljsbuild   {:jar    true
-                                           :builds {:app {:source-paths ["env/prod/cljs"]
-                                                          :compiler     {:optimizations :advanced
-                                                                         :pretty-print  false}}}}
+                                           :builds {:app         {:source-paths ["env/prod/cljs"]
+                                                                  :compiler     {:optimizations :advanced
+                                                                                 :pretty-print  false}}
+                                                    :server-side {:compiler {:optimizations :advanced
+                                                                             :pretty-print  false}}}}
                              :aot         :all}
              :dev           [:project/dev :profiles/dev]
              :test          [:project/test :profiles/test]
@@ -79,8 +94,15 @@
                                             [lein-figwheel "0.3.9"]
                                             [mvxcvi/puget "0.8.1"]]
                              :plugins      [[lein-figwheel "0.3.7"]]
-                             :cljsbuild    {:builds {:app {:source-paths ["env/dev/cljs"]
-                                                           :compiler     {:source-map true}}}}
+                             :cljsbuild    {:builds {:app         {:source-paths ["env/dev/cljs"]
+                                                                   :compiler     {:optimizations :none
+                                                                                  :source-map    true
+                                                                                  :pretty-print  true
+                                                                                  :verbose       true}}
+                                                     :server-side {:compiler {:optimizations :none
+                                                                              :source-map    true
+                                                                              :pretty-print  true
+                                                                              :verbose       true}}}}
                              :figwheel     {:http-server-root "public"
                                             :server-port      3449
                                             :nrepl-port       7002
