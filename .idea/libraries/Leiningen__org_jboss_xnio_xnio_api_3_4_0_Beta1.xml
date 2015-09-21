@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: org.jboss.xnio/xnio-api:3.4.0.Beta1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/jboss/xnio/xnio-api/3.4.0.Beta1/xnio-api-3.4.0.Beta1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

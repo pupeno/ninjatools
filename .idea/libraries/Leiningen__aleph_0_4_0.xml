@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: aleph:0.4.0">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/aleph/aleph/0.4.0/aleph-0.4.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

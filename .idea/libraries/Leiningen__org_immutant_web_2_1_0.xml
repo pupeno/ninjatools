@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: org.immutant/web:2.1.0">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/immutant/web/2.1.0/web-2.1.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

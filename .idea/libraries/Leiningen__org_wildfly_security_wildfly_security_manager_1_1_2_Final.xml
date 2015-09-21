@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: org.wildfly.security/wildfly-security-manager:1.1.2.Final">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/wildfly/security/wildfly-security-manager/1.1.2.Final/wildfly-security-manager-1.1.2.Final.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
