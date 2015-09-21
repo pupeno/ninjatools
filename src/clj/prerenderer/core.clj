@@ -3,7 +3,8 @@
 (ns prerenderer.core
   (:require [clojure.string :as string]
             [clojure.java.io :as io]
-            [clj-http.client :as http])
+            [clj-http.client :as http]
+            ring.util.request)
   (:import java.lang.ProcessBuilder
            java.io.File))
 
