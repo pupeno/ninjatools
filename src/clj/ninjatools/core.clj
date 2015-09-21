@@ -15,7 +15,9 @@
 
 (defn start-server [port]
   (init)
-  (reset! server (immutant/run app :port port)))
+  (reset! server (immutant/run app
+                               :host (if (env :production) "0.0.0.0" "localhost")
+                               :port port)))
 
 (defn stop-server []
   (when @server
@@ -26,7 +28,7 @@
 (defn start-app [[port]]
   (.addShutdownHook (Runtime/getRuntime) (Thread. stop-server))
   (start-server (http-port port))
-  (timbre/info "server started on port:" (:port @server)))
+  (timbre/info "server started on port:" (str (:host @server) ":" (:port @server))))
 
 (defn -main [& args]
   (cond
