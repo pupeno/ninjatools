@@ -19,8 +19,8 @@
 (def xmlhttprequest (nodejs/require "@pupeno/xmlhttprequest"))
 (aset (.-defaults xmlhttprequest) "host" "localhost")
 (aset (.-defaults xmlhttprequest) "port" "3000")
-(aset js/global "XMLHttpRequest" (.-XMLHttpRequest xmlhttprequest))
-(aset js/global "alert" println)
+(goog.object/set js/global "XMLHttpRequest" (.-XMLHttpRequest xmlhttprequest))
+(goog.object/set js/global "alert" println)
 
 (def cli-options
   [["-p PORT_FILE" "--port-file PORT_FILE" "File to which to write the port number opened for requests"
