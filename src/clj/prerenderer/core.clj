@@ -10,17 +10,15 @@
 
 (defn create
   ([options]
-   (let [engine (merge {:path              nil
-                        :resource          nil
-                        :wait-for-resource false
-                        :process           nil
-                        :port-file         (.getPath (doto (File/createTempFile (str "com.carouselapps.prerenderer-" *ns* "-") ".port")
-                                                       .deleteOnExit))
-                        :start-timeout     5000}
+   (let [engine (merge {:path          nil
+                        :wait          false
+                        :process       nil
+                        :port-file     (.getPath (doto (File/createTempFile (str "com.carouselapps.prerenderer-" *ns* "-") ".port")
+                                                   .deleteOnExit))
+                        :start-timeout 5000}
                        options)]
-     (if (and (nil? (:path engine))
-              (nil? (:resource engine)))
-       (throw (Exception. "Either resource or path should be specified when creating an engine.")))
+     (if (nil? (:path engine))
+       (throw (Exception. "Path should be specified when creating an engine.")))
      (atom engine))))
 
 (defn running? [engine]
@@ -54,9 +52,23 @@
               (recur (read-port-file engine))))
         port-number))))
 
+(defn ensure-javascript-exists
+  ([engine] (ensure-javascript-exists engine false))
+  ([engine notify-about-file-appearing]
+   (if (not (.exists (io/as-file (:path engine))))
+     (let [message (str "File " (:path engine) " for prerendering is not present. Did you compile your JavaScript? 'lein cljsbuild auto' maybe?")]
+       (if (:wait engine)
+         (do
+           (println message "Waiting until it appears...")
+           (Thread/sleep 100)
+           (recur engine true))
+         (throw (Exception. message))))
+     (when notify-about-file-appearing
+       (println "File" (:path engine) "appeared. Pfiuuu!")))))
+
 (defn start-engine [engine]
-  (println engine)
   (spit (:port-file engine) "")
+  (ensure-javascript-exists engine)
   (let [process-builder (doto (ProcessBuilder. ["node" (:path engine) "--port-file" (:port-file engine)])
                           .inheritIO)
         process (.start process-builder)
@@ -65,27 +77,10 @@
       (assoc engine :port-number port-number)
       (throw (Exception. (str "Failed to get port number when starting " (:path engine)))))))
 
-(defn resource-to-path [path wait]
-  (let [full-path (io/resource path)
-        error-message (str "Resource " path " for prerendering is not present. Did you compile your JavaScript? 'lein cljsbuild auto' maybe?")]
-    (if (nil? full-path)
-      (if wait
-        (do
-          (println error-message "Waiting until it appears")
-          (Thread/sleep 100)
-          (recur path wait))
-        (throw (Exception. error-message)))
-      (.getPath full-path))))
-
-(defn resolve-path [engine]
-  (if (nil? (:path engine))
-    (assoc engine :path (resource-to-path (:resource engine) (:wait-for-resource engine)))
-    engine))
-
 (defn ensure-engine-is-running! [engine]
   (locking engine
     (when (not (running? engine))
-      (reset! engine (merge @engine (start-engine (resolve-path @engine)))))))
+      (reset! engine (start-engine @engine)))))
 
 (defn render [engine request]
   (ensure-engine-is-running! engine)
