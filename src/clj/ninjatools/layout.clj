@@ -1,8 +1,7 @@
 ;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
 
 (ns ninjatools.layout
-  (:require ninjatools.server
-            [selmer.parser :as parser]
+  (:require [selmer.parser :as parser]
             [selmer.filters :as filters]
             [markdown.core :refer [md-to-html-string]]
             [ring.util.response :refer [content-type response]]
@@ -18,9 +17,7 @@
 (parser/add-tag! :csrf-field (fn [_ _] (anti-forgery-field)))
 (filters/add-filter! :markdown (fn [content] [:safe (md-to-html-string content)]))
 
-(def engine (prerenderer/create {:path              "resources/public/js/server-side.js"
-                                 :wait              (env :dev)
-                                 :default-ajax-port (:port @ninjatools.server/server)}))
+(def js-engine (atom nil)) ; Set by ninjatools.core
 
 (defn render [request]
   (-> "app.html"
@@ -30,6 +27,6 @@
           :csrf-token *anti-forgery-token*
           :servlet-context *servlet-context*
           :identity *identity*
-          :prerendered-content [:safe (prerenderer/render engine request)]))
+          :prerendered-content [:safe (prerenderer/render @js-engine request)]))
       response
       (content-type "text/html; charset=utf-8")))
