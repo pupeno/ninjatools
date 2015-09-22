@@ -28,34 +28,34 @@
    ["-h" "--help"]])
 
 (defn program-name []
-      (string/join " " (first (split-with #(re-find #"(\.js|node)$" %) (.-argv nodejs/process)))))
+  (string/join " " (first (split-with #(re-find #"(\.js|node)$" %) (.-argv nodejs/process)))))
 
 (defn usage [name options-summary]
-      (->> [(str name "'s Universal JavaScript engine for server side pre-rendering single page applications.")
-            ""
-            (str "Usage: " (program-name) " [options]")
-            ""
-            "Options:"
-            options-summary]
-           (string/join \newline)))
+  (->> [(str name "'s Universal JavaScript engine for server side pre-rendering single page applications.")
+        ""
+        (str "Usage: " (program-name) " [options]")
+        ""
+        "Options:"
+        options-summary]
+       (string/join \newline)))
 
 (defn error-msg [errors]
-      (str "The following errors occurred while parsing your command:\n\n"
-           (string/join \newline errors)))
+  (str "The following errors occurred while parsing your command:\n\n"
+       (string/join \newline errors)))
 
 (defn exit [status msg]
-      (println msg)
-      (.exit js/process status))
+  (println msg)
+  (.exit js/process status))
 
 (defn create [name render]
-      (fn [& args]
-          (let [{:keys [options _arguments errors summary]} (parse-opts args cli-options)]
-               (cond
-                 (:help options) (exit 0 (usage name summary))
-                 errors (exit 1 (error-msg errors)))
-               (let [app (-> (express)
-                             (.use (cookie-parser))
-                             (.get "/" (fn [_req res] (.send res "Universal JavaScript engine for server side pre-rendering single page applications.")))
-                             (.get "/render" render))
-                     server (.createServer http app)]
-                    (.listen server 0 (fn [] (.writeFile fs (:port-file options) (.-port (.address server)))))))))
+  (fn [& args]
+    (let [{:keys [options _arguments errors summary]} (parse-opts args cli-options)]
+      (cond
+        (:help options) (exit 0 (usage name summary))
+        errors (exit 1 (error-msg errors)))
+      (let [app (-> (express)
+                    (.use (cookie-parser))
+                    (.get "/" (fn [_req res] (.send res "Universal JavaScript engine for server side pre-rendering single page applications.")))
+                    (.get "/render" render))
+            server (.createServer http app)]
+        (.listen server 0 (fn [] (.writeFile fs (:port-file options) (.-port (.address server)))))))))
