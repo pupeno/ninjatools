@@ -78,6 +78,7 @@
   :profiles {:uberjar       {:omit-source true
                              :env         {:production true}
                              :hooks       [leiningen.cljsbuild]
+                             :prep-tasks  ["deps"]
                              :cljsbuild   {:jar    true
                                            :builds {:app         {:source-paths ["env/prod/cljs"]
                                                                   :compiler     {:optimizations :advanced
