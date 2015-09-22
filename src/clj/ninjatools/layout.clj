@@ -27,6 +27,6 @@
           :csrf-token *anti-forgery-token*
           :servlet-context *servlet-context*
           :identity *identity*
-          :prerendered-content [:safe (prerenderer/render @js-engine request)]))
+          :prerendered-content [:safe (time (prerenderer/render @js-engine request))]))
       response
       (content-type "text/html; charset=utf-8")))
