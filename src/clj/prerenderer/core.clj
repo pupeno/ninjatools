@@ -10,12 +10,14 @@
 
 (defn create
   ([options]
-   (let [engine (merge {:path          nil
-                        :wait          false
-                        :process       nil
-                        :port-file     (.getPath (doto (File/createTempFile (str "com.carouselapps.prerenderer-" *ns* "-") ".port")
-                                                   .deleteOnExit))
-                        :start-timeout 5000}
+   (let [engine (merge {:path              nil
+                        :wait              false
+                        :process           nil
+                        :default-ajax-host "localhost"
+                        :default-ajax-port 3000
+                        :port-file         (.getPath (doto (File/createTempFile (str "com.carouselapps.prerenderer-" *ns* "-") ".port")
+                                                       .deleteOnExit))
+                        :start-timeout     5000}
                        options)]
      (if (nil? (:path engine))
        (throw (Exception. "Path should be specified when creating an engine.")))
@@ -69,7 +71,10 @@
 (defn start-engine [engine]
   (spit (:port-file engine) "")
   (ensure-javascript-exists engine)
-  (let [process-builder (doto (ProcessBuilder. ["node" (:path engine) "--port-file" (:port-file engine)])
+  (let [process-builder (doto (ProcessBuilder. ["node" (:path engine)
+                                                "--port-file" (:port-file engine)
+                                                "--default-ajax-host" (:default-ajax-host engine)
+                                                "--default-ajax-port" (str (:default-ajax-port engine))])
                           .inheritIO)
         process (.start process-builder)
         engine (assoc engine :process process)]

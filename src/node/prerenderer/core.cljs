@@ -17,14 +17,16 @@
 
 ; Set an environment that ressembles a browser, with ajax and alert.
 (def xmlhttprequest (nodejs/require "@pupeno/xmlhttprequest"))
-(aset (.-defaults xmlhttprequest) "host" "localhost")
-(aset (.-defaults xmlhttprequest) "port" "3000")
 (goog.object/set js/global "XMLHttpRequest" (.-XMLHttpRequest xmlhttprequest))
 (goog.object/set js/global "alert" println)
 
 (def cli-options
   [["-p PORT_FILE" "--port-file PORT_FILE" "File to which to write the port number opened for requests"
     :validate [(complement clojure.string/blank?) "A port file must be provided"]]
+   ["-h HOST_NAME" "--default-ajax-host HOST_NAME" "Hostname to connect to for AJAX requests"
+    :default "localhost"]
+   ["-a PORT_NUMBER" "--default-ajax-port PORT_NUMBER" "Port number to use for AJAX requests"
+    :default 3000]
    ["-h" "--help"]])
 
 (defn program-name []
@@ -53,6 +55,8 @@
       (cond
         (:help options) (exit 0 (usage name summary))
         errors (exit 1 (error-msg errors)))
+      (aset (.-defaults xmlhttprequest) "host" (:default-ajax-host options))
+      (aset (.-defaults xmlhttprequest) "port" (:default-ajax-port options))
       (let [app (-> (express)
                     (.use (cookie-parser))
                     (.get "/" (fn [_req res] (.send res "Universal JavaScript engine for server side pre-rendering single page applications.")))

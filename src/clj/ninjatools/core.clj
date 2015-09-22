@@ -1,7 +1,8 @@
 ;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
 
 (ns ninjatools.core
-  (:require [ninjatools.handler :refer [app init destroy parse-port]]
+  (:require [ninjatools.server :refer [server]]
+            [ninjatools.handler :refer [app init destroy parse-port]]
             [immutant.web :as immutant]
             [ninjatools.db.migrations :as migrations]
             [taoensso.timbre :as timbre]
@@ -10,8 +11,6 @@
 
 (defn http-port [port]
   (parse-port (or port (env :port) 3000)))
-
-(defonce server (atom nil))
 
 (defn start-server [port]
   (init)
