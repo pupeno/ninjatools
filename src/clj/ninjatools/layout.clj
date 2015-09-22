@@ -18,9 +18,9 @@
 (parser/add-tag! :csrf-field (fn [_ _] (anti-forgery-field)))
 (filters/add-filter! :markdown (fn [content] [:safe (md-to-html-string content)]))
 
-(def engine (prerenderer/create {:path        "resources/public/js/server-side.js"
-                                 :wait        (env :dev)
-                                 :server-port (:port @ninjatools.server/server)}))
+(def engine (prerenderer/create {:path              "resources/public/js/server-side.js"
+                                 :wait              (env :dev)
+                                 :default-ajax-port (:port @ninjatools.server/server)}))
 
 (defn render [request]
   (-> "app.html"
