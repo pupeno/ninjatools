@@ -46,7 +46,6 @@
 (defn get-port-number [js-engine]
   (or (with-timeout
         (:start-timeout js-engine)
-        (println js-engine)
         (loop [port-number (read-port-file js-engine)]
           (if (string/blank? port-number)
             (if (is-running? js-engine)
