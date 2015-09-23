@@ -20,7 +20,7 @@
   (reset! server (immutant/run app
                                :host (if (env :production) "0.0.0.0" "localhost")
                                :port port))
-  (reset! ninjatools.layout/js-engine (prerenderer/run {:path              "resources/public/js/server-side.js"
+  (reset! ninjatools.layout/js-engine (prerenderer/run {:path              "target/js/server-side.js"
                                                         :default-ajax-port port
                                                         :wait              (env :dev)})))
 

@@ -63,8 +63,8 @@
                                                     :output-to  "resources/public/js/app.js"
                                                     :externs    ["react/externs/react.js"]}}
                        :server-side {:source-paths ["src/cljs" "src/node"]
-                                     :compiler     {:output-dir "resources/public/js/server-side"
-                                                    :output-to  "resources/public/js/server-side.js"
+                                     :compiler     {:output-dir "target/js/server-side"
+                                                    :output-to  "target/js/server-side.js"
                                                     :externs    ["react/externs/react.js"]
                                                     :main       "ninjatools.node"
                                                     :target     :nodejs}}}}
