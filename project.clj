@@ -80,8 +80,7 @@
                                                                                  :pretty-print  false}}
                                                     :server-side {:compiler {:optimizations :none
                                                                              :source-map    true
-                                                                             :pretty-print  true
-                                                                             :verbose       true}}}}
+                                                                             :pretty-print  true}}}}
                              :aot         :all}
              :dev           [:project/dev :profiles/dev]
              :test          [:project/test :profiles/test]
