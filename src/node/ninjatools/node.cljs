@@ -20,4 +20,4 @@
         (re-frame-prerenderer/dispatch-super-sync [event-name matched-route]
                                                   (fn [] (.send res (reagent/render-to-string [views/main-panel]))))))))
 
-(set! *main-cli-fn* (prerenderer/create "Ninja Tools" render))
+(set! *main-cli-fn* (prerenderer/create render "Ninja Tools"))

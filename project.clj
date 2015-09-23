@@ -43,9 +43,7 @@
                  [metosin/compojure-api "0.23.1"]
                  [metosin/ring-swagger-ui "2.1.2"]
                  [org.immutant/web "2.1.0"]
-                 #_[com.carouselapps/prerenderer "0.1.0-SNAPSHOT"]
-                 [org.clojure/tools.cli "0.3.3"]
-                 [clj-http "2.0.0"]]
+                 [com.carouselapps/prerenderer "0.1.0-SNAPSHOT"]]
 
   :min-lein-version "2.0.0"
   :uberjar-name "ninjatools.jar"
@@ -70,10 +68,7 @@
                                                     :externs    ["react/externs/react.js"]
                                                     :main       "ninjatools.node"
                                                     :target     :nodejs}}}}
-  :npm {:dependencies [["@pupeno/xmlhttprequest" "1.7.0"]
-                       [express "4.13.3"]
-                       [find-port "1.0.1"]
-                       [cookie-parser "1.4.0"]]}
+
 
   :profiles {:uberjar       {:omit-source true
                              :env         {:production true}

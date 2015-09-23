@@ -9,6 +9,7 @@
             [ring.util.anti-forgery :refer [anti-forgery-field]]
             [ring.middleware.anti-forgery :refer [*anti-forgery-token*]]
             [environ.core :refer [env]]
+            ring.util.request
             [prerenderer.core :as prerenderer]))
 
 (declare ^:dynamic *identity*)
@@ -27,6 +28,6 @@
           :csrf-token *anti-forgery-token*
           :servlet-context *servlet-context*
           :identity *identity*
-          :prerendered-content [:safe (prerenderer/render @js-engine request)]))
+          :prerendered-content [:safe (prerenderer/render @js-engine (ring.util.request/request-url request) (:headers request))]))
       response
       (content-type "text/html; charset=utf-8")))
