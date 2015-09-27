@@ -41,11 +41,11 @@
     [:div "This is the About Page."]))
 
 ;; --------------------
-(defmulti panels identity)
-(defmethod panels :home-panel [] [home-panel])
-(defmethod panels :tools-panel [] [tools-panel])
-(defmethod panels :tool-panel [] [tool-panel])
-(defmethod panels :about-panel [] [about-panel])
+(defmulti panels :name)
+(defmethod panels :home [] [home-panel])
+(defmethod panels :tools [] [tools-panel])
+(defmethod panels :tool [] [tool-panel])
+(defmethod panels :about [] [about-panel])
 (defmethod panels :default [] [:div])
 
 (defn nav-bar []
@@ -68,9 +68,9 @@
            [:a {:href (routes/url-for :about)} "About"]]]]]])))
 
 (defn main-panel []
-  (let [active-panel (re-frame/subscribe [:active-panel])]
+  (let [current-route (re-frame/subscribe [:current-route])]
     (fn []
       [:div
        [nav-bar]
        [:main.container
-        (panels @active-panel)]])))
+        (panels @current-route)]])))

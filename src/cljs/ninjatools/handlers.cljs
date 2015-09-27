@@ -26,27 +26,25 @@
 (re-frame/register-handler
   :display-page-home
   (fn [db [_ _]]
-    (assoc db :active-panel :home-panel)))
+    db))
 
 (re-frame/register-handler
   :display-page-about
   (fn [db [_ _]]
-    (assoc db :active-panel :about-panel)))
+    db))
 
 (re-frame/register-handler
   :display-page-tools
   (fn [db [_ _]]
     (when (empty? (get-in db [:tools :data]))
       (re-frame/dispatch [:get-tools]))
-    (assoc db :active-panel :tools-panel)))
+    (assoc db)))
 
 (re-frame/register-handler
   :display-page-tool
   (fn [db [_ args]]
     (re-frame/dispatch [:get-tool-with-integrations (:slug args)])
-    (-> db
-        (assoc :active-panel :tool-panel)
-        (assoc :current-tool-slug (:slug args)))))
+    (assoc db :current-tool-slug (:slug args))))
 
 (re-frame/register-handler
   :get-tools
