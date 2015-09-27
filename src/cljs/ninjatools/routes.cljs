@@ -21,9 +21,7 @@
   (sanitize-silk-keywords (silk/arrive routes path)))
 
 (defn dispatch-route [matched-route]
-  (let [event-name (keyword (str "display-page-" (name (:name matched-route))))]
-    (re-frame/dispatch [:set-current-route matched-route])
-    (re-frame/dispatch [event-name matched-route])))
+  (re-frame/dispatch [:set-current-route matched-route]))
 
 (defn start! []
   (pushy/start! (pushy/pushy dispatch-route parse-path)))

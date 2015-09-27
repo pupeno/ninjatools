@@ -18,33 +18,21 @@
              :by-slug       {}
              :current-route nil}}))
 
+(defmulti display-page :name)
+(defmethod display-page :default [_current-route db]
+  db)
+(defmethod display-page :tools [_current-route db]
+  (when (empty? (get-in db [:tools :data]))
+    (re-frame/dispatch [:get-tools]))
+  db)
+(defmethod display-page :tool [current-route db]
+  (re-frame/dispatch [:get-tool-with-integrations (:slug current-route)])
+  (assoc db :current-tool-slug (:slug current-route)))
+
 (re-frame/register-handler
   :set-current-route
   (fn [db [_name current-route]]
-    (assoc db :current-route current-route)))
-
-(re-frame/register-handler
-  :display-page-home
-  (fn [db [_ _]]
-    db))
-
-(re-frame/register-handler
-  :display-page-about
-  (fn [db [_ _]]
-    db))
-
-(re-frame/register-handler
-  :display-page-tools
-  (fn [db [_ _]]
-    (when (empty? (get-in db [:tools :data]))
-      (re-frame/dispatch [:get-tools]))
-    (assoc db)))
-
-(re-frame/register-handler
-  :display-page-tool
-  (fn [db [_ args]]
-    (re-frame/dispatch [:get-tool-with-integrations (:slug args)])
-    (assoc db :current-tool-slug (:slug args))))
+    (display-page current-route (assoc db :current-route current-route))))
 
 (re-frame/register-handler
   :get-tools
