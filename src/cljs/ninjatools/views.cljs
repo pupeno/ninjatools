@@ -10,6 +10,10 @@
   []
   [:div "Loading..."])
 
+(defn home-panel []
+  (fn []
+    [:h1 "Home"]))
+
 (defn tools-panel []
   (let [tools (re-frame/subscribe [:tools])]
     (fn []
@@ -38,6 +42,7 @@
 
 ;; --------------------
 (defmulti panels identity)
+(defmethod panels :home-panel [] [home-panel])
 (defmethod panels :tools-panel [] [tools-panel])
 (defmethod panels :tool-panel [] [tool-panel])
 (defmethod panels :about-panel [] [about-panel])

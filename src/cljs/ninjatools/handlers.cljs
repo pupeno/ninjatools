@@ -18,6 +18,12 @@
              :by-slug {}}}))
 
 (re-frame/register-handler
+  :display-page-home
+  (fn [db [_ current-route]]
+    (assoc db :active-panel :home-panel
+              :current-route current-route)))
+
+(re-frame/register-handler
   :display-page-about
   (fn [db [_ _]]
     (assoc db :active-panel :about-panel)))

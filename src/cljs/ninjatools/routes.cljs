@@ -6,8 +6,9 @@
             [pushy.core :as pushy]
             [re-frame.core :as re-frame]))
 
-(def routes (silk/routes [[:tools [[]]]
-                          [:tool [["tools" :slug]]]
+(def routes (silk/routes [[:home [[]]]
+                          [:tools [["tools"]]]
+                          [:tool [["tool" :slug]]]
                           [:about [["about"]]]]))
 
 (defn sanitize-silk-keywords [matched-route]
