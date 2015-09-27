@@ -48,24 +48,29 @@
 (defmethod panels :about-panel [] [about-panel])
 (defmethod panels :default [] [:div])
 
+(defn nav-bar []
+  (let [current-route (re-frame/subscribe [:current-route])]
+    (fn []
+      [:nav.navbar.navbar-inverse.navbar-fixed-top
+       [:div.container
+        [:div.navbar-header
+         [:button.navbar-toggle.collapsed {:type "button", :data-toggle "collapse", :data-target "#navbar", :aria-expanded "false", :aria-controls "navbar"}
+          [:span.sr-only "Toggle navigation"]
+          [:span.icon-bar]
+          [:span.icon-bar]
+          [:span.icon-bar]]
+         [:a.navbar-brand {:href (routes/url-for :home)} "Ninja Tools"]]
+        [:div#navbar.collapse.navbar-collapse
+         [:ul.nav.navbar-nav
+          [:li {:class (when (some #{(:name @current-route)} [:tools :tool]) "active")}
+           [:a {:href (routes/url-for :tools)} "Tools"]]
+          [:li {:class (when (= :about (:name @current-route)) "active")}
+           [:a {:href (routes/url-for :about)} "About"]]]]]])))
+
 (defn main-panel []
   (let [active-panel (re-frame/subscribe [:active-panel])]
     (fn []
       [:div
-       [:nav.navbar.navbar-inverse.navbar-fixed-top
-        [:div.container
-         [:div.navbar-header
-          [:button.navbar-toggle.collapsed {:type "button", :data-toggle "collapse", :data-target "#navbar", :aria-expanded "false", :aria-controls "navbar"}
-           [:span.sr-only "Toggle navigation"]
-           [:span.icon-bar]
-           [:span.icon-bar]
-           [:span.icon-bar]]
-          [:a.navbar-brand {:href "/"} "Ninja Tools"]]
-         [:div#navbar.collapse.navbar-collapse
-          [:ul.nav.navbar-nav
-           #_[:li {:class "active"}
-              [:a {:href "#/"} "Tools"]]
-           [:li
-              [:a {:href (routes/url-for :about)} "About"]]]]]]
+       [nav-bar]
        [:main.container
         (panels @active-panel)]])))

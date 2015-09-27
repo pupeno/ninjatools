@@ -6,6 +6,11 @@
             [ninjatools.db :as db]))
 
 (re-frame/register-sub
+  :current-route
+  (fn [db _]
+    (reaction (:current-route @db))))
+
+(re-frame/register-sub
   :active-panel
   (fn [db _]
     (reaction (:active-panel @db))))

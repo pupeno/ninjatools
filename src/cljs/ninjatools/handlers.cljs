@@ -14,14 +14,19 @@
 (re-frame/register-handler
   :initialize-db
   (fn [_ _]
-    {:tools {:data    {}
-             :by-slug {}}}))
+    {:tools {:data          {}
+             :by-slug       {}
+             :current-route nil}}))
+
+(re-frame/register-handler
+  :set-current-route
+  (fn [db [_name current-route]]
+    (assoc db :current-route current-route)))
 
 (re-frame/register-handler
   :display-page-home
-  (fn [db [_ current-route]]
-    (assoc db :active-panel :home-panel
-              :current-route current-route)))
+  (fn [db [_ _]]
+    (assoc db :active-panel :home-panel)))
 
 (re-frame/register-handler
   :display-page-about
@@ -57,7 +62,6 @@
     (let [tools (map clojure.walk/keywordize-keys tools)]
       (assoc db :tools {:data    (reduce #(assoc %1 (:id %2) %2) {} tools)
                         :by-slug (reduce #(assoc %1 (:slug %2) (:id %2)) {} tools)}))))
-
 
 (re-frame/register-handler
   :get-tool-with-integrations
