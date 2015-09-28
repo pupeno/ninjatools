@@ -14,12 +14,17 @@
 (re-frame/register-handler
   :initialize-db
   (fn [_ _]
-    {:tools {:data          {}
-             :by-slug       {}
-             :current-route nil}}))
+    {:tools         {:data    {}
+                     :by-slug {}}
+     :current-route nil
+     :tools-in-use  #{}}))
 
 (defmulti display-page :name)
 (defmethod display-page :default [_current-route db]
+  db)
+(defmethod display-page :home [_current-route db]
+  (when (empty? (get-in db [:tools :data]))
+    (re-frame/dispatch [:get-tools]))
   db)
 (defmethod display-page :tools [_current-route db]
   (when (empty? (get-in db [:tools :data]))
@@ -67,3 +72,8 @@
   (fn [db [_ tool-id integration-ids]]
     (let [tool (assoc (get-in db [:tools :data tool-id]) :integration-ids integration-ids)]
       (assoc-in db [:tools :data tool-id] tool))))          ; TODO: get the tools that we have integration ids for when we stop getting all the tools all the time.
+
+(re-frame/register-handler
+  :mark-tool-as-used
+  (fn [db [_ tool-id]]
+    (update-in db [:tools-in-use] conj tool-id)))

@@ -11,8 +11,26 @@
   [:div "Loading..."])
 
 (defn home-panel []
-  (fn []
-    [:h1 "Home"]))
+  (let [tools (re-frame/subscribe [:tools])
+        tools-in-use (re-frame/subscribe [:tools-in-use])]
+    (fn []
+      [:div
+       [:div "Select the tools you use"]
+       (if (empty? (:data @tools))
+         [loading]
+         [:div
+          [:ul (for [tool (doall (filter #(not (contains? @tools-in-use (:id %))) (doall (vals (:data @tools)))))]
+                 ^{:key (:id tool)}
+                 [:li [:a {:on-click #(re-frame/dispatch [:mark-tool-as-used (:id tool)])} (:name tool)]])]
+          [:div [:a {:on-click #(re-frame/dispatch [:get-tools])}
+                 "Refresh tools"]]
+          (if (not (empty? @tools-in-use))
+            [:div
+             [:div "Your tools"]
+             [:ul (for [tool (doall (map #(get-in @tools [:data %]) @tools-in-use))]
+                    ^{:key (:id tool)}
+                    [:li (:name tool)])]]
+            [:div])])])))
 
 (defn tools-panel []
   (let [tools (re-frame/subscribe [:tools])]

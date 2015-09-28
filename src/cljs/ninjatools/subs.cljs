@@ -16,6 +16,11 @@
     (reaction (:tools @db))))
 
 (re-frame/register-sub
+  :tools-in-use
+  (fn [db _]
+    (reaction (:tools-in-use @db))))
+
+(re-frame/register-sub
   :current-tool
   (fn [db _]
     (reaction (db/get-tool-by-slug @db (get @db :current-tool-slug)))))
