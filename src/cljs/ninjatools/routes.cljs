@@ -20,10 +20,11 @@
 (defn parse-path [path]
   (sanitize-silk-keywords (silk/arrive routes path)))
 
-(defn dispatch-route [matched-route]
-  (re-frame/dispatch [:set-current-route matched-route]))
+(defn routing-event [matched-route]
+  [:set-current-route matched-route])
 
 (defn start! []
-  (pushy/start! (pushy/pushy dispatch-route parse-path)))
+  (pushy/start! (pushy/pushy #(re-frame/dispatch (routing-event %))
+                             parse-path)))
 
 (def url-for (partial silk/depart routes))

@@ -13,11 +13,12 @@
 
 (defn render [req res]
   (let [page-path (.-path (.parse url (.-url (.-query req))))
-        matched-route (routes/parse-path page-path)]
+        matched-route (routes/parse-path page-path)
+        event (routes/routing-event matched-route)]
     (if (nil? matched-route)
       (throw (js/Error. (str "Unrecognized path: " page-path)))
-      (let [event-name (keyword (str "display-page-" (name (:name matched-route))))]
-        (re-frame-prerenderer/dispatch-super-sync [event-name matched-route]
-                                                  (fn [] (.send res (reagent/render-to-string [views/main-panel]))))))))
+      (re-frame-prerenderer/dispatch-super-sync
+        event
+        (fn [] (.send res (reagent/render-to-string [views/main-panel])))))))
 
 (set! *main-cli-fn* (prerenderer/create render "Ninja Tools"))
