@@ -20,16 +20,20 @@
      :tools-in-use  #{}}))
 
 (defmulti display-page :name)
+
 (defmethod display-page :default [_current-route db]
   db)
+
 (defmethod display-page :home [_current-route db]
   (when (empty? (get-in db [:tools :data]))
     (re-frame/dispatch [:get-tools]))
   db)
+
 (defmethod display-page :tools [_current-route db]
   (when (empty? (get-in db [:tools :data]))
     (re-frame/dispatch [:get-tools]))
   db)
+
 (defmethod display-page :tool [current-route db]
   (re-frame/dispatch [:get-tool-with-integrations (:slug current-route)])
   (assoc db :current-tool-slug (:slug current-route)))
