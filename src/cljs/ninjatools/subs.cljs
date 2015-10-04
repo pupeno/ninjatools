@@ -28,10 +28,11 @@
 (re-frame/register-sub
   :current-available-tools
   (fn [db _]
-    (let [page-number (if-let [raw-page-number ((:query (:url (:current-route @db))) "p")]
-                        (js/parseInt raw-page-number)
-                        0)]
-      (reaction {:tools       (doall (take 10 (drop (* 10 page-number)
-                                                    (filter #(not (contains? (:tools-in-use @db) (:id %)))
-                                                            (vals (:data (:tools @db)))))))
-                 :page-number page-number}))))
+    (reaction
+      (let [page-number (if-let [raw-page-number ((:query (:url (:current-route @db))) "p")]
+                          (js/parseInt raw-page-number)
+                          0)]
+        {:tools       (doall (take 10 (drop (* 10 page-number)
+                                            (filter #(not (contains? (:tools-in-use @db) (:id %)))
+                                                    (vals (:data (:tools @db)))))))
+         :page-number page-number}))))
