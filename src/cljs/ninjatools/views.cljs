@@ -23,7 +23,7 @@
           [:ul (for [tool (:tools @current-available-tools)]
                  ^{:key (:id tool)}
                  [:li [:a {:on-click #(re-frame/dispatch [:mark-tool-as-used (:id tool)])} (:name tool)]])]
-          [:div [:a {:href (str (routes/url-for :home) "/?p=" (inc (:page-number @current-available-tools)))} "more tools"]]
+          [:div [:a {:href (str (routes/url-for :home) "?p=" (inc (:page-number @current-available-tools)))} "more tools"]]
           (if (not (empty? @tools-in-use))
             [:div
              [:div "Your tools"]
