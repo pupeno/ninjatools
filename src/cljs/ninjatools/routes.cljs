@@ -23,8 +23,16 @@
 (defn routing-event [matched-route]
   [:set-current-route matched-route])
 
+;; Similar to Pushy's, but it considers entirely blank URIs not processable. Related to this: https://github.com/kibu-australia/pushy/issues/10
+(defn processable-url? [uri]
+  (and (not (clojure.string/blank? uri))
+       (or (not (.hasDomain uri))
+           (some? (re-matches (re-pattern (str "^" (.-origin js/location) ".*$"))
+                              (str uri))))))
+
 (defn start! []
   (pushy/start! (pushy/pushy #(re-frame/dispatch (routing-event %))
-                             parse-path)))
+                             parse-path
+                             :processable-url? processable-url?)))
 
 (def url-for (partial silk/depart routes))
