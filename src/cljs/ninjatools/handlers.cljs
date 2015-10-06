@@ -14,7 +14,7 @@
 (re-frame/register-handler
   :initialize-db
   (fn [_ _]
-    {:tools         {:data    {}
+    {:tools         {:by-id   {}
                      :by-slug {}}
      :current-route nil
      :tools-in-use  #{}}))
@@ -25,12 +25,12 @@
   db)
 
 (defmethod display-page :home [_current-route db]
-  (when (empty? (get-in db [:tools :data]))
+  (when (empty? (get-in db [:tools :by-id]))
     (re-frame/dispatch [:get-tools]))
   db)
 
 (defmethod display-page :tools [_current-route db]
-  (when (empty? (get-in db [:tools :data]))
+  (when (empty? (get-in db [:tools :by-id]))
     (re-frame/dispatch [:get-tools]))
   db)
 
@@ -55,13 +55,13 @@
   :got-tools
   (fn [db [_ tools]]
     (let [tools (map clojure.walk/keywordize-keys tools)]
-      (assoc db :tools {:data    (reduce #(assoc %1 (:id %2) %2) {} tools)
-                        :by-slug (reduce #(assoc %1 (:slug %2) (:id %2)) {} tools)}))))
+      (assoc db :tools {:by-id   (reduce #(assoc %1 (:id %2) %2) {} tools)
+                        :by-slug (reduce #(assoc %1 (:slug %2) %2) {} tools)}))))
 
 (re-frame/register-handler
   :get-tool-with-integrations
   (fn [db [_ tool-slug tool-requested]]
-    (if-let [tool (db/get-tool-by-slug db tool-slug)]
+    (if-let [tool (gen-in db [:tools :by-slug tool-slug])]
       (when (empty? (:integration-ids tool))
         (ajax/GET (str "/api/v1/tools/" (:id tool) "/integrations")
                   {:handler       #(re-frame/dispatch [:got-integrations (:id tool) %1])
@@ -74,8 +74,8 @@
 (re-frame/register-handler
   :got-integrations
   (fn [db [_ tool-id integration-ids]]
-    (let [tool (assoc (get-in db [:tools :data tool-id]) :integration-ids integration-ids)]
-      (assoc-in db [:tools :data tool-id] tool))))          ; TODO: get the tools that we have integration ids for when we stop getting all the tools all the time.
+    (let [tool (assoc (get-in db [:tools :by-id tool-id]) :integration-ids integration-ids)]
+      (assoc-in db [:tools :by-id tool-id] tool))))         ; TODO: get the tools that we have integration ids for when we stop getting all the tools all the time.
 
 (re-frame/register-handler
   :mark-tool-as-used

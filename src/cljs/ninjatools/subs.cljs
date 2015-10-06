@@ -23,7 +23,7 @@
 (re-frame/register-sub
   :current-tool
   (fn [db _]
-    (reaction (db/get-tool-by-slug @db (get @db :current-tool-slug)))))
+    (reaction (get-in @db [:tools :by-slug (get @db :current-tool-slug)]))))
 
 (re-frame/register-sub
   :current-available-tools
@@ -34,5 +34,5 @@
                           0)]
         {:tools       (doall (take 10 (drop (* 10 page-number)
                                             (filter #(not (contains? (:tools-in-use @db) (:id %)))
-                                                    (vals (:data (:tools @db)))))))
+                                                    (vals (:by-id (:tools @db)))))))
          :page-number page-number}))))

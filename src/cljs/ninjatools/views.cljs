@@ -27,17 +27,17 @@
           (if (not (empty? @tools-in-use))
             [:div
              [:div "Your tools"]
-             [:ul (for [tool (doall (map #(get-in @tools [:data %]) @tools-in-use))]
+             [:ul (for [tool (doall (map #(get-in @tools [:by-id %]) @tools-in-use))]
                     ^{:key (:id tool)}
                     [:li (:name tool)])]])])])))
 
 (defn tools-panel []
   (let [tools (re-frame/subscribe [:tools])]
     (fn []
-      (if (empty? (:data @tools))
+      (if (empty? (:by-id @tools))
         [loading]
         [:div
-         [:ul (for [tool (vals (:data @tools))]
+         [:ul (for [tool (vals (:by-id @tools))]
                 ^{:key (:id tool)} [:li [:a {:href (routes/url-for :tool {:slug (:slug tool)})} (:name tool)]])]
          [:div [:a {:on-click #(re-frame/dispatch [:get-tools])}
                 "Refresh tools"]]]))))
@@ -49,7 +49,7 @@
       (if @current-tool
         [:div
          [:h1 (:name @current-tool)]
-         [:ul (for [integrated-tool (vals (select-keys (:data @tools) (:integration-ids @current-tool)))]
+         [:ul (for [integrated-tool (vals (select-keys (:by-id @tools) (:integration-ids @current-tool)))]
                 ^{:key (:id integrated-tool)} [:li [:a {:href (routes/url-for :tool {:slug (:slug integrated-tool)})} (:name integrated-tool)]])]]
         [loading]))))
 
