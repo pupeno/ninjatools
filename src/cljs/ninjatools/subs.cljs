@@ -36,3 +36,8 @@
                                             (filter #(not (contains? (:tools-in-use @db) (:id %)))
                                                     (vals (:by-id (:tools @db)))))))
          :page-number page-number}))))
+
+(re-frame/register-sub
+  :registration
+  (fn [db _]
+    (reaction (:registration @db))))

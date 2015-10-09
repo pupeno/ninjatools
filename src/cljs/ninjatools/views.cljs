@@ -2,6 +2,7 @@
 
 (ns ninjatools.views
   (:require [re-frame.core :as re-frame]
+            [re-forms.core :as forms]
             [ninjatools.routes :as routes]
             [ninjatools.util :refer [log]]))
 
@@ -57,12 +58,43 @@
   (fn []
     [:div "This is the About Page."]))
 
+(defn login-panel []
+  (let [registration (re-frame/subscribe [:registration])]
+    (fn []
+      [:div
+       [:h1 "Register"]
+       [forms/activate @registration (:validation-errors @registration) :update-registering
+        [:div.form-horizontal
+         [:div.form-group {:re-forms/error-class {:key :email :error "has-error"}}
+          [:label.col-sm-2.control-label {:for :email} "Email"]
+          [:div.col-sm-10 [:input.form-control {:re-forms/field {:key :email}
+                                                :type           :email
+                                                :id             :email
+                                                :placeholder    "sam@example.com"}]
+           [:div.text-danger {:re-forms/error-message {:key :email}} [:p]]]]
+         [:div.form-group {:re-forms/error-class {:ks [:password] :error "has-error"}}
+          [:label.col-sm-2.control-label {:for :password} "Password"]
+          [:div.col-sm-10 [:input.form-control {:re-forms/field {:ks [:password]}
+                                                :type           :password
+                                                :id             :password}]
+           [:div.text-danger {:re-forms/error-message {:ks [:password]}} [:p]]]]
+         [:div.form-group {:re-forms/error-class {:key :password-confirmation :error "has-error"}}
+          [:label.col-sm-2.control-label {:for :password-confirmation} "Password confirmation"]
+          [:div.col-sm-10 [:input.form-control {:re-forms/field {:key :password-confirmation}
+                                                :type           :password
+                                                :id             :password-confirmation}]
+           [:div.text-danger {:re-forms/error-message {:key :password-confirmation}} [:p]]]]
+         [:div.form-group
+          [:div.col-sm-offset-2.col-sm-10
+           [:button.btn.btn-primary {:type :submit :on-click #(re-frame/dispatch [:register])} "Register"]]]]]])))
+
 ;; --------------------
 (defmulti panels :name)
 (defmethod panels :home [] [home-panel])
 (defmethod panels :tools [] [tools-panel])
 (defmethod panels :tool [] [tool-panel])
 (defmethod panels :about [] [about-panel])
+(defmethod panels :login [] [login-panel])
 (defmethod panels :default [] [:div])
 
 (defn nav-bar []
@@ -82,7 +114,10 @@
           [:li {:class (when (some #{(:name @current-route)} [:tools :tool]) "active")}
            [:a {:href (routes/url-for :tools)} "Tools"]]
           [:li {:class (when (= :about (:name @current-route)) "active")}
-           [:a {:href (routes/url-for :about)} "About"]]]]]])))
+           [:a {:href (routes/url-for :about)} "About"]]]
+         [:ul.nav.navbar-nav.navbar-right
+          [:li {:class (when (= :login (:name @current-route)) "active")}
+           [:a {:href (routes/url-for :login)} [:i.fa.fa-user]]]]]]])))
 
 (defn main-panel []
   (let [current-route (re-frame/subscribe [:current-route])]

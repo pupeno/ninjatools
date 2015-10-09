@@ -9,7 +9,8 @@
 (def routes (silk/routes [[:home [[]]]
                           [:tools [["tools"]]]
                           [:tool [["tool" :slug]]]
-                          [:about [["about"]]]]))
+                          [:about [["about"]]]
+                          [:login [["login"]]]]))
 
 (defn sanitize-silk-keywords [matched-route]
   (rename-keys matched-route {:domkm.silk/name    :name

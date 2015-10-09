@@ -26,6 +26,7 @@
                  [org.webjars/jquery "2.1.4"]
                  [buddy "0.7.2"]
                  [migratus "0.8.6"]
+                 [com.novemberain/validateur "2.4.2"]
                  [conman "0.2.0"]
                  [to-jdbc-uri "0.3.0"]
                  [org.postgresql/postgresql "9.3-1102-jdbc41"]
