@@ -61,7 +61,7 @@
 (re-frame/register-handler
   :get-tool-with-integrations
   (fn [db [_ tool-slug tool-requested]]
-    (if-let [tool (gen-in db [:tools :by-slug tool-slug])]
+    (if-let [tool (get-in db [:tools :by-slug tool-slug])]
       (when (empty? (:integration-ids tool))
         (ajax/GET (str "/api/v1/tools/" (:id tool) "/integrations")
                   {:handler       #(re-frame/dispatch [:got-integrations (:id tool) %1])
