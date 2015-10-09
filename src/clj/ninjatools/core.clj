@@ -39,4 +39,3 @@
   (cond
     (some #{"migrate" "rollback"} args) (migrations/migrate args)
     :else (start-app args)))
-  
