@@ -28,6 +28,6 @@
           :csrf-token *anti-forgery-token*
           :servlet-context *servlet-context*
           :identity *identity*
-          :prerendered-content [:safe (prerenderer/render @js-engine (ring.util.request/request-url request) (:headers request))]))
+          #_:prerendered-content #_[:safe (prerenderer/render @js-engine (ring.util.request/request-url request) (:headers request))]))
       response
       (content-type "text/html; charset=utf-8")))
