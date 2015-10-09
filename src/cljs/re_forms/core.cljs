@@ -1,8 +1,7 @@
 ;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
 
 (ns re-forms.core
-  (:require [clojure.walk :refer [postwalk]]
-            [re-frame.core :as re-frame]))
+  (:require [clojure.walk :refer [postwalk]]))
 
 (def ^:private attributes-index 1)                          ; The second element in structure that represents an input is the attributes, as in :type, :key, etc.
 
@@ -20,16 +19,12 @@
 (defn- js-event-value [event]
   (.-value (.-target event)))
 
-(defn- bind-field [values event node]
+(defn- bind-field [values on-change node]
   (if (not (field? node))
     node
     (let [[attributes _ ks] (extract-attributes node :re-forms/field)]
       (assoc node attributes-index (assoc attributes :default-value (get-in values ks)
-                                                     :on-change (fn [js-event]
-                                                                  (let [event-v (if (fn? event)
-                                                                                  (event ks (js-event-value js-event))
-                                                                                  [event ks (js-event-value js-event)])]
-                                                                    (re-frame/dispatch event-v))))))))
+                                                     :on-change #(on-change ks (js-event-value %)))))))
 
 (defn- error-class?
   "Tests whether the node should be marked with an error class should the field have an associated error."
@@ -60,11 +55,11 @@
                (drop-last (dissoc (assoc node attributes-index attributes)))
                (map #(conj (get node 2) %) errors)))))))
 
-(defn activate [values errors event form]
+(defn activate [values errors on-change form]
   (let [errors (or errors {})]
     (postwalk (fn [node]
                 (->> node
-                     (bind-field values event)
+                     (bind-field values on-change)
                      (bind-error-class errors)
                      (bind-error-messages errors)))
               form)))

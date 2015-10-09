@@ -2,7 +2,7 @@
 
 (ns ninjatools.views
   (:require [re-frame.core :as re-frame]
-            [re-forms.core :as forms]
+            [re-forms.re-frame :as forms]
             [ninjatools.routes :as routes]
             [ninjatools.util :refer [log]]))
 
