@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: com.novemberain/validateur:2.4.2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/novemberain/validateur/2.4.2/validateur-2.4.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

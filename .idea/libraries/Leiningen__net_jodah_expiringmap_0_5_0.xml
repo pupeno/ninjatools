@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: net.jodah/expiringmap:0.5.0">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/net/jodah/expiringmap/0.5.0/expiringmap-0.5.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: buddy/buddy-sign:0.7.1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/buddy/buddy-sign/0.7.1/buddy-sign-0.7.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
