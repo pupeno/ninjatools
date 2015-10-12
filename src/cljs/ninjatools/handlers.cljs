@@ -6,7 +6,8 @@
             [ajax.core :as ajax]
             [ninjatools.util :refer [log]]
             [clojure.walk]
-            [validateur.validation :as validateur]))
+            [validateur.validation :as validateur]
+            [ninjatools.validators :as validators]))
 
 (defn report-unexpected-error [{:keys [status status-text]}]
   (js/alert "We are sorry, there was an unexpected error.")
@@ -84,17 +85,13 @@
   (fn [db [_ tool-id]]
     (update-in db [:tools-in-use] conj tool-id)))
 
-(def registration-validator (validateur/validation-set
-                              (validateur/presence-of :email :message "Email can't be blank")
-                              (validateur/presence-of :password :message "Password can't be blank")
-                              #_(validateur/presence-of :password-confirmation)))
 (re-frame/register-handler
   :register
   (fn [db [_]]
     (let [registration (:registration db)]
-      (if (validateur/valid? registration-validator registration)
+      (if (validateur/valid? validators/registration registration)
         db
-        (assoc-in db [:registration :validation-errors] (registration-validator registration))))))
+        (assoc-in db [:registration :validation-errors] (validators/registration registration))))))
 
 (re-frame/register-handler
   :update-registering
@@ -102,4 +99,4 @@
     (let [db (assoc-in db (cons :registration ks) value)]
       (if (nil? (get-in db [:registration :validation-errors]))
         db
-        (assoc-in db [:registration :validation-errors] (registration-validator (:registration db)))))))
+        (assoc-in db [:registration :validation-errors] (validators/registration (:registration db)))))))

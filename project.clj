@@ -60,11 +60,11 @@
   :clean-targets ^{:protect false} [:target-path [:clj :cljsbuild :builds :app :compiler :output-dir] [:clj :cljsbuild :builds :app :compiler :output-to]]
   :source-paths ["src/clj"]
   :test-paths ["test/clj"]
-  :cljsbuild {:builds {:app         {:source-paths ["src/cljs"]
+  :cljsbuild {:builds {:app         {:source-paths ["src/cljs" "src/cljc"]
                                      :compiler     {:output-dir "resources/public/js/app"
                                                     :output-to  "resources/public/js/app.js"
                                                     :externs    ["react/externs/react.js"]}}
-                       :server-side {:source-paths ["src/cljs" "src/node"]
+                       :server-side {:source-paths ["src/cljs" "src/cljc" "src/node"]
                                      :compiler     {:output-dir "target/js/server-side"
                                                     :output-to  "target/js/server-side.js"
                                                     :externs    ["react/externs/react.js"]
