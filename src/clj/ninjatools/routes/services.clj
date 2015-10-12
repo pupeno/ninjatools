@@ -28,55 +28,55 @@
                         (ok (tool/get-integrations-for id)))
 
                   #_(GET* "/plus" []
-                        :return Long
-                        :query-params [x :- Long, {y :- Long 1}]
-                        :summary "x+y with query-parameters. y defaults to 1."
-                        (ok (+ x y)))
+                          :return Long
+                          :query-params [x :- Long, {y :- Long 1}]
+                          :summary "x+y with query-parameters. y defaults to 1."
+                          (ok (+ x y)))
 
                   #_(POST* "/minus" []
-                         :return Long
-                         :body-params [x :- Long, y :- Long]
-                         :summary "x-y with body-parameters."
-                         (ok (- x y)))
+                           :return Long
+                           :body-params [x :- Long, y :- Long]
+                           :summary "x-y with body-parameters."
+                           (ok (- x y)))
 
                   #_(GET* "/times/:x/:y" []
-                        :return Long
-                        :path-params [x :- Long, y :- Long]
-                        :summary "x*y with path-parameters"
-                        (ok (* x y)))
+                          :return Long
+                          :path-params [x :- Long, y :- Long]
+                          :summary "x*y with path-parameters"
+                          (ok (* x y)))
 
                   #_(POST* "/divide" []
-                         :return Double
-                         :form-params [x :- Long, y :- Long]
-                         :summary "x/y with form-parameters"
-                         (ok (/ x y)))
+                           :return Double
+                           :form-params [x :- Long, y :- Long]
+                           :summary "x/y with form-parameters"
+                           (ok (/ x y)))
 
                   #_(GET* "/power" []
-                        :return Long
-                        :header-params [x :- Long, y :- Long]
-                        :summary "x^y with header-parameters"
-                        (ok (long (Math/pow x y))))
+                          :return Long
+                          :header-params [x :- Long, y :- Long]
+                          :summary "x^y with header-parameters"
+                          (ok (long (Math/pow x y))))
 
                   #_(PUT* "/echo" []
-                        :return [{:hot Boolean}]
-                        :body [body [{:hot Boolean}]]
-                        :summary "echoes a vector of anonymous hotties"
-                        (ok body))
+                          :return [{:hot Boolean}]
+                          :body [body [{:hot Boolean}]]
+                          :summary "echoes a vector of anonymous hotties"
+                          (ok body))
 
                   #_(POST* "/echo" []
-                         :return (s/maybe Thingie)
-                         :body [thingie (s/maybe Thingie)]
-                         :summary "echoes a Thingie from json-body"
-                         (ok thingie)))
+                           :return (s/maybe Thingie)
+                           :body [thingie (s/maybe Thingie)]
+                           :summary "echoes a Thingie from json-body"
+                           (ok thingie)))
 
         #_(context* "/context" []
-                  :tags ["context*"]
-                  :summary "summary inherited from context"
-                  (context* "/:kikka" []
-                            :path-params [kikka :- s/Str]
-                            :query-params [kukka :- s/Str]
-                            (GET* "/:kakka" []
-                                  :path-params [kakka :- s/Str]
-                                  (ok {:kikka kikka
-                                       :kukka kukka
-                                       :kakka kakka})))))
+                    :tags ["context*"]
+                    :summary "summary inherited from context"
+                    (context* "/:kikka" []
+                              :path-params [kikka :- s/Str]
+                              :query-params [kukka :- s/Str]
+                              (GET* "/:kakka" []
+                                    :path-params [kakka :- s/Str]
+                                    (ok {:kikka kikka
+                                         :kukka kukka
+                                         :kakka kakka})))))
