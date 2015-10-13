@@ -7,11 +7,11 @@
             [ninjatools.db.core :as db]
             [ninjatools.models.tool :as tool]))
 
-(s/defschema Thingie {:id    Long
-                      :hot   Boolean
-                      :tag   (s/enum :kikka :kukka)
-                      :chief [{:name String
-                               :type #{{:id String}}}]})
+#_(s/defschema Thingie {:id    Long
+                        :hot   Boolean
+                        :tag   (s/enum :kikka :kukka)
+                        :chief [{:name String
+                                 :type #{{:id String}}}]})
 
 (defapi service-routes
         (ring.swagger.ui/swagger-ui "/api")
