@@ -7,7 +7,7 @@
             [ninjatools.util :refer [log]]
             [clojure.walk]
             [validateur.validation :as validateur]
-            [ninjatools.validators :as validators]))
+            [ninjatools.models.user :as user]))
 
 (defn report-unexpected-error [{:keys [status status-text]}]
   (js/alert "We are sorry, there was an unexpected error.")
@@ -89,9 +89,21 @@
   :register
   (fn [db [_]]
     (let [registration (:registration db)]
-      (if (validateur/valid? validators/registration registration)
-        db
-        (assoc-in db [:registration :validation-errors] (validators/registration registration))))))
+      (if (validateur/valid? user/registration-validation registration)
+        (do (ajax/POST "/api/v1/register"
+                       {:params        (dissoc registration :validation-errors)
+                        :handler       #(re-frame/dispatch [:got-registered (clojure.walk/keywordize-keys %1)])
+                        :error-handler report-unexpected-error})
+            db)
+        (assoc-in db [:registration :validation-errors] (user/registration-validation registration))))))
+
+(re-frame/register-handler
+  :got-registered
+  (fn [db [_ {status :status registration :registration}]]
+    (if (= status :success)
+      (do (report-unexpected-error "Registration succesful, now what?")
+          (assoc db :registration {}))
+      (assoc db :registration registration))))
 
 (re-frame/register-handler
   :update-registering
@@ -99,4 +111,4 @@
     (let [db (assoc-in db (cons :registration ks) value)]
       (if (nil? (get-in db [:registration :validation-errors]))
         db
-        (assoc-in db [:registration :validation-errors] (validators/registration (:registration db)))))))
+        (assoc-in db [:registration :validation-errors] (user/registration-validation (:registration db)))))))

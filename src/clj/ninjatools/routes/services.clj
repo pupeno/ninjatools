@@ -5,7 +5,8 @@
             [compojure.api.sweet :refer :all]
             [schema.core :as s]
             [ninjatools.db.core :as db]
-            [ninjatools.models.tool :as tool]))
+            [ninjatools.models.tool :as tool]
+            [ninjatools.models.user :as user]))
 
 #_(s/defschema Thingie {:id    Long
                         :hot   Boolean
@@ -26,6 +27,13 @@
                         :summary "Return all the integrated tools to a given tool."
                         :path-params [id :- s/Uuid]
                         (ok (tool/get-integrations-for id)))
+
+                  (POST* "/register" []
+                         :summary "Register as a new user"
+                         :body [user-registration user/RegistrationSchema]
+                         :return {:status (s/enum :success :validation-error)
+                                  :registration user/RegistrationValidationSchema}
+                         (ok (user/create user-registration)))
 
                   #_(GET* "/plus" []
                           :return Long
