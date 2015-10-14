@@ -7,7 +7,7 @@
             [ninjatools.util :refer [log]]
             [clojure.walk]
             [validateur.validation :as validateur]
-            [ninjatools.models.user :as user]))
+            [ninjatools.models.user-schema :as user-schema]))
 
 (defn report-unexpected-error [{:keys [status status-text]}]
   (js/alert "We are sorry, there was an unexpected error.")
@@ -16,11 +16,14 @@
 (re-frame/register-handler
   :initialize-db
   (fn [_ _]
-    {:tools         {:by-id   {}
-                     :by-slug {}}
-     :current-route nil
-     :tools-in-use  #{}
-     :registration  {}}))
+    (re-frame/dispatch [:get-current-user])
+    {:current-route     nil
+     :current-user      nil
+     :log-in-form       {}
+     :registration-form {}
+     :tools             {:by-id   {}
+                         :by-slug {}}
+     :tools-in-use      #{}}))
 
 (defmulti display-page :name)
 
@@ -45,6 +48,87 @@
   :set-current-route
   (fn [db [_name current-route]]
     (display-page current-route (assoc db :current-route current-route))))
+
+(re-frame/register-handler
+  :get-current-user
+  (fn [db [_]]
+    (ajax/GET "/api/v1/current-user"
+              {:handler       #(re-frame/dispatch [:got-current-user (clojure.walk/keywordize-keys %1)])
+               :error-handler report-unexpected-error})
+    db))
+
+(re-frame/register-handler
+  :got-current-user
+  (fn [db [_ user]]
+    (assoc db :current-user (if (empty? user) nil user))))
+
+(re-frame/register-handler
+  :log-out
+  (fn [db [_]]
+    (ajax/PUT "/api/v1/log-out" {:handler       (fn [_] (re-frame/dispatch [:logged-out]))
+                                 :error-handler report-unexpected-error})
+    db))
+
+(re-frame/register-handler
+  :logged-out
+  (fn [db [_]]
+    (assoc db :current-user nil)))
+
+(re-frame/register-handler
+  :update-log-in-form
+  (fn [db [_ ks value]]
+    (let [db (assoc-in db (cons :log-in-form ks) value)]
+      (if (nil? (get-in db [:log-in-form :errors]))
+        db
+        (assoc-in db [:log-in-form :errors] (user-schema/log-in-validation (:log-in-form db)))))))
+
+(re-frame/register-handler
+  :log-in
+  (fn [db [_]]
+    (let [log-in-form (:log-in-form db)]
+      (if (validateur/valid? user-schema/log-in-validation log-in-form)
+        (do (ajax/PUT "/api/v1/log-in"
+                      {:params        (dissoc log-in-form :errors)
+                       :handler       #(re-frame/dispatch [:got-logged-in (clojure.walk/keywordize-keys %1)])
+                       :error-handler report-unexpected-error})
+            db)
+        (assoc-in db [:log-in-form :errors] (user-schema/log-in-validation log-in-form))))))
+
+(re-frame/register-handler
+  :got-logged-in
+  (fn [db [_ {status :status log-in-form :log-in-form user :user}]]
+    (if (= status "success")
+      (assoc db :log-in-form {}
+                :current-user user)
+      (assoc db :log-in-form log-in-form))))
+
+(re-frame/register-handler
+  :update-registration-form
+  (fn [db [_ ks value]]
+    (let [db (assoc-in db (cons :registration-form ks) value)]
+      (if (nil? (get-in db [:registration-form :errors]))
+        db
+        (assoc-in db [:registration-form :errors] (user-schema/registration-validation (:registration-form db)))))))
+
+(re-frame/register-handler
+  :register
+  (fn [db [_]]
+    (let [registration-form (:registration-form db)]
+      (if (validateur/valid? user-schema/registration-validation registration-form)
+        (do (ajax/POST "/api/v1/register"
+                       {:params        (dissoc registration-form :errors)
+                        :handler       #(re-frame/dispatch [:got-registered (clojure.walk/keywordize-keys %1)])
+                        :error-handler report-unexpected-error})
+            db)
+        (assoc-in db [:registration-form :errors] (user-schema/registration-validation registration-form))))))
+
+(re-frame/register-handler
+  :got-registered
+  (fn [db [_ {status :status registration-form :registration-form user :user}]]
+    (if (= status "success")
+      (assoc db :registration-form {}
+                :current-user user)
+      (assoc db :registration-form registration-form))))
 
 (re-frame/register-handler
   :get-tools
@@ -84,31 +168,3 @@
   :mark-tool-as-used
   (fn [db [_ tool-id]]
     (update-in db [:tools-in-use] conj tool-id)))
-
-(re-frame/register-handler
-  :register
-  (fn [db [_]]
-    (let [registration (:registration db)]
-      (if (validateur/valid? user/registration-validation registration)
-        (do (ajax/POST "/api/v1/register"
-                       {:params        (dissoc registration :validation-errors)
-                        :handler       #(re-frame/dispatch [:got-registered (clojure.walk/keywordize-keys %1)])
-                        :error-handler report-unexpected-error})
-            db)
-        (assoc-in db [:registration :validation-errors] (user/registration-validation registration))))))
-
-(re-frame/register-handler
-  :got-registered
-  (fn [db [_ {status :status registration :registration}]]
-    (if (= status :success)
-      (do (report-unexpected-error "Registration succesful, now what?")
-          (assoc db :registration {}))
-      (assoc db :registration registration))))
-
-(re-frame/register-handler
-  :update-registering
-  (fn [db [_ ks value]]
-    (let [db (assoc-in db (cons :registration ks) value)]
-      (if (nil? (get-in db [:registration :validation-errors]))
-        db
-        (assoc-in db [:registration :validation-errors] (user/registration-validation (:registration db)))))))

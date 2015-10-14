@@ -10,7 +10,8 @@
                           [:tools [["tools"]]]
                           [:tool [["tool" :slug]]]
                           [:about [["about"]]]
-                          [:login [["login"]]]]))
+                          [:register [["register"]]]
+                          [:log-in [["login"]]]]))
 
 (defn sanitize-silk-keywords [matched-route]
   (rename-keys matched-route {:domkm.silk/name    :name

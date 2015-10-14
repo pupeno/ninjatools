@@ -4,6 +4,7 @@
   (:require [re-frame.core :as re-frame]
             [free-form.re-frame :as forms]
             [ninjatools.routes :as routes]
+            [ninjatools.models.user-schema :as user-schema]
             [ninjatools.util :refer [log]]))
 
 (defn loading
@@ -58,12 +59,36 @@
   (fn []
     [:div "This is the About Page."]))
 
-(defn login-panel []
-  (let [registration (re-frame/subscribe [:registration])]
+(defn log-in-panel []
+  (let [log-in-form (re-frame/subscribe [:log-in-form])]
+    (fn []
+      [:div
+       [:h1 "Log in"]
+       [forms/form @log-in-form (:errors @log-in-form) :update-log-in-form
+        [:div.form-horizontal
+         [:div.form-group {:free-form/error-class {:key :email :error "has-error"}}
+          [:label.col-sm-2.control-label {:for :email} "Email"]
+          [:div.col-sm-10 [:input.form-control {:free-form/field {:key :email}
+                                                :type            :email
+                                                :id              :email
+                                                :placeholder     "sam@example.com"}]
+           [:div.text-danger {:free-form/error-message {:key :email}} [:p]]]]
+         [:div.form-group {:free-form/error-class {:ks [:password] :error "has-error"}}
+          [:label.col-sm-2.control-label {:for :password} "Password"]
+          [:div.col-sm-10 [:input.form-control {:free-form/field {:ks [:password]}
+                                                :type            :password
+                                                :id              :password}]
+           [:div.text-danger {:free-form/error-message {:ks [:password]}} [:p]]]]
+         [:div.form-group
+          [:div.col-sm-offset-2.col-sm-10
+           [:button.btn.btn-primary {:type :submit :on-click #(re-frame/dispatch [:log-in])} "Log in"]]]]]])))
+
+(defn register-panel []
+  (let [registration-form (re-frame/subscribe [:registration-form])]
     (fn []
       [:div
        [:h1 "Register"]
-       [forms/form @registration (:validation-errors @registration) :update-registering
+       [forms/form @registration-form (:errors @registration-form) :update-registration-form
         [:div.form-horizontal
          [:div.form-group {:free-form/error-class {:key :email :error "has-error"}}
           [:label.col-sm-2.control-label {:for :email} "Email"]
@@ -94,11 +119,13 @@
 (defmethod panels :tools [] [tools-panel])
 (defmethod panels :tool [] [tool-panel])
 (defmethod panels :about [] [about-panel])
-(defmethod panels :login [] [login-panel])
+(defmethod panels :register [] [register-panel])
+(defmethod panels :log-in [] [log-in-panel])
 (defmethod panels :default [] [:div])
 
 (defn nav-bar []
-  (let [current-route (re-frame/subscribe [:current-route])]
+  (let [current-route (re-frame/subscribe [:current-route])
+        current-user (re-frame/subscribe [:current-user])]
     (fn []
       [:nav.navbar.navbar-inverse.navbar-fixed-top
        [:div.container
@@ -116,8 +143,18 @@
           [:li {:class (when (= :about (:name @current-route)) "active")}
            [:a {:href (routes/url-for :about)} "About"]]]
          [:ul.nav.navbar-nav.navbar-right
-          [:li {:class (when (= :login (:name @current-route)) "active")}
-           [:a {:href (routes/url-for :login)} [:i.fa.fa-user]]]]]]])))
+          [:li.dropdown {:class (when (contains? #{:login :register} (:name @current-route)) "active")}
+           [:a.dropdown-toggle {:href "#" :data-toggle "dropdown" :role "button" :aria-haspopup "true" :aria-expanded "false"}
+            [:i.fa.fa-user]]
+           (if @current-user
+             [:ul.dropdown-menu
+              [:li [:a (user-schema/display-name @current-user)]]
+              [:li [:a {:on-click #(re-frame/dispatch [:log-out])} "Log out"]]]
+             [:ul.dropdown-menu
+              [:li {:class (when (= :log-in (:name @current-route)) "active")}
+               [:a {:href (routes/url-for :log-in)} "Log in"]]
+              [:li {:class (when (= :register (:name @current-route)) "active")}
+               [:a {:href (routes/url-for :register)} "Register"]]])]]]]])))
 
 (defn main-panel []
   (let [current-route (re-frame/subscribe [:current-route])]

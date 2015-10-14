@@ -6,7 +6,9 @@
             [schema.core :as s]
             [ninjatools.db.core :as db]
             [ninjatools.models.tool :as tool]
-            [ninjatools.models.user :as user]))
+            [ninjatools.models.user :as user]
+            [ninjatools.models.user-schema :as user-schema]
+            [validateur.validation :as validateur]))
 
 #_(s/defschema Thingie {:id    Long
                         :hot   Boolean
@@ -28,12 +30,33 @@
                         :path-params [id :- s/Uuid]
                         (ok (tool/get-integrations-for id)))
 
-                  (POST* "/register" []
+                  (GET* "/current-user" {identity :identity}
+                        (if identity
+                          (ok (user/sanitize-for-public (db/get-user-by-id identity)))
+                          (ok)))
+                  (PUT* "/log-out" {session :session}
+                        (assoc (ok) :session (dissoc session :identity)))
+                  (PUT* "/log-in" {session :session}
+                        :summary "Log in as a user"
+                        :body [log-in-form user-schema/LogInSchema]
+                        ; TODO: :return
+                        (if (validateur/valid? user-schema/log-in-validation log-in-form)
+                          (if-let [user (user/get-by-credentials log-in-form)]
+                            (-> (ok {:status :success :user (user/sanitize-for-public user)})
+                                (assoc :session (assoc session :identity (:id user))))
+                            (ok {:status :failed :log-in-form (update-in log-in-form [:errors :password] #(conj (or %1 []) "Email and password doesn't match"))}))
+                          (ok {:status :failed :log-in-form (assoc log-in-form :errors (user-schema/log-in-validation log-in-form))})))
+
+                  (POST* "/register" {session :session}
                          :summary "Register as a new user"
-                         :body [user-registration user/RegistrationSchema]
-                         :return {:status (s/enum :success :validation-error)
-                                  :registration user/RegistrationValidationSchema}
-                         (ok (user/create user-registration)))
+                         :body [registration-form user-schema/RegistrationSchema]
+                         ; TODO: :return {:status (s/enum :success :failed)
+                         ;        :registration user-schema/RegistrationValidationSchema}
+                         (if (validateur/valid? user/registration-validation registration-form)
+                           (let [user (user/create (dissoc registration-form :password-confirmation))]
+                             (-> (ok {:status :success :user (user/sanitize-for-public user)})
+                                 (assoc :session (assoc session :identity (:id user)))))
+                           (ok {:status :failed :registration-form (assoc registration-form :errors (user/registration-validation registration-form))})))
 
                   #_(GET* "/plus" []
                           :return Long

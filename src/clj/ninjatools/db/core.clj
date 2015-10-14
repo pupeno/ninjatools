@@ -31,6 +31,7 @@
 (defn connect! []
   (conman/connect! conn (assoc pool-spec :jdbc-url (to-jdbc-uri (env :database-url)))))
 
+
 (defn disconnect! []
   (conman/disconnect! conn))
 
@@ -40,6 +41,12 @@
 
 (defn get-tool-by-name [name]
   (first (get-tool-by-name- {:name name})))
+
+(defn get-user-by-email [email]
+  (first (get-user-by-email- {:email email})))
+
+(defn get-user-by-id [id]
+  (first (get-user-by-id- {:id id})))
 
 (defn to-date [sql-date]
   (-> sql-date (.getTime) (java.util.Date.)))
