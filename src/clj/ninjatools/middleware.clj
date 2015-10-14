@@ -88,7 +88,7 @@
       wrap-formats
       (wrap-defaults
         (-> site-defaults
-            (assoc-in [:security :anti-forgery] false)      ; Anti-forgery is only applied to the main app, search for uses of wrap-csfr. TODO: is this correct?
+            (assoc-in [:security :anti-forgery] false)      ; Anti-forgery is not applied to the API, only to the served HTML (defined in handler.clj) and even then its need is doubious in an SPA.
             (assoc-in [:session :store] (jdbc-session-store/jdbc-store (to-jdbc-uri (env :database-url))))
             (assoc-in [:session :secure] (not (or (env :dev) (env :test))))))
       wrap-webjars
