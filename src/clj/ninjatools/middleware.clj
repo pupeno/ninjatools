@@ -1,7 +1,8 @@
 ;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
 
 (ns ninjatools.middleware
-  (:require [ninjatools.session :as session]
+  (:require [jdbc-ring-session.core :as jdbc-session-store]
+            [to-jdbc-uri.core :refer [to-jdbc-uri]]
             [ninjatools.layout :refer [*servlet-context*]]
             [taoensso.timbre :as timbre]
             [environ.core :refer [env]]
@@ -88,7 +89,7 @@
       (wrap-defaults
         (-> site-defaults
             (assoc-in [:security :anti-forgery] false)      ; Anti-forgery is only applied to the main app, search for uses of wrap-csfr. TODO: is this correct?
-            (assoc-in [:session :store] session/ttl-mem)))
+            (assoc-in [:session :store] (jdbc-session-store/jdbc-store (to-jdbc-uri (env :database-url))))))
       wrap-webjars
       wrap-servlet-context
       wrap-internal-error))
