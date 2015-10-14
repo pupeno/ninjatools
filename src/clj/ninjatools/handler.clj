@@ -78,4 +78,4 @@
                middleware/wrap-csrf)
   (route/not-found "Not Found"))
 
-(def app (middleware/wrap-app #'app-routes))
+(def app (middleware/wrap-base #'app-routes))

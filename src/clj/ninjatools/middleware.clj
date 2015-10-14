@@ -1,9 +1,9 @@
 ;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
 
 (ns ninjatools.middleware
-  (:require [jdbc-ring-session.core :as jdbc-session-store]
+  (:require [ninjatools.layout :refer [*app-context* error-page]]
+            [jdbc-ring-session.core :as jdbc-session-store]
             [to-jdbc-uri.core :refer [to-jdbc-uri]]
-            [ninjatools.layout :refer [*servlet-context*]]
             [taoensso.timbre :as timbre]
             [environ.core :refer [env]]
             [clojure.java.io :as io]
@@ -20,17 +20,22 @@
             [buddy.auth.backends.session :refer [session-backend]]
             [buddy.auth.accessrules :refer [restrict]]
             [buddy.auth :refer [authenticated?]]
-            [ninjatools.layout :refer [*identity*]]))
+            [ninjatools.layout :refer [*identity*]])
+  (:import [javax.servlet ServletContext]))
 
-(defn wrap-servlet-context [handler]
+(defn wrap-context [handler]
   (fn [request]
-    (binding [*servlet-context*
+    (binding [*app-context*
               (if-let [context (:servlet-context request)]
                 ;; If we're not inside a servlet environment
                 ;; (for example when using mock requests), then
                 ;; .getContextPath might not exist
-                (try (.getContextPath context)
-                     (catch IllegalArgumentException _ context)))]
+                (try (.getContextPath ^ServletContext context)
+                     (catch IllegalArgumentException _ context))
+                ;; if the context is not specified in the request
+                ;; we check if one has been specified in the environment
+                ;; instead
+                (:app-context env))]
       (handler request))))
 
 (defn wrap-internal-error [handler]
@@ -39,9 +44,9 @@
       (handler req)
       (catch Throwable t
         (timbre/error t)
-        {:status  500
-         :headers {"Content-Type" "text/html"}
-         :body    (-> "templates/error.html" io/resource slurp)}))))
+        (error-page {:status  500
+                     :title   "Something very bad has happened!"
+                     :message "We've dispatched a team of highly trained gnomes to take care of the problem."})))))
 
 (defn wrap-delay [handler]
   (fn [request]
@@ -57,15 +62,20 @@
     handler))
 
 (defn wrap-csrf [handler]
-  (wrap-anti-forgery handler))
+  (wrap-anti-forgery
+    handler
+    {:error-response
+     (error-page
+       {:status 403
+        :title  "Invalid anti-forgery token"})}))
 
 (defn wrap-formats [handler]
   (wrap-restful-format handler {:formats [:json-kw :transit-json :transit-msgpack]}))
 
 (defn on-error [request response]
-  {:status  403
-   :headers {"Content-Type" "text/plain"}
-   :body    (str "Access to " (:uri request) " is not authorized")})
+  (error-page
+    {:status 403
+     :title  (str "Access to " (:uri request) " is not authorized")}))
 
 (defn wrap-restricted [handler]
   (restrict handler {:handler  authenticated?
@@ -73,7 +83,7 @@
 
 (defn wrap-identity [handler]
   (fn [request]
-    (binding [*identity* (or (get-in request [:session :identity]) nil)]
+    (binding [*identity* (get-in request [:session :identity])]
       (handler request))))
 
 (defn wrap-auth [handler]
@@ -81,16 +91,16 @@
       wrap-identity
       (wrap-authentication (session-backend))))
 
-(defn wrap-app [handler]
+(defn wrap-base [handler]
   (-> handler
       wrap-dev
       wrap-auth
       wrap-formats
+      wrap-webjars
       (wrap-defaults
         (-> site-defaults
             (assoc-in [:security :anti-forgery] false)      ; Anti-forgery is not applied to the API, only to the served HTML (defined in handler.clj) and even then its need is doubious in an SPA.
             (assoc-in [:session :store] (jdbc-session-store/jdbc-store (to-jdbc-uri (env :database-url))))
             (assoc-in [:session :secure] (not (or (env :dev) (env :test))))))
-      wrap-webjars
-      wrap-servlet-context
+      wrap-context
       wrap-internal-error))
