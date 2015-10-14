@@ -89,7 +89,8 @@
       (wrap-defaults
         (-> site-defaults
             (assoc-in [:security :anti-forgery] false)      ; Anti-forgery is only applied to the main app, search for uses of wrap-csfr. TODO: is this correct?
-            (assoc-in [:session :store] (jdbc-session-store/jdbc-store (to-jdbc-uri (env :database-url))))))
+            (assoc-in [:session :store] (jdbc-session-store/jdbc-store (to-jdbc-uri (env :database-url))))
+            (assoc-in [:session :secure] (not (or (env :dev) (env :test))))))
       wrap-webjars
       wrap-servlet-context
       wrap-internal-error))
