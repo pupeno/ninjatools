@@ -44,7 +44,7 @@
                           (if-let [user (user/get-by-credentials log-in-form)]
                             (-> (ok {:status :success :user (user/sanitize-for-public user)})
                                 (assoc :session (assoc session :identity (:id user))))
-                            (ok {:status :failed :log-in-form (update-in log-in-form [:errors :password] #(conj (or %1 []) "Email and password doesn't match"))}))
+                            (ok {:status :failed :log-in-form (update-in log-in-form [:errors :-general] #(conj (or %1 []) "Email and password doesn't match"))}))
                           (ok {:status :failed :log-in-form (assoc log-in-form :errors (user-schema/log-in-validation log-in-form))})))
 
                   (POST* "/register" {session :session}
