@@ -117,7 +117,7 @@
   (fn [db _]
     (ratom/reaction (:log-in-form @db))))
 
-(defn log-in-panel []
+(defn log-in-page []
   (let [log-in-form (re-frame/subscribe [:log-in-form])]
     (fn []
       [:div
@@ -142,9 +142,9 @@
           [:div.col-sm-offset-2.col-sm-10
            [:button.btn.btn-primary {:type :submit :on-click #(human/dispatch [:log-in])} "Log in"]]]]]])))
 
-(defmethod views/panels :log-in [] [log-in-panel])
+(defmethod views/pages :log-in [] [log-in-page])
 
-(defn register-panel []
+(defn register-page []
   (let [registration-form (re-frame/subscribe [:registration-form])]
     (fn []
       [:div
@@ -174,4 +174,4 @@
           [:div.col-sm-offset-2.col-sm-10
            [:button.btn.btn-primary {:type :submit :on-click #(human/dispatch [:register])} "Register"]]]]]])))
 
-(defmethod views/panels :register [] [register-panel])
+(defmethod views/pages :register [] [register-page])

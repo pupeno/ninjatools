@@ -95,7 +95,7 @@
                                                     (vals (:by-id (:tools @db)))))))
          :page-number page-number}))))
 
-(defn home-panel []
+(defn home-page []
   (let [tools (re-frame/subscribe [:tools])
         current-available-tools (re-frame/subscribe [:current-available-tools])
         tools-in-use (re-frame/subscribe [:tools-in-use])]
@@ -116,9 +116,9 @@
                     ^{:key (:id tool)}
                     [:li (:name tool)])]])])])))
 
-(defmethod views/panels :home [] [home-panel])
+(defmethod views/pages :home [] [home-page])
 
-(defn tools-panel []
+(defn tools-page []
   (let [tools (re-frame/subscribe [:tools])]
     (fn []
       (if (empty? (:by-id @tools))
@@ -129,9 +129,9 @@
          [:div [:a {:on-click #(human/dispatch [:get-tools])}
                 "Refresh tools"]]]))))
 
-(defmethod views/panels :tools [] [tools-panel])
+(defmethod views/pages :tools [] [tools-page])
 
-(defn tool-panel []
+(defn tool-page []
   (let [current-tool (re-frame/subscribe [:current-tool])
         tools (re-frame/subscribe [:tools])]
     (fn []
@@ -142,4 +142,4 @@
                 ^{:key (:id integrated-tool)} [:li [:a {:href (routing/url-for :tool {:slug (:slug integrated-tool)})} (:name integrated-tool)]])]]
         [views/loading]))))
 
-(defmethod views/panels :tool [] [tool-panel])
+(defmethod views/pages :tool [] [tool-page])

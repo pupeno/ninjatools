@@ -13,14 +13,14 @@
   []
   [:div "Loading..."])
 
-(defn about-panel []
+(defn about-page []
   (fn []
     [:div "This is the About Page."]))
 
 ;; --------------------
-(defmulti panels :name)
-(defmethod panels :about [] [about-panel])
-(defmethod panels :default [] [:div])
+(defmulti pages :name)
+(defmethod pages :about [] [about-page])
+(defmethod pages :default [] [:div])
 
 (defn nav-bar []
   (let [current-route (re-frame/subscribe [:current-route])
@@ -62,4 +62,4 @@
        [nav-bar]
        [:main.container
         [alerts/view]
-        (panels @current-route)]])))
+        (pages @current-route)]])))
