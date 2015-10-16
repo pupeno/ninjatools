@@ -5,7 +5,7 @@
             [prerenderer.core :as prerenderer]
             [prerenderer.re-frame :as re-frame-prerenderer]
             ninjatools.core                                 ; To include all of ninja namespaces.
-            [ninjatools.routes :as routes]
+            [ninjatools.routing :as routes]
             [ninjatools.views :as views]
             [reagent.core :as reagent]))
 

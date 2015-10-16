@@ -5,7 +5,7 @@
             [ninjatools.handlers :as handlers]
             [ninjatools.views :as views]
             [ajax.core :as ajax]
-            [ninjatools.routes :as routes]
+            [ninjatools.routing :as routing]
             [reagent.ratom :as ratom :include-macros true]
             clojure.walk
             [ninjatools.human :as human]
@@ -108,7 +108,7 @@
           [:ul (for [tool (:tools @current-available-tools)]
                  ^{:key (:id tool)}
                  [:li [:a {:on-click #(human/dispatch [:mark-tool-as-used (:id tool)])} (:name tool)]])]
-          [:div [:a {:href (str (routes/url-for :home) "?p=" (inc (:page-number @current-available-tools)))} "more tools"]]
+          [:div [:a {:href (str (routing/url-for :home) "?p=" (inc (:page-number @current-available-tools)))} "more tools"]]
           (if (not (empty? @tools-in-use))
             [:div
              [:div "Your tools"]
@@ -125,7 +125,7 @@
         [views/loading]
         [:div
          [:ul (for [tool (vals (:by-id @tools))]
-                ^{:key (:id tool)} [:li [:a {:href (routes/url-for :tool {:slug (:slug tool)})} (:name tool)]])]
+                ^{:key (:id tool)} [:li [:a {:href (routing/url-for :tool {:slug (:slug tool)})} (:name tool)]])]
          [:div [:a {:on-click #(human/dispatch [:get-tools])}
                 "Refresh tools"]]]))))
 
@@ -139,7 +139,7 @@
         [:div
          [:h1 (:name @current-tool)]
          [:ul (for [integrated-tool (vals (select-keys (:by-id @tools) (:integration-ids @current-tool)))]
-                ^{:key (:id integrated-tool)} [:li [:a {:href (routes/url-for :tool {:slug (:slug integrated-tool)})} (:name integrated-tool)]])]]
+                ^{:key (:id integrated-tool)} [:li [:a {:href (routing/url-for :tool {:slug (:slug integrated-tool)})} (:name integrated-tool)]])]]
         [views/loading]))))
 
 (defmethod views/panels :tool [] [tool-panel])

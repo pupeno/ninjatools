@@ -1,6 +1,6 @@
 ;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
 
-(ns ninjatools.routes
+(ns ninjatools.routing
   (:require [clojure.set :refer [rename-keys]]
             [domkm.silk :as silk]
             [pushy.core :as pushy]

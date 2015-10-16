@@ -2,7 +2,7 @@
 
 (ns ninjatools.views
   (:require [re-frame.core :as re-frame]
-            [ninjatools.routes :as routes]
+            [ninjatools.routing :as routing]
             [ninjatools.alerts :as alerts]
             [ninjatools.models.user-schema :as user-schema]
             [ninjatools.util :refer [log]]
@@ -34,13 +34,13 @@
           [:span.icon-bar]
           [:span.icon-bar]
           [:span.icon-bar]]
-         [:a.navbar-brand {:href (routes/url-for :home)} "Ninja Tools"]]
+         [:a.navbar-brand {:href (routing/url-for :home)} "Ninja Tools"]]
         [:div#navbar.collapse.navbar-collapse
          [:ul.nav.navbar-nav
           [:li {:class (when (some #{(:name @current-route)} [:tools :tool]) "active")}
-           [:a {:href (routes/url-for :tools)} "Tools"]]
+           [:a {:href (routing/url-for :tools)} "Tools"]]
           [:li {:class (when (= :about (:name @current-route)) "active")}
-           [:a {:href (routes/url-for :about)} "About"]]]
+           [:a {:href (routing/url-for :about)} "About"]]]
          [:ul.nav.navbar-nav.navbar-right
           [:li.dropdown {:class (when (contains? #{:login :register} (:name @current-route)) "active")}
            [:a.dropdown-toggle {:href "#" :data-toggle "dropdown" :role "button" :aria-haspopup "true" :aria-expanded "false"}
@@ -51,9 +51,9 @@
               [:li [:a {:on-click #(human/dispatch [:log-out])} "Log out"]]]
              [:ul.dropdown-menu
               [:li {:class (when (= :log-in (:name @current-route)) "active")}
-               [:a {:href (routes/url-for :log-in)} "Log in"]]
+               [:a {:href (routing/url-for :log-in)} "Log in"]]
               [:li {:class (when (= :register (:name @current-route)) "active")}
-               [:a {:href (routes/url-for :register)} "Register"]]])]]]]])))
+               [:a {:href (routing/url-for :register)} "Register"]]])]]]]])))
 
 (defn main-panel []
   (let [current-route (re-frame/subscribe [:current-route])]

@@ -5,7 +5,7 @@
             [re-frame.core :as re-frame]
             [ninjatools.handlers]
             [ninjatools.subs]
-            [ninjatools.routes :as routes]
+            [ninjatools.routing :as routing]
             [ninjatools.views :as views]
             ninjatools.auth
             ninjatools.tools))
@@ -15,6 +15,6 @@
                   (.getElementById js/document "app")))
 
 (defn ^:export init []
-  (routes/start!)
+  (routing/start!)
   (re-frame/dispatch-sync [:initialize-db])
   (mount-root))
