@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: com.lucasbradstreet/cljs-uuid-utils:1.0.2">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/com/lucasbradstreet/cljs-uuid-utils/1.0.2/cljs-uuid-utils-1.0.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
