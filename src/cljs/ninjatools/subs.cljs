@@ -16,11 +16,6 @@
     (reaction (:alerts @db))))
 
 (re-frame/register-sub
-  :current-user
-  (fn [db _]
-    (reaction (:current-user @db))))
-
-(re-frame/register-sub
   :tools
   (fn [db _]
     (reaction (:tools @db))))
@@ -46,13 +41,3 @@
                                             (filter #(not (contains? (:tools-in-use @db) (:id %)))
                                                     (vals (:by-id (:tools @db)))))))
          :page-number page-number}))))
-
-(re-frame/register-sub
-  :registration-form
-  (fn [db _]
-    (reaction (:registration-form @db))))
-
-(re-frame/register-sub
-  :log-in-form
-  (fn [db _]
-    (reaction (:log-in-form @db))))
