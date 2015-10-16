@@ -9,6 +9,11 @@
             [reagent.ratom :as ratom :include-macros true]
             clojure.walk))
 
+(defn add-tool [db tool]
+  (-> db
+      (assoc-in [:tools :by-id (:id tool)] tool)
+      (assoc-in [:tools :by-slug (:slug tool)] tool)))
+
 (defmethod handlers/display-page :home [_current-route db]
   (when (empty? (get-in db [:tools :by-id]))
     (re-frame/dispatch [:get-tools]))
@@ -35,8 +40,7 @@
   :got-tools
   (fn [db [_ tools]]
     (let [tools (map clojure.walk/keywordize-keys tools)]
-      (assoc db :tools {:by-id   (reduce #(assoc %1 (:id %2) %2) {} tools)
-                        :by-slug (reduce #(assoc %1 (:slug %2) %2) {} tools)}))))
+      (reduce add-tool db tools))))
 
 (re-frame/register-handler
   :get-tool-with-integrations
@@ -54,10 +58,8 @@
 (re-frame/register-handler
   :got-integrations
   (fn [db [_ tool-id integration-ids]]
-    (let [tool (assoc (get-in db [:tools :by-id tool-id]) :integration-ids integration-ids)]
-      (-> db                                                ; TODO: get the tools that we have integration ids for when we stop getting all the tools all the time.
-          (assoc-in [:tools :by-id tool-id] tool)
-          (assoc-in [:tools :by-slug (:slug tool)] tool)))))
+    (let [tool (assoc (get-in db [:tools :by-id tool-id]) :integration-ids integration-ids)] ; TODO: get the tools that we have integration ids for when we stop getting all the tools all the time.
+      (add-tool db tool))))
 
 (re-frame/register-handler
   :mark-tool-as-used
