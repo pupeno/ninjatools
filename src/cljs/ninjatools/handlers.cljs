@@ -4,7 +4,7 @@
   (:require [re-frame.core :as re-frame]
             [ninjatools.db :as db]
             [ajax.core :as ajax]
-            [ninjatools.util :refer [log]]
+            [ninjatools.util :refer [log dissoc-in]]
             [clojure.walk]
             [validateur.validation :as validateur]
             [ninjatools.models.user-schema :as user-schema]))
@@ -18,6 +18,7 @@
   (fn [_ _]
     (re-frame/dispatch [:get-current-user])
     {:current-route     nil
+     :alerts            (sorted-map)
      :current-user      nil
      :log-in-form       {}
      :registration-form {}
@@ -48,6 +49,11 @@
   :set-current-route
   (fn [db [_name current-route]]
     (display-page current-route (assoc db :current-route current-route))))
+
+(re-frame/register-handler
+  :remove-alert
+  (fn [db [_ id]]
+    (dissoc-in db [:alerts id])))
 
 (re-frame/register-handler
   :get-current-user

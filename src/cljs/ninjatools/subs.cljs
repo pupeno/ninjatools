@@ -11,6 +11,11 @@
     (reaction (:current-route @db))))
 
 (re-frame/register-sub
+  :alerts
+  (fn [db _]
+    (reaction (:alerts @db))))
+
+(re-frame/register-sub
   :current-user
   (fn [db _]
     (reaction (:current-user @db))))

@@ -44,7 +44,8 @@
                  [metosin/compojure-api "0.23.1"]
                  [metosin/ring-swagger-ui "2.1.3"]
                  [org.immutant/web "2.1.0"]
-                 [com.carouselapps/prerenderer "0.1.0"]]
+                 [com.carouselapps/prerenderer "0.1.0"]
+                 [com.lucasbradstreet/cljs-uuid-utils "1.0.2"]]
 
   :min-lein-version "2.0.0"
   :uberjar-name "ninjatools.jar"

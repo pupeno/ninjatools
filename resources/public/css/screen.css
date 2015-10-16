@@ -1,5 +1,13 @@
 /* Copyright © 2015 Carousel Apps, Ltd. All rights reserved. */
 
 body {
-  padding-top: 50px;
+  padding-top: 50px; /* Leave space for the fixed navbar. */
+}
+
+a {
+    cursor: pointer; /* Make all links look clickable, even when there's no href. */
+}
+
+main.container div.alerts {
+    margin-top: 20px; /* Separate the alerts from the navbar on top, the same amount as between alert and alert. */
 }

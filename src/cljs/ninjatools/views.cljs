@@ -158,9 +158,23 @@
                [:a {:href (routes/url-for :register)} "Register"]]])]]]]])))
 
 (defn main-panel []
-  (let [current-route (re-frame/subscribe [:current-route])]
+  (let [current-route (re-frame/subscribe [:current-route])
+        alerts (re-frame/subscribe [:alerts])]
     (fn []
       [:div
        [nav-bar]
        [:main.container
+        (if (not (empty? @alerts))
+          [:div.alerts
+           (map (fn [[id alert]]
+                  [:div {:key id
+                         :class (str "alert alert-" (name (:type alert)))
+                         :role "alert"}
+                   (:message alert)
+                   [:button {:type "button"
+                             :class "close"
+                             :aria-label "Close"
+                             :on-click #(re-frame/dispatch [:remove-alert id])}
+                    [:span {:aria-hidden true} [:i.fa.fa-times]]]])
+                @alerts)])
         (panels @current-route)]])))
