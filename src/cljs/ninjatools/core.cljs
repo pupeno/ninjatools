@@ -3,7 +3,6 @@
 (ns ninjatools.core
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]
-            [ninjatools.handlers]
             [ninjatools.routing :as routing]
             [ninjatools.views :as views]
             ninjatools.auth
@@ -18,3 +17,16 @@
   (routing/start!)
   (re-frame/dispatch-sync [:initialize-db])
   (mount-root))
+
+(re-frame/register-handler
+  :initialize-db
+  (fn [_ _]
+    (re-frame/dispatch [:get-current-user])
+    {:current-route     nil
+     :alerts            (sorted-map)
+     :current-user      nil
+     :log-in-form       {}
+     :registration-form {}
+     :tools             {:by-id   {}
+                         :by-slug {}}
+     :tools-in-use      #{}}))
