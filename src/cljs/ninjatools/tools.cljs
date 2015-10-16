@@ -2,7 +2,6 @@
 
 (ns ninjatools.tools
   (:require [re-frame.core :as re-frame]
-            [ninjatools.handlers :as handlers]
             [ninjatools.views :as views]
             [ajax.core :as ajax]
             [ninjatools.routing :as routing]
@@ -16,17 +15,17 @@
       (assoc-in [:tools :by-id (:id tool)] tool)
       (assoc-in [:tools :by-slug (:slug tool)] tool)))
 
-(defmethod handlers/display-page :home [_current-route db]
+(defmethod routing/display-page :home [_current-route db]
   (when (empty? (get-in db [:tools :by-id]))
     (re-frame/dispatch [:get-tools]))
   db)
 
-(defmethod handlers/display-page :tools [_current-route db]
+(defmethod routing/display-page :tools [_current-route db]
   (when (empty? (get-in db [:tools :by-id]))
     (re-frame/dispatch [:get-tools]))
   db)
 
-(defmethod handlers/display-page :tool [current-route db]
+(defmethod routing/display-page :tool [current-route db]
   (re-frame/dispatch [:get-tool-with-integrations (:slug current-route)])
   (assoc db :current-tool-slug (:slug current-route)))
 

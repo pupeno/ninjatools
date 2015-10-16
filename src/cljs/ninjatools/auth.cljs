@@ -4,7 +4,6 @@
 (ns ninjatools.auth
   (:require [re-frame.core :as re-frame]
             [validateur.validation :as validateur]
-            [ninjatools.handlers :as handlers]
             [ninjatools.views :as views]
             [ninjatools.alerts :as alerts]
             [ninjatools.human :as human]

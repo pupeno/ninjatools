@@ -16,11 +16,3 @@
                          :by-slug {}}
      :tools-in-use      #{}}))
 
-(defmulti display-page :name)
-(defmethod display-page :default [_current-route db]
-  db)
-
-(re-frame/register-handler
-  :set-current-route
-  (fn [db [_name current-route]]
-    (display-page current-route (assoc db :current-route current-route))))

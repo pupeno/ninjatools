@@ -4,7 +4,8 @@
   (:require [clojure.set :refer [rename-keys]]
             [domkm.silk :as silk]
             [pushy.core :as pushy]
-            [re-frame.core :as re-frame]))
+            [re-frame.core :as re-frame]
+            [reagent.ratom :as ratom :include-macros true]))
 
 (def routes (silk/routes [[:home [[]]]
                           [:tools [["tools"]]]
@@ -32,3 +33,17 @@
                              parse-path)))
 
 (def url-for (partial silk/depart routes))
+
+(defmulti display-page :name)
+(defmethod display-page :default [_current-route db]
+  db)
+
+(re-frame/register-handler
+  :set-current-route
+  (fn [db [_name current-route]]
+    (display-page current-route (assoc db :current-route current-route))))
+
+(re-frame/register-sub
+  :current-route
+  (fn [db _]
+    (ratom/reaction (:current-route @db))))

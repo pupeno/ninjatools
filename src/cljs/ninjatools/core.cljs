@@ -4,11 +4,11 @@
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]
             [ninjatools.handlers]
-            [ninjatools.subs]
             [ninjatools.routing :as routing]
             [ninjatools.views :as views]
             ninjatools.auth
-            ninjatools.tools))
+            ninjatools.tools
+            ninjatools.human))
 
 (defn mount-root []
   (reagent/render [views/main-panel]
