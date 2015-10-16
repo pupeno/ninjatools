@@ -55,7 +55,9 @@
   :got-integrations
   (fn [db [_ tool-id integration-ids]]
     (let [tool (assoc (get-in db [:tools :by-id tool-id]) :integration-ids integration-ids)]
-      (assoc-in db [:tools :by-id tool-id] tool))))         ; TODO: get the tools that we have integration ids for when we stop getting all the tools all the time.
+      (-> db                                                ; TODO: get the tools that we have integration ids for when we stop getting all the tools all the time.
+          (assoc-in [:tools :by-id tool-id] tool)
+          (assoc-in [:tools :by-slug (:slug tool)] tool)))))
 
 (re-frame/register-handler
   :mark-tool-as-used
