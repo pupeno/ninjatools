@@ -7,6 +7,10 @@
             [ninjatools.models.user-schema :as user-schema]
             [ninjatools.util :refer [log]]))
 
+(defn dispatch [& args]
+  (re-frame/dispatch [:human-interaction])
+  (apply re-frame/dispatch args))
+
 (defn loading
   "Display a loading panel"
   []
@@ -24,7 +28,7 @@
          [:div
           [:ul (for [tool (:tools @current-available-tools)]
                  ^{:key (:id tool)}
-                 [:li [:a {:on-click #(re-frame/dispatch [:mark-tool-as-used (:id tool)])} (:name tool)]])]
+                 [:li [:a {:on-click #(dispatch [:mark-tool-as-used (:id tool)])} (:name tool)]])]
           [:div [:a {:href (str (routes/url-for :home) "?p=" (inc (:page-number @current-available-tools)))} "more tools"]]
           (if (not (empty? @tools-in-use))
             [:div
@@ -41,7 +45,7 @@
         [:div
          [:ul (for [tool (vals (:by-id @tools))]
                 ^{:key (:id tool)} [:li [:a {:href (routes/url-for :tool {:slug (:slug tool)})} (:name tool)]])]
-         [:div [:a {:on-click #(re-frame/dispatch [:get-tools])}
+         [:div [:a {:on-click #(dispatch [:get-tools])}
                 "Refresh tools"]]]))))
 
 (defn tool-panel []
@@ -82,7 +86,7 @@
            [:div.text-danger {:free-form/error-message {:ks [:password]}} [:p]]]]
          [:div.form-group
           [:div.col-sm-offset-2.col-sm-10
-           [:button.btn.btn-primary {:type :submit :on-click #(re-frame/dispatch [:log-in])} "Log in"]]]]]])))
+           [:button.btn.btn-primary {:type :submit :on-click #(dispatch [:log-in])} "Log in"]]]]]])))
 
 (defn register-panel []
   (let [registration-form (re-frame/subscribe [:registration-form])]
@@ -112,7 +116,7 @@
            [:div.text-danger {:free-form/error-message {:key :password-confirmation}} [:p]]]]
          [:div.form-group
           [:div.col-sm-offset-2.col-sm-10
-           [:button.btn.btn-primary {:type :submit :on-click #(re-frame/dispatch [:register])} "Register"]]]]]])))
+           [:button.btn.btn-primary {:type :submit :on-click #(dispatch [:register])} "Register"]]]]]])))
 
 ;; --------------------
 (defmulti panels :name)
@@ -150,7 +154,7 @@
            (if @current-user
              [:ul.dropdown-menu
               [:li [:a (user-schema/display-name @current-user)]]
-              [:li [:a {:on-click #(re-frame/dispatch [:log-out])} "Log out"]]]
+              [:li [:a {:on-click #(dispatch [:log-out])} "Log out"]]]
              [:ul.dropdown-menu
               [:li {:class (when (= :log-in (:name @current-route)) "active")}
                [:a {:href (routes/url-for :log-in)} "Log in"]]
@@ -167,14 +171,14 @@
         (if (not (empty? @alerts))
           [:div.alerts
            (map (fn [[id alert]]
-                  [:div {:key id
+                  [:div {:key   id
                          :class (str "alert alert-" (name (:type alert)))
-                         :role "alert"}
+                         :role  "alert"}
                    (:message alert)
-                   [:button {:type "button"
-                             :class "close"
+                   [:button {:type       "button"
+                             :class      "close"
                              :aria-label "Close"
-                             :on-click #(re-frame/dispatch [:remove-alert id])}
+                             :on-click   #(dispatch [:remove-alert id])}
                     [:span {:aria-hidden true} [:i.fa.fa-times]]]])
                 @alerts)])
         (panels @current-route)]])))

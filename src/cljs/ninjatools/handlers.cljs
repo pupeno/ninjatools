@@ -48,12 +48,18 @@
 (re-frame/register-handler
   :set-current-route
   (fn [db [_name current-route]]
+    (re-frame/dispatch [:human-interaction])
     (display-page current-route (assoc db :current-route current-route))))
 
 (re-frame/register-handler
   :remove-alert
   (fn [db [_ id]]
     (dissoc-in db [:alerts id])))
+
+(re-frame/register-handler
+  :human-interaction
+  (fn [db & _]
+    db))
 
 (re-frame/register-handler
   :get-current-user
