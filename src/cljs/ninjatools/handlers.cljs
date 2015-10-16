@@ -1,13 +1,7 @@
 ;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
 
 (ns ninjatools.handlers
-  (:require [re-frame.core :as re-frame]
-            [ninjatools.alerts :as alerts]
-            [ninjatools.util :refer [log]]))
-
-(defn report-unexpected-error [{:keys [status status-text]}]
-  (js/alert "We are sorry, there was an unexpected error.")
-  (log "Error: " status status-text))
+  (:require [re-frame.core :as re-frame]))
 
 (re-frame/register-handler
   :initialize-db

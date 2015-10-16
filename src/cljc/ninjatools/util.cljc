@@ -10,6 +10,11 @@
    (defn log [& args]
      (.log js/console (pr-str args))))
 
+#?(:cljs
+   (defn report-unexpected-error [{:keys [status status-text]}]
+     (js/alert "We are sorry, there was an unexpected error.")
+     (log "Error: " status status-text)))
+
 ; dissoc-in copied from clojure.incubator because it's clj only there, not cljc.
 ; https://github.com/clojure/core.incubator/blob/98672b9f627631215b47744fe193550f389d1095/src/main/clojure/clojure/core/incubator.clj#L62
 (defn dissoc-in

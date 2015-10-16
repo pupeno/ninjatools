@@ -8,6 +8,7 @@
             [ninjatools.views :as views]
             [ninjatools.alerts :as alerts]
             [ninjatools.human :as human]
+            [ninjatools.util :as util]
             [ajax.core :as ajax]
             [reagent.ratom :as ratom :include-macros true]
             [free-form.re-frame :as forms]
@@ -18,7 +19,7 @@
   (fn [db [_]]
     (ajax/GET "/api/v1/current-user"
               {:handler       #(re-frame/dispatch [:got-current-user (clojure.walk/keywordize-keys %1)])
-               :error-handler handlers/report-unexpected-error})
+               :error-handler util/report-unexpected-error})
     db))
 
 (re-frame/register-handler
@@ -47,7 +48,7 @@
         (do (ajax/POST "/api/v1/register"
                        {:params        (dissoc registration-form :errors)
                         :handler       #(re-frame/dispatch [:got-registered (clojure.walk/keywordize-keys %1)])
-                        :error-handler handlers/report-unexpected-error})
+                        :error-handler util/report-unexpected-error})
             db)
         (assoc-in db [:registration-form :errors] (user-schema/registration-validation registration-form))))))
 
@@ -78,7 +79,7 @@
         (do (ajax/PUT "/api/v1/log-in"
                       {:params        (dissoc log-in-form :errors)
                        :handler       #(re-frame/dispatch [:got-logged-in (clojure.walk/keywordize-keys %1)])
-                       :error-handler handlers/report-unexpected-error})
+                       :error-handler util/report-unexpected-error})
             db)
         (assoc-in db [:log-in-form :errors] (user-schema/log-in-validation log-in-form))))))
 
@@ -96,7 +97,7 @@
   :log-out
   (fn [db [_]]
     (ajax/PUT "/api/v1/log-out" {:handler       (fn [_] (re-frame/dispatch [:logged-out]))
-                                 :error-handler handlers/report-unexpected-error})
+                                 :error-handler util/report-unexpected-error})
     db))
 
 (re-frame/register-handler

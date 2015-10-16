@@ -8,7 +8,8 @@
             [ninjatools.routes :as routes]
             [reagent.ratom :as ratom :include-macros true]
             clojure.walk
-            [ninjatools.human :as human]))
+            [ninjatools.human :as human]
+            [ninjatools.util :as util]))
 
 (defn add-tool [db tool]
   (-> db
@@ -34,7 +35,7 @@
   (fn [db [_]]
     (ajax/GET "/api/v1/tools"
               {:handler       #(re-frame/dispatch [:got-tools %1])
-               :error-handler handlers/report-unexpected-error})
+               :error-handler util/report-unexpected-error})
     db))
 
 (re-frame/register-handler
@@ -50,7 +51,7 @@
       (when (empty? (:integration-ids tool))
         (ajax/GET (str "/api/v1/tools/" (:id tool) "/integrations")
                   {:handler       #(re-frame/dispatch [:got-integrations (:id tool) %1])
-                   :error-handler handlers/report-unexpected-error}))
+                   :error-handler util/report-unexpected-error}))
       (do (when (not tool-requested)
             (re-frame/dispatch [:get-tools]))               ; TODO: only get the tool we want, by slug.
           (re-frame/dispatch [:get-tool-with-integrations tool-slug true])))
