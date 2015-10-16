@@ -6,7 +6,9 @@
             [ninjatools.handlers]
             [ninjatools.subs]
             [ninjatools.routes :as routes]
-            [ninjatools.views :as views]))
+            [ninjatools.views :as views]
+            ninjatools.auth
+            ninjatools.tools))
 
 (defn mount-root []
   (reagent/render [views/main-panel]
