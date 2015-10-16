@@ -16,58 +16,12 @@
   []
   [:div "Loading..."])
 
-(defn home-panel []
-  (let [tools (re-frame/subscribe [:tools])
-        current-available-tools (re-frame/subscribe [:current-available-tools])
-        tools-in-use (re-frame/subscribe [:tools-in-use])]
-    (fn []
-      [:div
-       [:div "Select the tools you use"]
-       (if (empty? (:tools @current-available-tools))
-         [loading]
-         [:div
-          [:ul (for [tool (:tools @current-available-tools)]
-                 ^{:key (:id tool)}
-                 [:li [:a {:on-click #(dispatch [:mark-tool-as-used (:id tool)])} (:name tool)]])]
-          [:div [:a {:href (str (routes/url-for :home) "?p=" (inc (:page-number @current-available-tools)))} "more tools"]]
-          (if (not (empty? @tools-in-use))
-            [:div
-             [:div "Your tools"]
-             [:ul (for [tool (doall (map #(get-in @tools [:by-id %]) @tools-in-use))]
-                    ^{:key (:id tool)}
-                    [:li (:name tool)])]])])])))
-
-(defn tools-panel []
-  (let [tools (re-frame/subscribe [:tools])]
-    (fn []
-      (if (empty? (:by-id @tools))
-        [loading]
-        [:div
-         [:ul (for [tool (vals (:by-id @tools))]
-                ^{:key (:id tool)} [:li [:a {:href (routes/url-for :tool {:slug (:slug tool)})} (:name tool)]])]
-         [:div [:a {:on-click #(dispatch [:get-tools])}
-                "Refresh tools"]]]))))
-
-(defn tool-panel []
-  (let [current-tool (re-frame/subscribe [:current-tool])
-        tools (re-frame/subscribe [:tools])]
-    (fn []
-      (if @current-tool
-        [:div
-         [:h1 (:name @current-tool)]
-         [:ul (for [integrated-tool (vals (select-keys (:by-id @tools) (:integration-ids @current-tool)))]
-                ^{:key (:id integrated-tool)} [:li [:a {:href (routes/url-for :tool {:slug (:slug integrated-tool)})} (:name integrated-tool)]])]]
-        [loading]))))
-
 (defn about-panel []
   (fn []
     [:div "This is the About Page."]))
 
 ;; --------------------
 (defmulti panels :name)
-(defmethod panels :home [] [home-panel])
-(defmethod panels :tools [] [tools-panel])
-(defmethod panels :tool [] [tool-panel])
 (defmethod panels :about [] [about-panel])
 (defmethod panels :default [] [:div])
 
