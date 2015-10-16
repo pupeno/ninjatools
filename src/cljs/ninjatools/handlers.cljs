@@ -78,7 +78,9 @@
 (re-frame/register-handler
   :logged-out
   (fn [db [_]]
-    (assoc db :current-user nil)))
+    (-> db
+        (assoc :current-user nil)
+        (db/add-alert :success "You are now logged out."))))
 
 (re-frame/register-handler
   :update-log-in-form
@@ -104,8 +106,10 @@
   :got-logged-in
   (fn [db [_ {status :status log-in-form :log-in-form user :user}]]
     (if (= status "success")
-      (assoc db :log-in-form {}
-                :current-user user)
+      (-> db
+          (assoc :log-in-form {}
+                 :current-user user)
+          (db/add-alert :success "You are now logged in."))
       (assoc db :log-in-form log-in-form))))
 
 (re-frame/register-handler
@@ -132,8 +136,10 @@
   :got-registered
   (fn [db [_ {status :status registration-form :registration-form user :user}]]
     (if (= status "success")
-      (assoc db :registration-form {}
-                :current-user user)
+      (-> db
+          (assoc :registration-form {}
+                 :current-user user)
+          (db/add-alert :success "Thank you for registering, you are now also logged in with your new account."))
       (assoc db :registration-form registration-form))))
 
 (re-frame/register-handler
