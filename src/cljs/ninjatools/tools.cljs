@@ -129,10 +129,8 @@
   (let [current-tool (re-frame/subscribe [:current-tool])
         tools (re-frame/subscribe [:tools])]
     (fn []
-
       (if @current-tool
         [:div
-         [:div (pr-str @current-tool)]
          [:h1 (:name @current-tool)]
          [:ul (for [integrated-tool (vals (select-keys (:by-id @tools) (:integration-ids @current-tool)))]
                 ^{:key (:id integrated-tool)} [:li [:a {:href (routes/url-for :tool {:slug (:slug integrated-tool)})} (:name integrated-tool)]])]]
