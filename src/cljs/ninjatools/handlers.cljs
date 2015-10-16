@@ -53,12 +53,12 @@
 (re-frame/register-handler
   :remove-alert
   (fn [db [_ id]]
-    (dissoc-in db [:alerts id])))
+    (db/remove-alert db id)))
 
 (re-frame/register-handler
   :human-interaction
   (fn [db & _]
-    db))
+    (db/remove-old-alerts db)))
 
 (re-frame/register-handler
   :get-current-user
