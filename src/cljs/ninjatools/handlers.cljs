@@ -48,7 +48,6 @@
 (re-frame/register-handler
   :set-current-route
   (fn [db [_name current-route]]
-    (re-frame/dispatch [:human-interaction])
     (display-page current-route (assoc db :current-route current-route))))
 
 (re-frame/register-handler

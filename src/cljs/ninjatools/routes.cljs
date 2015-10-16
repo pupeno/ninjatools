@@ -26,7 +26,9 @@
   [:set-current-route matched-route])
 
 (defn start! []
-  (pushy/start! (pushy/pushy #(re-frame/dispatch (routing-event %))
+  (pushy/start! (pushy/pushy (fn [matched-route]
+                               (re-frame/dispatch [:human-interaction])
+                               (re-frame/dispatch (routing-event matched-route)))
                              parse-path)))
 
 (def url-for (partial silk/depart routes))
