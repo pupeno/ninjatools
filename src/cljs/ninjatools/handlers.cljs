@@ -2,12 +2,8 @@
 
 (ns ninjatools.handlers
   (:require [re-frame.core :as re-frame]
-            [ninjatools.db :as db]
-            [ajax.core :as ajax]
-            [ninjatools.util :refer [log]]
-            [clojure.walk]
-            [validateur.validation :as validateur]
-            [ninjatools.models.user-schema :as user-schema]))
+            [ninjatools.alerts :as alerts]
+            [ninjatools.util :refer [log]]))
 
 (defn report-unexpected-error [{:keys [status status-text]}]
   (js/alert "We are sorry, there was an unexpected error.")
@@ -34,13 +30,3 @@
   :set-current-route
   (fn [db [_name current-route]]
     (display-page current-route (assoc db :current-route current-route))))
-
-(re-frame/register-handler
-  :remove-alert
-  (fn [db [_ id]]
-    (db/remove-alert db id)))
-
-(re-frame/register-handler
-  :human-interaction
-  (fn [db & _]
-    (db/remove-old-alerts db)))

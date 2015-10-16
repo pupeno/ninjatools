@@ -3,13 +3,10 @@
 (ns ninjatools.views
   (:require [re-frame.core :as re-frame]
             [ninjatools.routes :as routes]
-            [ninjatools.auth :as auth]
+            [ninjatools.alerts :as alerts]
             [ninjatools.models.user-schema :as user-schema]
-            [ninjatools.util :refer [log]]))
-
-(defn dispatch [& args]
-  (re-frame/dispatch [:human-interaction])
-  (apply re-frame/dispatch args))
+            [ninjatools.util :refer [log]]
+            [ninjatools.human :as human]))
 
 (defn loading
   "Display a loading panel"
@@ -51,7 +48,7 @@
            (if @current-user
              [:ul.dropdown-menu
               [:li [:a (user-schema/display-name @current-user)]]
-              [:li [:a {:on-click #(dispatch [:log-out])} "Log out"]]]
+              [:li [:a {:on-click #(human/dispatch [:log-out])} "Log out"]]]
              [:ul.dropdown-menu
               [:li {:class (when (= :log-in (:name @current-route)) "active")}
                [:a {:href (routes/url-for :log-in)} "Log in"]]
@@ -59,23 +56,10 @@
                [:a {:href (routes/url-for :register)} "Register"]]])]]]]])))
 
 (defn main-panel []
-  (let [current-route (re-frame/subscribe [:current-route])
-        alerts (re-frame/subscribe [:alerts])]
+  (let [current-route (re-frame/subscribe [:current-route])]
     (fn []
       [:div
        [nav-bar]
        [:main.container
-        (if (not (empty? @alerts))
-          [:div.alerts
-           (map (fn [[id alert]]
-                  [:div {:key   id
-                         :class (str "alert alert-" (name (:type alert)))
-                         :role  "alert"}
-                   (:message alert)
-                   [:button {:type       "button"
-                             :class      "close"
-                             :aria-label "Close"
-                             :on-click   #(dispatch [:remove-alert id])}
-                    [:span {:aria-hidden true} [:i.fa.fa-times]]]])
-                @alerts)])
+        [alerts/view]
         (panels @current-route)]])))

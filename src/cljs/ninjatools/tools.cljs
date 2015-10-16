@@ -7,7 +7,8 @@
             [ajax.core :as ajax]
             [ninjatools.routes :as routes]
             [reagent.ratom :as ratom :include-macros true]
-            clojure.walk))
+            clojure.walk
+            [ninjatools.human :as human]))
 
 (defn add-tool [db tool]
   (-> db
@@ -105,7 +106,7 @@
          [:div
           [:ul (for [tool (:tools @current-available-tools)]
                  ^{:key (:id tool)}
-                 [:li [:a {:on-click #(views/dispatch [:mark-tool-as-used (:id tool)])} (:name tool)]])]
+                 [:li [:a {:on-click #(human/dispatch [:mark-tool-as-used (:id tool)])} (:name tool)]])]
           [:div [:a {:href (str (routes/url-for :home) "?p=" (inc (:page-number @current-available-tools)))} "more tools"]]
           (if (not (empty? @tools-in-use))
             [:div
@@ -124,7 +125,7 @@
         [:div
          [:ul (for [tool (vals (:by-id @tools))]
                 ^{:key (:id tool)} [:li [:a {:href (routes/url-for :tool {:slug (:slug tool)})} (:name tool)]])]
-         [:div [:a {:on-click #(views/dispatch [:get-tools])}
+         [:div [:a {:on-click #(human/dispatch [:get-tools])}
                 "Refresh tools"]]]))))
 
 (defmethod views/panels :tools [] [tools-panel])

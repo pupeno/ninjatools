@@ -2,16 +2,9 @@
 
 (ns ninjatools.subs
   (:require-macros [reagent.ratom :refer [reaction]])
-  (:require [re-frame.core :as re-frame]
-            [ninjatools.db :as db]))
+  (:require [re-frame.core :as re-frame]))
 
 (re-frame/register-sub
   :current-route
   (fn [db _]
     (reaction (:current-route @db))))
-
-(re-frame/register-sub
-  :alerts
-  (fn [db _]
-    (reaction (:alerts @db))))
-

@@ -4,9 +4,10 @@
 (ns ninjatools.auth
   (:require [re-frame.core :as re-frame]
             [validateur.validation :as validateur]
-            [ninjatools.db :as db]
             [ninjatools.handlers :as handlers]
             [ninjatools.views :as views]
+            [ninjatools.alerts :as alerts]
+            [ninjatools.human :as human]
             [ajax.core :as ajax]
             [reagent.ratom :as ratom :include-macros true]
             [free-form.re-frame :as forms]
@@ -57,7 +58,7 @@
       (-> db
           (assoc :registration-form {}
                  :current-user user)
-          (db/add-alert :success "Thank you for registering, you are now also logged in with your new account."))
+          (alerts/add-alert :success "Thank you for registering, you are now also logged in with your new account."))
       (assoc db :registration-form registration-form))))
 
 
@@ -88,7 +89,7 @@
       (-> db
           (assoc :log-in-form {}
                  :current-user user)
-          (db/add-alert :success "You are now logged in."))
+          (alerts/add-alert :success "You are now logged in."))
       (assoc db :log-in-form log-in-form))))
 
 (re-frame/register-handler
@@ -103,7 +104,7 @@
   (fn [db [_]]
     (-> db
         (assoc :current-user nil)
-        (db/add-alert :success "You are now logged out."))))
+        (alerts/add-alert :success "You are now logged out."))))
 
 (re-frame/register-sub
   :registration-form
@@ -138,7 +139,7 @@
            [:div.text-danger {:free-form/error-message {:ks [:password]}} [:p]]]]
          [:div.form-group
           [:div.col-sm-offset-2.col-sm-10
-           [:button.btn.btn-primary {:type :submit :on-click #(views/dispatch [:log-in])} "Log in"]]]]]])))
+           [:button.btn.btn-primary {:type :submit :on-click #(human/dispatch [:log-in])} "Log in"]]]]]])))
 
 (defmethod views/panels :log-in [] [log-in-panel])
 
@@ -170,6 +171,6 @@
            [:div.text-danger {:free-form/error-message {:key :password-confirmation}} [:p]]]]
          [:div.form-group
           [:div.col-sm-offset-2.col-sm-10
-           [:button.btn.btn-primary {:type :submit :on-click #(views/dispatch [:register])} "Register"]]]]]])))
+           [:button.btn.btn-primary {:type :submit :on-click #(human/dispatch [:register])} "Register"]]]]]])))
 
 (defmethod views/panels :register [] [register-panel])
