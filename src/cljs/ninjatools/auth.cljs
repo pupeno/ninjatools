@@ -2,16 +2,17 @@
 
 
 (ns ninjatools.auth
-  (:require [re-frame.core :as re-frame]
+  (:require [reagent.ratom :as ratom :include-macros true]
+            [re-frame.core :as re-frame]
+            [ajax.core :as ajax]
+            [free-form.re-frame :as forms]
             [validateur.validation :as validateur]
+            [ninjatools.models.user-schema :as user-schema]
             [ninjatools.views :as views]
             [ninjatools.alerts :as alerts]
             [ninjatools.human :as human]
             [ninjatools.util :as util]
-            [ajax.core :as ajax]
-            [reagent.ratom :as ratom :include-macros true]
-            [free-form.re-frame :as forms]
-            [ninjatools.models.user-schema :as user-schema]))
+            ))
 
 (re-frame/register-handler
   :get-current-user

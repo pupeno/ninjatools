@@ -1,10 +1,10 @@
 ;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
 
 (ns ninjatools.alerts
-  (:require [cljs-uuid-utils.core :as uuid]
-            [schema.core :as s :include-macros true]
+  (:require [schema.core :as s :include-macros true]
             [reagent.ratom :as ratom :include-macros true]
             [re-frame.core :as re-frame]
+            [cljs-uuid-utils.core :as uuid]
             [ninjatools.util :refer [dissoc-in]]
             [ninjatools.human :as human]))
 

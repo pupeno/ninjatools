@@ -6,6 +6,7 @@
             [ninjatools.routing :as routing]
             [ninjatools.views :as views]
             ninjatools.auth
+            ninjatools.alerts
             ninjatools.tools
             ninjatools.human))
 

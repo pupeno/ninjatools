@@ -4,8 +4,8 @@
   (:require [clojure.set :refer [rename-keys]]
             [domkm.silk :as silk]
             [pushy.core :as pushy]
-            [re-frame.core :as re-frame]
-            [reagent.ratom :as ratom :include-macros true]))
+            [reagent.ratom :as ratom :include-macros true]
+            [re-frame.core :as re-frame]))
 
 (def routes (silk/routes [[:home [[]]]
                           [:tools [["tools"]]]

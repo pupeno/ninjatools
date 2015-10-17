@@ -1,12 +1,12 @@
 ;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
 
 (ns ninjatools.tools
-  (:require [re-frame.core :as re-frame]
-            [ninjatools.views :as views]
-            [ajax.core :as ajax]
-            [ninjatools.routing :as routing]
+  (:require [clojure.walk :as walk]
             [reagent.ratom :as ratom :include-macros true]
-            clojure.walk
+            [re-frame.core :as re-frame]
+            [ajax.core :as ajax]
+            [ninjatools.views :as views]
+            [ninjatools.routing :as routing]
             [ninjatools.human :as human]
             [ninjatools.util :as util]))
 
@@ -40,7 +40,7 @@
 (re-frame/register-handler
   :got-tools
   (fn [db [_ tools]]
-    (let [tools (map clojure.walk/keywordize-keys tools)]
+    (let [tools (map walk/keywordize-keys tools)]
       (reduce add-tool db tools))))
 
 (re-frame/register-handler

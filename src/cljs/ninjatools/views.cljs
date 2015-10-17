@@ -2,9 +2,9 @@
 
 (ns ninjatools.views
   (:require [re-frame.core :as re-frame]
+            [ninjatools.models.user-schema :as user-schema]
             [ninjatools.routing :as routing]
             [ninjatools.alerts :as alerts]
-            [ninjatools.models.user-schema :as user-schema]
             [ninjatools.util :refer [log]]
             [ninjatools.human :as human]))
 
