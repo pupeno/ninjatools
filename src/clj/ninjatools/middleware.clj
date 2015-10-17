@@ -20,7 +20,8 @@
             [buddy.auth.backends.session :refer [session-backend]]
             [buddy.auth.accessrules :refer [restrict]]
             [buddy.auth :refer [authenticated?]]
-            [ninjatools.layout :refer [*identity*]])
+            [ninjatools.layout :refer [*identity*]]
+            [ring.middleware.ssl :refer [wrap-forwarded-scheme wrap-hsts wrap-ssl-redirect]])
   (:import [javax.servlet ServletContext]))
 
 (defn wrap-context [handler]
@@ -91,8 +92,17 @@
       wrap-identity
       (wrap-authentication (session-backend))))
 
+(defn wrap-ssl [handler]
+  (if (or (env :dev) (env :test))
+    handler
+    (-> handler
+        wrap-hsts
+        wrap-ssl-redirect
+        wrap-forwarded-scheme)))
+
 (defn wrap-base [handler]
   (-> handler
+      wrap-ssl
       wrap-dev
       wrap-auth
       wrap-formats
