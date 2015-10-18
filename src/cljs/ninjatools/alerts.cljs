@@ -61,6 +61,6 @@
                  [:button {:type       "button"
                            :class      "close"
                            :aria-label "Close"
-                           :on-click   #(ui/dispatch [:remove-alert id])}
+                           :on-click   #(ui/dispatch % [:remove-alert id])}
                   [:span {:aria-hidden true} [:i.fa.fa-times]]]])
               @alerts)]))))

@@ -122,7 +122,7 @@
       [:div
        [:h1 "Log in"]
        [forms/form @log-in-form (:errors @log-in-form) :update-log-in-form
-        [:form.form-horizontal {:on-submit #(ui/dispatch [:log-in])}
+        [:form.form-horizontal {:on-submit #(ui/dispatch % [:log-in])}
          [:div.col-sm-offset-2.col-sm-10 {:free-form/error-message {:key :-general}} [:p.text-danger]]
          [:div.form-group {:free-form/error-class {:key :email :error "has-error"}}
           [:label.col-sm-2.control-label {:for :email} "Email"]
@@ -149,7 +149,7 @@
       [:div
        [:h1 "Register"]
        [forms/form @registration-form (:errors @registration-form) :update-registration-form
-        [:form.form-horizontal {:on-submit #(ui/dispatch [:register])}
+        [:form.form-horizontal {:on-submit #(ui/dispatch % [:register])}
          [:div.form-group {:free-form/error-class {:key :email :error "has-error"}}
           [:label.col-sm-2.control-label {:for :email} "Email"]
           [:div.col-sm-10 [:input.form-control {:free-form/field {:key :email}

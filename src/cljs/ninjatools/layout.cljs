@@ -39,7 +39,7 @@
            (if @current-user
              [:ul.dropdown-menu
               [:li [:a (user-schema/display-name @current-user)]]
-              [:li [:a {:on-click #(ui/dispatch [:log-out])} "Log out"]]]
+              [:li [:a {:on-click #(ui/dispatch % [:log-out])} "Log out"]]]
              [:ul.dropdown-menu
               [:li {:class (when (= :log-in (:name @current-route)) "active")}
                [:a {:href (routing/url-for :log-in)} "Log in"]]
