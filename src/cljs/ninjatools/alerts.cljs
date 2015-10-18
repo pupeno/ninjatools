@@ -51,16 +51,17 @@
 (defn view []
   (let [alerts (re-frame/subscribe [:alerts])]
     (fn []
-      (if (not (empty? @alerts))
-        [:div.alerts
-         (map (fn [[id alert]]
-                [:div {:key   id
-                       :class (str "alert alert-" (name (:type alert)))
-                       :role  "alert"}
-                 (:message alert)
-                 [:button {:type       "button"
-                           :class      "close"
-                           :aria-label "Close"
-                           :on-click   #(ui/dispatch % [:remove-alert id])}
-                  [:span {:aria-hidden true} [:i.fa.fa-times]]]])
-              @alerts)]))))
+      [:div.alerts
+       [ui/css-transition-group {:transition-name "alert" :transition-enter-timeout 300 :transition-leave-timeout 300}
+        (if (not (empty? @alerts))
+          (map (fn [[id alert]]
+                 [:div.alert {:key   id
+                              :class (str "alert-" (name (:type alert)))
+                              :role  "alert"}
+                  (:message alert)
+                  [:button {:type       "button"
+                            :class      "close"
+                            :aria-label "Close"
+                            :on-click   #(ui/dispatch % [:remove-alert id])}
+                   [:span {:aria-hidden true} [:i.fa.fa-times]]]])
+               @alerts))]])))

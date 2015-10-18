@@ -8,6 +8,11 @@ a {
     cursor: pointer; /* Make all links look clickable, even when there's no href. */
 }
 
-main.container div.alerts {
+main.container .alerts .alert:first-child {
     margin-top: 20px; /* Separate the alerts from the navbar on top, the same amount as between alert and alert. */
+}
+
+main.container .alerts .alert-leave.alert-leave-active {
+  opacity: 0;
+  transition: all 300ms ease-in;
 }
