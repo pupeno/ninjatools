@@ -6,7 +6,7 @@
             [re-frame.core :as re-frame]
             [cljs-uuid-utils.core :as uuid]
             [ninjatools.util :refer [dissoc-in]]
-            [ninjatools.human :as human]))
+            [ninjatools.ui :as ui]))
 
 (s/defn ^:always-validate add-alert [db
                                      type :- (s/enum :success :info :warning :danger)
@@ -38,8 +38,8 @@
   (fn [db [_ id]]
     (remove-alert db id)))
 
-(re-frame/register-handler ; See to-do in human.cljs.
-  :human-interaction
+(re-frame/register-handler ; See to-do in ui.cljs.
+  :ui-interaction
   (fn [db & _]
     (remove-old-alerts db)))
 
@@ -61,6 +61,6 @@
                  [:button {:type       "button"
                            :class      "close"
                            :aria-label "Close"
-                           :on-click   #(human/dispatch [:remove-alert id])}
+                           :on-click   #(ui/dispatch [:remove-alert id])}
                   [:span {:aria-hidden true} [:i.fa.fa-times]]]])
               @alerts)]))))

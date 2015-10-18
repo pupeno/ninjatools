@@ -4,8 +4,8 @@
   (:require [re-frame.core :as re-frame]))
 
 (defn dispatch [& args]
-  (re-frame/dispatch [:human-interaction])
+  (re-frame/dispatch [:ui-interaction])
   (apply re-frame/dispatch args)
   false)
 
-; TODO: implement a way for many functions to be called when human-interaction is dispatched. Right now we don't need  this as we have only one event handler in alerts.cljs.
+; TODO: implement a way for many functions to be called when ui-interaction is dispatched. Right now we don't need  this as we have only one event handler in alerts.cljs.

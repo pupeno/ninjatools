@@ -8,7 +8,7 @@
             ninjatools.auth
             ninjatools.alerts
             ninjatools.tools
-            ninjatools.human))
+            ninjatools.ui))
 
 (defn mount-root []
   (reagent/render [views/main-panel]

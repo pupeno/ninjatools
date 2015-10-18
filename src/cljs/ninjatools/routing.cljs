@@ -28,7 +28,7 @@
 
 (defn start! []
   (pushy/start! (pushy/pushy (fn [matched-route]
-                               (re-frame/dispatch [:human-interaction])
+                               (re-frame/dispatch [:ui-interaction])
                                (re-frame/dispatch (routing-event matched-route)))
                              parse-path)))
 

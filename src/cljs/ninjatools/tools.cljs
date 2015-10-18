@@ -7,7 +7,7 @@
             [ajax.core :as ajax]
             [ninjatools.views :as views]
             [ninjatools.routing :as routing]
-            [ninjatools.human :as human]
+            [ninjatools.ui :as ui]
             [ninjatools.util :as util]))
 
 (defn add-tool [db tool]
@@ -106,7 +106,7 @@
          [:div
           [:ul (for [tool (:tools @current-available-tools)]
                  ^{:key (:id tool)}
-                 [:li [:a {:on-click #(human/dispatch [:mark-tool-as-used (:id tool)])} (:name tool)]])]
+                 [:li [:a {:on-click #(ui/dispatch [:mark-tool-as-used (:id tool)])} (:name tool)]])]
           [:div [:a {:href (str (routing/url-for :home) "?p=" (inc (:page-number @current-available-tools)))} "more tools"]]
           (if (not (empty? @tools-in-use))
             [:div
@@ -125,7 +125,7 @@
         [:div
          [:ul (for [tool (vals (:by-id @tools))]
                 ^{:key (:id tool)} [:li [:a {:href (routing/url-for :tool {:slug (:slug tool)})} (:name tool)]])]
-         [:div [:a {:on-click #(human/dispatch [:get-tools])}
+         [:div [:a {:on-click #(ui/dispatch [:get-tools])}
                 "Refresh tools"]]]))))
 
 (defmethod views/pages :tools [] [tools-page])
