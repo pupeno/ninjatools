@@ -5,7 +5,7 @@
             [reagent.ratom :as ratom :include-macros true]
             [re-frame.core :as re-frame]
             [ajax.core :as ajax]
-            [ninjatools.views :as views]
+            [ninjatools.layout :as layout]
             [ninjatools.routing :as routing]
             [ninjatools.ui :as ui]
             [ninjatools.util :as util]))
@@ -102,7 +102,7 @@
       [:div
        [:div "Select the tools you use"]
        (if (empty? (:tools @current-available-tools))
-         [views/loading]
+         [ui/loading]
          [:div
           [:ul (for [tool (:tools @current-available-tools)]
                  ^{:key (:id tool)}
@@ -115,20 +115,20 @@
                     ^{:key (:id tool)}
                     [:li (:name tool)])]])])])))
 
-(defmethod views/pages :home [] [home-page])
+(defmethod layout/pages :home [] [home-page])
 
 (defn tools-page []
   (let [tools (re-frame/subscribe [:tools])]
     (fn []
       (if (empty? (:by-id @tools))
-        [views/loading]
+        [ui/loading]
         [:div
          [:ul (for [tool (vals (:by-id @tools))]
                 ^{:key (:id tool)} [:li [:a {:href (routing/url-for :tool {:slug (:slug tool)})} (:name tool)]])]
          [:div [:a {:on-click #(ui/dispatch [:get-tools])}
                 "Refresh tools"]]]))))
 
-(defmethod views/pages :tools [] [tools-page])
+(defmethod layout/pages :tools [] [tools-page])
 
 (defn tool-page []
   (let [current-tool (re-frame/subscribe [:current-tool])
@@ -139,6 +139,6 @@
          [:h1 (:name @current-tool)]
          [:ul (for [integrated-tool (vals (select-keys (:by-id @tools) (:integration-ids @current-tool)))]
                 ^{:key (:id integrated-tool)} [:li [:a {:href (routing/url-for :tool {:slug (:slug integrated-tool)})} (:name integrated-tool)]])]]
-        [views/loading]))))
+        [ui/loading]))))
 
-(defmethod views/pages :tool [] [tool-page])
+(defmethod layout/pages :tool [] [tool-page])

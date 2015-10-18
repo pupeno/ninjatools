@@ -8,11 +8,10 @@
             [free-form.re-frame :as forms]
             [validateur.validation :as validateur]
             [ninjatools.models.user-schema :as user-schema]
-            [ninjatools.views :as views]
+            [ninjatools.layout :as layout]
             [ninjatools.alerts :as alerts]
             [ninjatools.ui :as ui]
-            [ninjatools.util :as util]
-            ))
+            [ninjatools.util :as util]))
 
 (re-frame/register-handler
   :get-current-user
@@ -142,7 +141,7 @@
           [:div.col-sm-offset-2.col-sm-10
            [:button.btn.btn-primary {:type :submit} "Log in"]]]]]])))
 
-(defmethod views/pages :log-in [] [log-in-page])
+(defmethod layout/pages :log-in [] [log-in-page])
 
 (defn register-page []
   (let [registration-form (re-frame/subscribe [:registration-form])]
@@ -174,4 +173,4 @@
           [:div.col-sm-offset-2.col-sm-10
            [:button.btn.btn-primary {:type :submit} "Register"]]]]]])))
 
-(defmethod views/pages :register [] [register-page])
+(defmethod layout/pages :register [] [register-page])

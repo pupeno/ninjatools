@@ -6,7 +6,7 @@
             [prerenderer.re-frame :as re-frame-prerenderer]
             ninjatools.core                                 ; To include all of ninja namespaces.
             [ninjatools.routing :as routes]
-            [ninjatools.views :as views]
+            [ninjatools.layout :as views]
             [reagent.core :as reagent]))
 
 (def url (nodejs/require "url"))

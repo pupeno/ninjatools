@@ -9,3 +9,8 @@
   false)
 
 ; TODO: implement a way for many functions to be called when ui-interaction is dispatched. Right now we don't need  this as we have only one event handler in alerts.cljs.
+
+(defn loading
+  "Display a loading panel"
+  []
+  [:div "Loading..."])

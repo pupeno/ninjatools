@@ -1,6 +1,6 @@
 ;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
 
-(ns ninjatools.views
+(ns ninjatools.layout
   (:require [re-frame.core :as re-frame]
             [ninjatools.models.user-schema :as user-schema]
             [ninjatools.routing :as routing]
@@ -8,19 +8,10 @@
             [ninjatools.util :refer [log]]
             [ninjatools.ui :as ui]))
 
-(defn loading
-  "Display a loading panel"
-  []
-  [:div "Loading..."])
-
-(defn about-page []
-  (fn []
-    [:div "This is the About Page."]))
 
 ;; --------------------
 (defmulti pages :name)
-(defmethod pages :about [] [about-page])
-(defmethod pages :default [] [:div])
+(defmethod pages :default [] [:div]) ; TODO: this should probably show some kind of error. This is essentially a 404.
 
 (defn nav-bar []
   (let [current-route (re-frame/subscribe [:current-route])

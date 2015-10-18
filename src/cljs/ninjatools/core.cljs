@@ -4,14 +4,14 @@
   (:require [reagent.core :as reagent]
             [re-frame.core :as re-frame]
             [ninjatools.routing :as routing]
-            [ninjatools.views :as views]
+            [ninjatools.layout :as layout]
             ninjatools.auth
             ninjatools.alerts
             ninjatools.tools
             ninjatools.ui))
 
 (defn mount-root []
-  (reagent/render [views/main-panel]
+  (reagent/render [layout/main-panel]
                   (.getElementById js/document "app")))
 
 (defn ^:export init []
