@@ -11,7 +11,7 @@
 
 ;; --------------------
 (defmulti pages :name)
-(defmethod pages :default [] [:div]) ; TODO: this should probably show some kind of error. This is essentially a 404.
+(defmethod pages :default [] [:div])                        ; TODO: this should probably show some kind of error. This is essentially a 404.
 
 (defn nav-bar []
   (let [current-route (re-frame/subscribe [:current-route])

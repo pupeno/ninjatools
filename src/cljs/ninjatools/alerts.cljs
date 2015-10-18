@@ -38,7 +38,7 @@
   (fn [db [_ id]]
     (remove-alert db id)))
 
-(re-frame/register-handler ; See to-do in ui.cljs.
+(re-frame/register-handler                                  ; See to-do in ui.cljs.
   :ui-interaction
   (fn [db & _]
     (remove-old-alerts db)))

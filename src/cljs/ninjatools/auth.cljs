@@ -58,9 +58,9 @@
       (do
         (routing/redirect-to :home)
         (-> db
-           (assoc :registration-form {}
-                  :current-user user)
-           (alerts/add-alert :success "Thank you for registering, you are now also logged in with your new account.")))
+            (assoc :registration-form {}
+                   :current-user user)
+            (alerts/add-alert :success "Thank you for registering, you are now also logged in with your new account.")))
       (assoc db :registration-form registration-form))))
 
 
@@ -91,9 +91,9 @@
       (do
         (routing/redirect-to :home)
         (-> db
-           (assoc :log-in-form {}
-                  :current-user user)
-           (alerts/add-alert :success "You are now logged in.")))
+            (assoc :log-in-form {}
+                   :current-user user)
+            (alerts/add-alert :success "You are now logged in.")))
       (assoc db :log-in-form log-in-form))))
 
 (re-frame/register-handler
