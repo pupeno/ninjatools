@@ -49,7 +49,7 @@
   (timbre/merge-config!
     {:level     (if (env :dev) :trace :info)
      :appenders {:rotor (rotor/rotor-appender
-                          {:path     "ninjatools.log"
+                          {:path     "tmp/logs/ninjatools.log"
                            :max-size (* 512 1024)
                            :backlog  10})}})
 

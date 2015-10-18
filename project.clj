@@ -106,7 +106,8 @@
                                             :server-port      3449
                                             :nrepl-port       7002
                                             :css-dirs         ["resources/public/css"]
-                                            :ring-handler     ninjatools.handler/app}
+                                            :ring-handler     ninjatools.handler/app
+                                            :server-logfile   "tmp/logs/figwheel-logfile.log"}
                              :repl-options {:init-ns ninjatools.core}
                              :injections   [(require 'pjstadig.humane-test-output)
                                             (pjstadig.humane-test-output/activate!)]
