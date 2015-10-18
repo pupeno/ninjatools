@@ -26,13 +26,18 @@
 (defn routing-event [matched-route]
   [:set-current-route matched-route])
 
+(def history (pushy/pushy (fn [matched-route]
+                            (re-frame/dispatch [:ui-interaction])
+                            (re-frame/dispatch (routing-event matched-route)))
+                          parse-path))
+
 (defn start! []
-  (pushy/start! (pushy/pushy (fn [matched-route]
-                               (re-frame/dispatch [:ui-interaction])
-                               (re-frame/dispatch (routing-event matched-route)))
-                             parse-path)))
+  (pushy/start! history))
 
 (def url-for (partial silk/depart routes))
+
+(defn redirect-to [& args]
+  (pushy/set-token! history (apply url-for args)))
 
 (defmulti display-page :name)
 (defmethod display-page :default [_current-route db]

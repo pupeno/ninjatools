@@ -1,6 +1,5 @@
 ;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
 
-
 (ns ninjatools.auth
   (:require [reagent.ratom :as ratom :include-macros true]
             [re-frame.core :as re-frame]
@@ -9,6 +8,7 @@
             [validateur.validation :as validateur]
             [ninjatools.models.user-schema :as user-schema]
             [ninjatools.layout :as layout]
+            [ninjatools.routing :as routing]
             [ninjatools.alerts :as alerts]
             [ninjatools.ui :as ui]
             [ninjatools.util :as util]))
@@ -55,10 +55,12 @@
   :got-registered
   (fn [db [_ {status :status registration-form :registration-form user :user}]]
     (if (= status "success")
-      (-> db
-          (assoc :registration-form {}
-                 :current-user user)
-          (alerts/add-alert :success "Thank you for registering, you are now also logged in with your new account."))
+      (do
+        (routing/redirect-to :home)
+        (-> db
+           (assoc :registration-form {}
+                  :current-user user)
+           (alerts/add-alert :success "Thank you for registering, you are now also logged in with your new account.")))
       (assoc db :registration-form registration-form))))
 
 
@@ -86,10 +88,12 @@
   :got-logged-in
   (fn [db [_ {status :status log-in-form :log-in-form user :user}]]
     (if (= status "success")
-      (-> db
-          (assoc :log-in-form {}
-                 :current-user user)
-          (alerts/add-alert :success "You are now logged in."))
+      (do
+        (routing/redirect-to :home)
+        (-> db
+           (assoc :log-in-form {}
+                  :current-user user)
+           (alerts/add-alert :success "You are now logged in.")))
       (assoc db :log-in-form log-in-form))))
 
 (re-frame/register-handler
