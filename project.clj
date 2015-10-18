@@ -31,8 +31,6 @@
                  [org.postgresql/postgresql "9.3-1102-jdbc41"]
                  [org.clojure/clojurescript "1.7.48"]
                  [org.clojure/tools.reader "0.9.2"]
-                 [reagent-forms "0.5.12"]
-                 [reagent-utils "0.1.5"]
                  [reagent "0.5.1" :exclusions [cljsjs/react]]
                  [cljsjs/react-with-addons "0.14.0-0"]
                  [com.domkm/silk "0.1.1"]
