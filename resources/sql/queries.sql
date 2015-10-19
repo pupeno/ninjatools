@@ -47,4 +47,4 @@ WHERE id = :id
 -- name: get-user-by-email-
 SELECT *
 FROM users
-WHERE email = :email
+WHERE LOWER(email) = LOWER(:email)
