@@ -21,7 +21,8 @@
             [buddy.auth.accessrules :refer [restrict]]
             [buddy.auth :refer [authenticated?]]
             [ninjatools.layout :refer [*identity*]]
-            [ring.middleware.ssl :refer [wrap-forwarded-scheme wrap-hsts wrap-ssl-redirect]])
+            [ring.middleware.ssl :refer [wrap-forwarded-scheme wrap-hsts wrap-ssl-redirect]]
+            [clojure.java.jdbc :as jdbc])
   (:import [javax.servlet ServletContext]))
 
 (defn wrap-context [handler]
@@ -110,7 +111,7 @@
       (wrap-defaults
         (-> site-defaults
             (assoc-in [:security :anti-forgery] false)      ; Anti-forgery is not applied to the API, only to the served HTML (defined in handler.clj) and even then its need is doubious in an SPA.
-            (assoc-in [:session :store] (jdbc-session-store/jdbc-store (to-jdbc-uri (env :database-url))))
+            (assoc-in [:session :store] (jdbc-session-store/jdbc-store (to-jdbc-uri (env :database-url)) #_{:table :sessions})) ; TODO: switch to table sessions once this has been fixed: https://github.com/yogthos/jdbc-ring-session/issues/4
             (assoc-in [:session :secure] (not (or (env :dev) (env :test))))))
       wrap-context
       wrap-internal-error))
