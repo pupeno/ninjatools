@@ -19,7 +19,20 @@
 
 (defonce ^:dynamic conn (atom nil))
 
-(conman/bind-connection conn "sql/queries.sql")
+; Generate query functions but wrap them around a conversion for the keys, so that they go from snake_case to kebab-case.
+(ns ninjatools.db.core.queries
+  (:require [conman.core :as conman]
+            [camel-snake-kebab.core :as csk]
+            [camel-snake-kebab.extras :as csk-extras]))
+(doall (for [yesql-query (conman/bind-connection ninjatools.db.core/conn "sql/queries.sql")]
+         (intern 'ninjatools.db.core
+                 (with-meta (:name (meta yesql-query)) (meta yesql-query))
+                 (fn [& args]
+                   (let [args (if (< 1 (count args))
+                                args
+                                (cons (csk-extras/transform-keys csk/->snake_case (first args)) (rest args)))])
+                   (csk-extras/transform-keys csk/->kebab-case (apply yesql-query args))))))
+(in-ns 'ninjatools.db.core)
 
 (def pool-spec
   {:adapter    :postgresql
