@@ -62,6 +62,6 @@
                   [:button {:type       "button"
                             :class      "close"
                             :aria-label "Close"
-                            :on-click   #(ui/dispatch % [:remove-alert id])}
+                            :on-click   #(re-frame/dispatch [:remove-alert id])} ; We don't use ui/dispatch because ui/dispatch, as a side effect, can remove alerts, and when you are removing alerts, it's a bad user experience for other alerts to disapear too.
                    [:span {:aria-hidden true} [:i.fa.fa-times]]]])
                @alerts))]])))
