@@ -154,6 +154,7 @@
        [:h1 "Register"]
        [forms/form @registration-form (:errors @registration-form) :update-registration-form
         [:form.form-horizontal {:on-submit #(ui/dispatch % [:register])}
+         [:div.col-sm-offset-2.col-sm-10 {:free-form/error-message {:key :-general}} [:p.text-danger]]
          [:div.form-group {:free-form/error-class {:key :email :error "has-error"}}
           [:label.col-sm-2.control-label {:for :email} "Email"]
           [:div.col-sm-10 [:input.form-control {:free-form/field {:key :email}
