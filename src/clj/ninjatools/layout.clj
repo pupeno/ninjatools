@@ -26,7 +26,7 @@
         (assoc {}
           :dev (env :dev)
           :csrf-token *anti-forgery-token*
-          :servlet-context *app-context*
+          :app-context *app-context*
           :identity *identity*
           #_:prerendered-content #_[:safe (prerenderer/render @js-engine (ring.util.request/request-url request) (:headers request))]))
       response
