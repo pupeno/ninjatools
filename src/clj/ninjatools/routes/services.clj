@@ -4,11 +4,13 @@
   (:require [ring.util.http-response :refer :all]
             [compojure.api.sweet :refer :all]
             [schema.core :as s]
+            [environ.core :refer [env]]
             [ninjatools.db.core :as db]
             [ninjatools.models.tool :as tool]
             [ninjatools.models.user :as user]
             [ninjatools.models.user-schema :as user-schema]
-            [validateur.validation :as validateur]))
+            [validateur.validation :as validateur]
+            [clojurewerkz.mailer.core :as mailer]))
 
 #_(s/defschema Thingie {:id    Long
                         :hot   Boolean
@@ -57,6 +59,36 @@
                              (-> (ok {:status :success :user (user/sanitize-for-public user)})
                                  (assoc :session (assoc session :identity (:id user)))))
                            (ok {:status :failed :registration-form (assoc registration-form :errors (user/registration-validation registration-form))})))
+
+                  (POST* "/reset-password" []
+                         :summary "Reset the password of an existing account"
+                         :body [reset-password-form user-schema/ResetPasswordSchema]
+                         ; TODO: return
+                         (if (validateur/valid? user-schema/reset-password-validation reset-password-form)
+                           (let [user (db/get-user-by-email (:email reset-password-form))]
+                             (when user
+                               (let [user (db/generate-reset-password-token<! user)
+                                     template-vars {:name             (user-schema/display-name user)
+                                                    :email            (:email user)
+                                                    :set-password-url (str (get-in env [:email :url]) "change-password?token=" (:reset-password-token user))}]
+                                 (mailer/deliver-email {:to      (str (user-schema/display-name user) " <" (:email user) ">")
+                                                        :subject "Reset your password for Ninja Tools"}
+                                                       "templates/email/reset-password.html.mustache" template-vars :text/html
+                                                       "templates/email/reset-password.txt.mustache" template-vars :text/plain)))
+                             (ok {:status :success :reset-password-form reset-password-form}))
+                           (ok {:status :failed :reset-password-form (assoc reset-password-form :errors (user-schema/reset-password-validation reset-password-form))})))
+
+                  (POST* "/change-password" request
+                         :summary "Change the password for the logged in user or the specified token"
+                         :body [change-password-form user-schema/ChangePasswordSchema]
+                         ; TODO: return
+                         (do
+                           (if (validateur/valid? user-schema/change-password-validation change-password-form)
+                             (if-let [user (db/get-user-by-reset-password-token (:token change-password-form))]
+                               (do (user/update-password user (:password change-password-form))
+                                   (ok {:status :success}))
+                               (ok {:status :failed :change-password-form (assoc-in change-password-form [:errors :-general] ["The reset token seems to be invalid or out of date. Please, start the reset password process again."])}))
+                             (ok {:status :failed :change-password-form (assoc change-password-form :errors (user-schema/change-password-validation change-password-form))}))))
 
                   #_(GET* "/plus" []
                           :return Long

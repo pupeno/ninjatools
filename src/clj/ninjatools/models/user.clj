@@ -7,8 +7,15 @@
             [ninjatools.db.core :as db]
             [buddy.hashers :as hashers]))
 
+(defn- encrypt-password [password]
+  (hashers/encrypt password))
+
 (defn create [user]
-  (db/create-user<! (assoc user :password (hashers/encrypt (:password user)))))
+  (db/create-user<! (assoc user :password (encrypt-password (:password user)))))
+
+(defn update-password [user new-password]
+  (db/update-password<! {:id       (:id user)
+                         :password (encrypt-password new-password)}))
 
 (def registration-validation
   (validateur/compose-sets

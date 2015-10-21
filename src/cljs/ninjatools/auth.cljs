@@ -63,7 +63,6 @@
             (alerts/add-alert :success "Thank you for registering, you are now also logged in with your new account.")))
       (assoc db :registration-form registration-form))))
 
-
 (re-frame/register-handler
   :update-log-in-form
   (fn [db [_ ks value]]
@@ -142,8 +141,11 @@
                                                 :id              :password}]
            [:div.text-danger {:free-form/error-message {:ks [:password]}} [:p]]]]
          [:div.form-group
-          [:div.col-sm-offset-2.col-sm-10
-           [:button.btn.btn-primary {:type :submit} "Log in"]]]]]])))
+          [:div.col-sm-offset-2.col-sm-5
+           [:button.btn.btn-primary {:type :submit} "Log in"]]
+          [:div.col-sm-5.text-right
+           [:p "Don't know your password? "
+            [:a {:href (routing/url-for :reset-password)} "Reset Password"]]]]]]])))
 
 (defmethod layout/pages :log-in [] [log-in-page])
 
@@ -175,7 +177,131 @@
                                                 :id              :password-confirmation}]
            [:div.text-danger {:free-form/error-message {:key :password-confirmation}} [:p]]]]
          [:div.form-group
-          [:div.col-sm-offset-2.col-sm-10
-           [:button.btn.btn-primary {:type :submit} "Register"]]]]]])))
+          [:div.col-sm-offset-2.col-sm-5
+           [:button.btn.btn-primary {:type :submit} "Register"]]
+          [:div.col-sm-5.text-right
+           [:p "Already have an account? "
+            [:a {:href (routing/url-for :log-in)} "Log in"]]]]]]])))
 
 (defmethod layout/pages :register [] [register-page])
+
+(re-frame/register-handler
+  :update-reset-password-form
+  (fn [db [_ ks value]]
+    (let [db (assoc-in db (cons :reset-password-form ks) value)]
+      (if (nil? (get-in db [:reset-password-form :errors]))
+        db
+        (assoc-in db [:reset-password-form :errors] (user-schema/reset-password-validation (:reset-password-form db)))))))
+
+(re-frame/register-handler
+  :reset-password
+  (fn [db [_ html-form]]
+    (let [reset-password-form (:reset-password-form db)]
+      (if (validateur/valid? user-schema/reset-password-validation reset-password-form)
+        (do (ajax/POST "/api/v1/reset-password"
+                       {:params        (dissoc reset-password-form :errors)
+                        :handler       #(re-frame/dispatch [:got-reset-password html-form (clojure.walk/keywordize-keys %1)])
+                        :error-handler util/report-unexpected-error})
+            db)
+        (assoc-in db [:reset-password-form :errors] (user-schema/reset-password-validation reset-password-form))))))
+
+(re-frame/register-handler
+  :got-reset-password
+  (fn [db [_ html-form {status :status reset-password-form :reset-password-form}]]
+    (if (= status "success")
+      (do
+        (.reset html-form)
+        (-> db
+            (assoc :reset-password-form {})
+            (alerts/add-alert :success "If there was an account with that email address, an email was sent to reset the password.")))
+      (assoc db :reset-password-form reset-password-form))))
+
+(re-frame/register-sub
+  :reset-password-form
+  (fn [db _]
+    (ratom/reaction (:reset-password-form @db))))
+
+(defn reset-password-page []
+  (let [reset-password-form (re-frame/subscribe [:reset-password-form])]
+    (fn []
+      [:div
+       [:h1 "Reset Password"]
+       [forms/form @reset-password-form (:errors @reset-password-form) :update-reset-password-form
+        [:form.form-horizontal {:on-submit #(ui/dispatch % [:reset-password])}
+         [:div.col-sm-offset-2.col-sm-10 {:free-form/error-message {:key :-general}} [:p.text-danger]]
+         [:div.form-group {:free-form/error-class {:key :email :error "has-error"}}
+          [:label.col-sm-2.control-label {:for :email} "Email"]
+          [:div.col-sm-10 [:input.form-control {:free-form/field {:key :email}
+                                                :type            :email
+                                                :id              :email
+                                                :placeholder     "sam@example.com"}]
+           [:div.text-danger {:free-form/error-message {:key :email}} [:p]]]]
+         [:div.form-group
+          [:div.col-sm-offset-2.col-sm-10
+           [:button.btn.btn-primary {:type :submit} "Reset Password"]]]]]])))
+
+(defmethod layout/pages :reset-password [] [reset-password-page])
+
+(re-frame/register-handler
+  :update-change-password-form
+  (fn [db [_ ks value]]
+    (let [db (assoc-in db (cons :change-password-form ks) value)]
+      (if (nil? (get-in db [:change-password-form :errors]))
+        db
+        (assoc-in db [:change-password-form :errors] (user-schema/change-password-validation (:change-password-form db)))))))
+
+(re-frame/register-handler
+  :change-password
+  (fn [db [_ html-form]]
+    (let [change-password-form (:change-password-form db)]
+      (if (validateur/valid? user-schema/change-password-validation change-password-form)
+        (do (ajax/POST "/api/v1/change-password"
+                       {:params        (-> change-password-form
+                                           (dissoc :errors)
+                                           (assoc :token (get-in db [:current-route :url :query "token"])))
+                        :handler       #(re-frame/dispatch [:got-change-password html-form (clojure.walk/keywordize-keys %1)])
+                        :error-handler util/report-unexpected-error})
+            db)
+        (assoc-in db [:change-password-form :errors] (user-schema/change-password-validation change-password-form))))))
+
+(re-frame/register-handler
+  :got-change-password
+  (fn [db [_ _html-form {status :status change-password-form :change-password-form}]]
+    (if (= status "success")
+      (do
+        (routing/redirect-to :log-in)
+        (-> db
+            (assoc :change-password-form {})
+            (alerts/add-alert :success "Your password has been changed, you can now try logging in.")))
+      (assoc db :change-password-form change-password-form))))
+
+(re-frame/register-sub
+  :change-password-form
+  (fn [db _]
+    (ratom/reaction (:change-password-form @db))))
+
+(defn change-password-page []
+  (let [change-password-form (re-frame/subscribe [:change-password-form])]
+    (fn []
+      [:div
+       [:h1 "Change Password"]
+       [forms/form @change-password-form (:errors @change-password-form) :update-change-password-form
+        [:form.form-horizontal {:on-submit #(ui/dispatch % [:change-password])}
+         [:div.col-sm-offset-2.col-sm-10 {:free-form/error-message {:key :-general}} [:p.text-danger]]
+         [:div.form-group {:free-form/error-class {:ks [:password] :error "has-error"}}
+          [:label.col-sm-2.control-label {:for :password} "Password"]
+          [:div.col-sm-10 [:input.form-control {:free-form/field {:ks [:password]}
+                                                :type            :password
+                                                :id              :password}]
+           [:div.text-danger {:free-form/error-message {:ks [:password]}} [:p]]]]
+         [:div.form-group {:free-form/error-class {:key :password-confirmation :error "has-error"}}
+          [:label.col-sm-2.control-label {:for :password-confirmation} "Password confirmation"]
+          [:div.col-sm-10 [:input.form-control {:free-form/field {:key :password-confirmation}
+                                                :type            :password
+                                                :id              :password-confirmation}]
+           [:div.text-danger {:free-form/error-message {:key :password-confirmation}} [:p]]]]
+         [:div.form-group
+          [:div.col-sm-offset-2.col-sm-10
+           [:button.btn.btn-primary {:type :submit} "Reset Password"]]]]]])))
+
+(defmethod layout/pages :change-password [] [change-password-page])

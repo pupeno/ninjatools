@@ -61,6 +61,9 @@
 (defn get-user-by-id [id]
   (first (get-user-by-id- {:id id})))
 
+(defn get-user-by-reset-password-token [token]
+  (first (get-user-by-reset-password-token- {:token token})))
+
 (defn to-date [sql-date]
   (-> sql-date (.getTime) (java.util.Date.)))
 

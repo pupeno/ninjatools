@@ -33,7 +33,7 @@
           [:li {:class (when (= :about (:name @current-route)) "active")}
            [:a {:href (routing/url-for :about)} "About"]]]
          [:ul.nav.navbar-nav.navbar-right
-          [:li.dropdown {:class (when (contains? #{:login :register} (:name @current-route)) "active")}
+          [:li.dropdown {:class (when (contains? #{:log-in :register :reset-password :change-password} (:name @current-route)) "active")}
            [:a.dropdown-toggle {:href "#" :data-toggle "dropdown" :role "button" :aria-haspopup "true" :aria-expanded "false"}
             [:i.fa.fa-user]]
            (if @current-user
@@ -44,7 +44,9 @@
               [:li {:class (when (= :log-in (:name @current-route)) "active")}
                [:a {:href (routing/url-for :log-in)} "Log in"]]
               [:li {:class (when (= :register (:name @current-route)) "active")}
-               [:a {:href (routing/url-for :register)} "Register"]]])]]]]])))
+               [:a {:href (routing/url-for :register)} "Register"]]
+              [:li {:class (when (= :reset-password (:name @current-route)) "active")}
+               [:a {:href (routing/url-for :reset-password)} "Reset Password"]]])]]]]])))
 
 (defn main-panel []
   (let [current-route (re-frame/subscribe [:current-route])]

@@ -48,3 +48,23 @@ WHERE id = :id
 SELECT *
 FROM users
 WHERE LOWER(email) = LOWER(:email)
+
+-- name: get-user-by-reset-password-token-
+SELECT *
+FROM users
+WHERE reset_password_token = :token
+  AND reset_password_token_expires_at >= now()
+
+-- name: generate-reset-password-token<!
+UPDATE users
+SET reset_password_token = uuid_generate_v4(),
+    reset_password_token_expires_at = now() + interval '1' day,
+    updated_at = now()
+WHERE id = :id
+
+-- name: update-password<!
+UPDATE users
+SET password = :password,
+    reset_password_token = NULL,
+    reset_password_token_expires_at = NULL
+WHERE id = :id

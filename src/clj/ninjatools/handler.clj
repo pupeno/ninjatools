@@ -11,7 +11,8 @@
             [selmer.parser :as parser]
             [environ.core :refer [env]]
             [clojure.tools.nrepl.server :as nrepl]
-            [ninjatools.layout :as layout]))
+            [ninjatools.layout :as layout]
+            [clojurewerkz.mailer.core :as mailer]))
 
 (defonce nrepl-server (atom nil))
 
@@ -56,6 +57,10 @@
   (if (env :dev) (parser/cache-off!))
   (start-nrepl)
   (db/connect!)
+  (mailer/delivery-mode! (get-in env [:email :delivery-mode]))
+  (when (= :smtp (get-in env [:email :delivery-mode]))
+    (alter-var-root (var mailer/*delivery-settings*) (constantly (get-in env [:email :credentials]))))
+  (mailer/defaults! {:from "Ninja Tools <info@tools.screensaver.ninja>"})
   (timbre/info (str
                  "\n-=[ninjatools started successfully"
                  (when (env :dev) " using the development profile")

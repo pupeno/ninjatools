@@ -25,6 +25,7 @@
                  [org.webjars/bootstrap "3.3.5"]
                  [buddy "0.7.2"]
                  [migratus "0.8.6"]
+                 [clojurewerkz/mailer "1.2.0"]
                  [com.novemberain/validateur "2.4.2"]
                  [conman "0.2.0"]
                  [to-jdbc-uri "0.3.0"]

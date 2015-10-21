@@ -24,11 +24,13 @@
   :initialize-db
   (fn [_ _]
     (re-frame/dispatch [:get-current-user])
-    {:current-route     nil
-     :alerts            (sorted-map)
-     :current-user      nil
-     :log-in-form       {}
-     :registration-form {}
-     :tools             {:by-id   {}
-                         :by-slug {}}
-     :tools-in-use      #{}}))
+    {:current-route        nil
+     :alerts               (sorted-map)
+     :current-user         nil
+     :log-in-form          {}
+     :registration-form    {}
+     :reset-password-form  {}
+     :change-password-form {}
+     :tools                {:by-id   {}
+                            :by-slug {}}
+     :tools-in-use         #{}}))
