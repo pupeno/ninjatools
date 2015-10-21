@@ -70,7 +70,7 @@
                                (let [user (db/generate-reset-password-token<! user)
                                      template-vars {:name             (user-schema/display-name user)
                                                     :email            (:email user)
-                                                    :set-password-url (str (get-in env [:email :url]) "change-password?token=" (:reset-password-token user))}]
+                                                    :set-password-url (str (:email-url env) "change-password?token=" (:reset-password-token user))}]
                                  (mailer/deliver-email {:to      (str (user-schema/display-name user) " <" (:email user) ">")
                                                         :subject "Reset your password for Ninja Tools"}
                                                        "templates/email/reset-password.txt.mustache" template-vars :text/plain

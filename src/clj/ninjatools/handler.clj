@@ -57,9 +57,12 @@
   (if (env :dev) (parser/cache-off!))
   (start-nrepl)
   (db/connect!)
-  (mailer/delivery-mode! (get-in env [:email :delivery-mode]))
-  (when (= :smtp (get-in env [:email :delivery-mode]))
-    (alter-var-root (var mailer/*delivery-settings*) (constantly (get-in env [:email :credentials]))))
+  (mailer/delivery-mode! (keyword (:email-delivery-mode env)))
+  (when (= "smtp" (:email-delivery-mode env))
+    (alter-var-root (var mailer/*delivery-settings*) (constantly {:host (:email-host env)
+                                                                  :user (:email-user env)
+                                                                  :pass (:email-pass env)
+                                                                  :ssl true})))
   (mailer/defaults! {:from "Ninja Tools <info@tools.screensaver.ninja>"})
   (timbre/info (str
                  "\n-=[ninjatools started successfully"
