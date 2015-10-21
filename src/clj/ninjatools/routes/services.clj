@@ -73,8 +73,8 @@
                                                     :set-password-url (str (get-in env [:email :url]) "change-password?token=" (:reset-password-token user))}]
                                  (mailer/deliver-email {:to      (str (user-schema/display-name user) " <" (:email user) ">")
                                                         :subject "Reset your password for Ninja Tools"}
-                                                       "templates/email/reset-password.html.mustache" template-vars :text/html
-                                                       "templates/email/reset-password.txt.mustache" template-vars :text/plain)))
+                                                       "templates/email/reset-password.txt.mustache" template-vars :text/plain
+                                                       "templates/email/reset-password.html.mustache" template-vars :text/html)))
                              (ok {:status :success :reset-password-form reset-password-form}))
                            (ok {:status :failed :reset-password-form (assoc reset-password-form :errors (user-schema/reset-password-validation reset-password-form))})))
 
