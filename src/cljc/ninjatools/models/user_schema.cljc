@@ -63,16 +63,31 @@
     (validateur/length-of :email :within (range -1 255) :allow-blank true :allow-nil true
                           :message-fn (fn [& _] "Email address can't be longer than 254 characters."))))
 
-(s/defschema ChangePasswordSchema {:password              s/Str
-                                   :password-confirmation s/Str
-                                   :token                 s/Uuid})
+(s/defschema ChangePasswordSchema (s/either
+                                    {:token                 s/Uuid
+                                     :password              s/Str
+                                     :password-confirmation s/Str}
+                                    {:current-password      s/Str
+                                     :password              s/Str
+                                     :password-confirmation s/Str}))
 
 (s/defschema ChangePasswordValidationSchema
   (assoc ChangePasswordSchema
     (s/optional-key :errors) (validation-errors-schema ChangePasswordSchema)))
 
-(def change-password-validation
+(def change-password-validation-by-token
   (validateur/validation-set
+    (validateur/presence-of :password :message "Password can't be blank.")
+    (validateur/length-of :password :within (range 8 255) :allow-blank true :allow-nil true
+                          :message-fn (fn [& _] "Password can't be shorter than 8 characters."))
+    (validateur/validate-with-predicate :password-confirmation
+                                        (fn [values]
+                                          (= (:password values) (:password-confirmation values)))
+                                        :message "Password confirmation doesn't match password.")))
+
+(def change-password-validation-by-password
+  (validateur/validation-set
+    (validateur/presence-of :current-password :message "Current password can't be blank.")
     (validateur/presence-of :password :message "Password can't be blank.")
     (validateur/length-of :password :within (range 8 255) :allow-blank true :allow-nil true
                           :message-fn (fn [& _] "Password can't be shorter than 8 characters."))

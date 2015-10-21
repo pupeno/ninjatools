@@ -5,10 +5,14 @@
             [ninjatools.models.user-schema :as user-schema]
             [validateur.validation :as validateur]
             [ninjatools.db.core :as db]
-            [buddy.hashers :as hashers]))
+            [buddy.hashers :as hashers]
+            [ninjatools.util :refer [println-ret]]))
 
 (defn- encrypt-password [password]
   (hashers/encrypt password))
+
+(defn check-password [user password]
+  (hashers/check password (:password user)))
 
 (defn create [user]
   (db/create-user<! (assoc user :password (encrypt-password (:password user)))))
@@ -26,7 +30,7 @@
 
 (defn get-by-credentials [credentials]
   (when-let [user (db/get-user-by-email (:email credentials))]
-    (when (hashers/check (:password credentials) (:password user))
+    (when (check-password user (:password credentials))
       user)))
 
 (defn sanitize-for-public [user]

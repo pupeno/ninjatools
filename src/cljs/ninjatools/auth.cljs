@@ -248,31 +248,41 @@
     (let [db (assoc-in db (cons :change-password-form ks) value)]
       (if (nil? (get-in db [:change-password-form :errors]))
         db
-        (assoc-in db [:change-password-form :errors] (user-schema/change-password-validation (:change-password-form db)))))))
+        (assoc-in db [:change-password-form :errors] (user-schema/change-password-validation-by-token (:change-password-form db)))))))
 
 (re-frame/register-handler
   :change-password
   (fn [db [_ html-form]]
-    (let [change-password-form (:change-password-form db)]
-      (if (validateur/valid? user-schema/change-password-validation change-password-form)
+    (let [change-password-form (:change-password-form db)
+          current-user (:current-user db)]
+      (if (validateur/valid? (if current-user
+                               user-schema/change-password-validation-by-password
+                               user-schema/change-password-validation-by-token)
+                             change-password-form)
         (do (ajax/POST "/api/v1/change-password"
-                       {:params        (-> change-password-form
-                                           (dissoc :errors)
-                                           (assoc :token (get-in db [:current-route :url :query "token"])))
+                       {:params        (-> (if current-user
+                                             change-password-form
+                                             (assoc change-password-form :token (get-in db [:current-route :url :query "token"])))
+                                           (dissoc :errors))
                         :handler       #(re-frame/dispatch [:got-change-password html-form (clojure.walk/keywordize-keys %1)])
                         :error-handler util/report-unexpected-error})
             db)
-        (assoc-in db [:change-password-form :errors] (user-schema/change-password-validation change-password-form))))))
+        (assoc-in db [:change-password-form :errors] (user-schema/change-password-validation-by-token change-password-form))))))
 
 (re-frame/register-handler
   :got-change-password
-  (fn [db [_ _html-form {status :status change-password-form :change-password-form}]]
+  (fn [db [_ html-form {status :status change-password-form :change-password-form}]]
     (if (= status "success")
       (do
-        (routing/redirect-to :log-in)
+        (if (:current-user db)
+          (.reset html-form)
+          (routing/redirect-to :log-in))
         (-> db
             (assoc :change-password-form {})
-            (alerts/add-alert :success "Your password has been changed, you can now try logging in.")))
+            (alerts/add-alert :success
+                              (if (:current-user db)
+                                "Your password was succesfully changed."
+                                "Your password has been changed, you can now try logging in."))))
       (assoc db :change-password-form change-password-form))))
 
 (re-frame/register-sub
@@ -281,21 +291,29 @@
     (ratom/reaction (:change-password-form @db))))
 
 (defn change-password-page []
-  (let [change-password-form (re-frame/subscribe [:change-password-form])]
+  (let [change-password-form (re-frame/subscribe [:change-password-form])
+        current-password (re-frame/subscribe [:current-user])]
     (fn []
       [:div
        [:h1 "Change Password"]
        [forms/form @change-password-form (:errors @change-password-form) :update-change-password-form
         [:form.form-horizontal {:on-submit #(ui/dispatch % [:change-password])}
          [:div.col-sm-offset-2.col-sm-10 {:free-form/error-message {:key :-general}} [:p.text-danger]]
+         (when @current-password
+           [:div.form-group {:free-form/error-class {:ks [:current-password] :error "has-error"}}
+            [:label.col-sm-2.control-label {:for :current-password} "Current Password"]
+            [:div.col-sm-10 [:input.form-control {:free-form/field {:ks [:current-password]}
+                                                  :type            :password
+                                                  :id              :current-password}]
+             [:div.text-danger {:free-form/error-message {:ks [:current-password]}} [:p]]]])
          [:div.form-group {:free-form/error-class {:ks [:password] :error "has-error"}}
-          [:label.col-sm-2.control-label {:for :password} "Password"]
+          [:label.col-sm-2.control-label {:for :password} "New Password"]
           [:div.col-sm-10 [:input.form-control {:free-form/field {:ks [:password]}
                                                 :type            :password
                                                 :id              :password}]
            [:div.text-danger {:free-form/error-message {:ks [:password]}} [:p]]]]
          [:div.form-group {:free-form/error-class {:key :password-confirmation :error "has-error"}}
-          [:label.col-sm-2.control-label {:for :password-confirmation} "Password confirmation"]
+          [:label.col-sm-2.control-label {:for :password-confirmation} "Password Confirmation"]
           [:div.col-sm-10 [:input.form-control {:free-form/field {:key :password-confirmation}
                                                 :type            :password
                                                 :id              :password-confirmation}]
