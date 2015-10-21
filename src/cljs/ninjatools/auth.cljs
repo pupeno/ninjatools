@@ -105,6 +105,7 @@
 (re-frame/register-handler
   :logged-out
   (fn [db [_]]
+    (routing/redirect-to :home)
     (-> db
         (assoc :current-user nil)
         (alerts/add-alert :success "You are now logged out."))))
