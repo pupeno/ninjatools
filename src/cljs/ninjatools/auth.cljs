@@ -35,9 +35,9 @@
   :update-registration-form
   (fn [db [_ ks value]]
     (let [db (assoc-in db (cons :registration-form ks) value)]
-      (if (nil? (get-in db [:registration-form :errors]))
+      (if (nil? (get-in db [:registration-form :-errors]))
         db
-        (assoc-in db [:registration-form :errors] (user-schema/registration-validation (:registration-form db)))))))
+        (assoc-in db [:registration-form :-errors] (user-schema/registration-validation (:registration-form db)))))))
 
 (re-frame/register-handler
   :register
@@ -45,11 +45,11 @@
     (let [registration-form (:registration-form db)]
       (if (validateur/valid? user-schema/registration-validation registration-form)
         (do (ajax/POST "/api/v1/register"
-                       {:params        (dissoc registration-form :errors)
+                       {:params        (dissoc registration-form :-errors)
                         :handler       #(re-frame/dispatch [:got-registered (clojure.walk/keywordize-keys %1)])
                         :error-handler util/report-unexpected-error})
             db)
-        (assoc-in db [:registration-form :errors] (user-schema/registration-validation registration-form))))))
+        (assoc-in db [:registration-form :-errors] (user-schema/registration-validation registration-form))))))
 
 (re-frame/register-handler
   :got-registered
@@ -67,9 +67,9 @@
   :update-log-in-form
   (fn [db [_ ks value]]
     (let [db (assoc-in db (cons :log-in-form ks) value)]
-      (if (nil? (get-in db [:log-in-form :errors]))
+      (if (nil? (get-in db [:log-in-form :-errors]))
         db
-        (assoc-in db [:log-in-form :errors] (user-schema/log-in-validation (:log-in-form db)))))))
+        (assoc-in db [:log-in-form :-errors] (user-schema/log-in-validation (:log-in-form db)))))))
 
 (re-frame/register-handler
   :log-in
@@ -77,11 +77,11 @@
     (let [log-in-form (:log-in-form db)]
       (if (validateur/valid? user-schema/log-in-validation log-in-form)
         (do (ajax/PUT "/api/v1/log-in"
-                      {:params        (dissoc log-in-form :errors)
+                      {:params        (dissoc log-in-form :-errors)
                        :handler       #(re-frame/dispatch [:got-logged-in (clojure.walk/keywordize-keys %1)])
                        :error-handler util/report-unexpected-error})
             db)
-        (assoc-in db [:log-in-form :errors] (user-schema/log-in-validation log-in-form))))))
+        (assoc-in db [:log-in-form :-errors] (user-schema/log-in-validation log-in-form))))))
 
 (re-frame/register-handler
   :got-logged-in
@@ -125,7 +125,7 @@
     (fn []
       [:div
        [:h1 "Log in"]
-       [forms/form @log-in-form (:errors @log-in-form) :update-log-in-form
+       [forms/form @log-in-form (:-errors @log-in-form) :update-log-in-form
         [:form.form-horizontal {:on-submit #(ui/dispatch % [:log-in])}
          [:div.col-sm-offset-2.col-sm-10 {:free-form/error-message {:key :-general}} [:p.text-danger]]
          [:div.form-group {:free-form/error-class {:key :email :error "has-error"}}
@@ -155,7 +155,7 @@
     (fn []
       [:div
        [:h1 "Register"]
-       [forms/form @registration-form (:errors @registration-form) :update-registration-form
+       [forms/form @registration-form (:-errors @registration-form) :update-registration-form
         [:form.form-horizontal {:on-submit #(ui/dispatch % [:register])}
          [:div.col-sm-offset-2.col-sm-10 {:free-form/error-message {:key :-general}} [:p.text-danger]]
          [:div.form-group {:free-form/error-class {:key :email :error "has-error"}}
@@ -190,9 +190,9 @@
   :update-reset-password-form
   (fn [db [_ ks value]]
     (let [db (assoc-in db (cons :reset-password-form ks) value)]
-      (if (nil? (get-in db [:reset-password-form :errors]))
+      (if (nil? (get-in db [:reset-password-form :-errors]))
         db
-        (assoc-in db [:reset-password-form :errors] (user-schema/reset-password-validation (:reset-password-form db)))))))
+        (assoc-in db [:reset-password-form :-errors] (user-schema/reset-password-validation (:reset-password-form db)))))))
 
 (re-frame/register-handler
   :reset-password
@@ -200,11 +200,11 @@
     (let [reset-password-form (:reset-password-form db)]
       (if (validateur/valid? user-schema/reset-password-validation reset-password-form)
         (do (ajax/POST "/api/v1/reset-password"
-                       {:params        (dissoc reset-password-form :errors)
+                       {:params        (dissoc reset-password-form :-errors)
                         :handler       #(re-frame/dispatch [:got-reset-password html-form (clojure.walk/keywordize-keys %1)])
                         :error-handler util/report-unexpected-error})
             (assoc-in db [:reset-password-form :-processing] true))
-        (assoc-in db [:reset-password-form :errors] (user-schema/reset-password-validation reset-password-form))))))
+        (assoc-in db [:reset-password-form :-errors] (user-schema/reset-password-validation reset-password-form))))))
 
 (re-frame/register-handler
   :got-reset-password
@@ -227,7 +227,7 @@
     (fn []
       [:div
        [:h1 "Reset Password"]
-       [forms/form @reset-password-form (:errors @reset-password-form) :update-reset-password-form
+       [forms/form @reset-password-form (:-errors @reset-password-form) :update-reset-password-form
         [:form.form-horizontal {:on-submit #(ui/dispatch % [:reset-password])}
          [:div.col-sm-offset-2.col-sm-10 {:free-form/error-message {:key :-general}} [:p.text-danger]]
          [:div.form-group {:free-form/error-class {:key :email :error "has-error"}}
@@ -248,9 +248,9 @@
   :update-change-password-form
   (fn [db [_ ks value]]
     (let [db (assoc-in db (cons :change-password-form ks) value)]
-      (if (nil? (get-in db [:change-password-form :errors]))
+      (if (nil? (get-in db [:change-password-form :-errors]))
         db
-        (assoc-in db [:change-password-form :errors] (user-schema/change-password-validation-by-token (:change-password-form db)))))))
+        (assoc-in db [:change-password-form :-errors] (user-schema/change-password-validation-by-token (:change-password-form db)))))))
 
 (re-frame/register-handler
   :change-password
@@ -265,11 +265,11 @@
                        {:params        (-> (if current-user
                                              change-password-form
                                              (assoc change-password-form :token (get-in db [:current-route :url :query "token"])))
-                                           (dissoc :errors))
+                                           (dissoc :-errors))
                         :handler       #(re-frame/dispatch [:got-change-password html-form (clojure.walk/keywordize-keys %1)])
                         :error-handler util/report-unexpected-error})
             db)
-        (assoc-in db [:change-password-form :errors] (user-schema/change-password-validation-by-token change-password-form))))))
+        (assoc-in db [:change-password-form :-errors] (user-schema/change-password-validation-by-token change-password-form))))))
 
 (re-frame/register-handler
   :got-change-password
@@ -298,7 +298,7 @@
     (fn []
       [:div
        [:h1 "Change Password"]
-       [forms/form @change-password-form (:errors @change-password-form) :update-change-password-form
+       [forms/form @change-password-form (:-errors @change-password-form) :update-change-password-form
         [:form.form-horizontal {:on-submit #(ui/dispatch % [:change-password])}
          [:div.col-sm-offset-2.col-sm-10 {:free-form/error-message {:key :-general}} [:p.text-danger]]
          (when @current-password

@@ -15,7 +15,7 @@
 
 (s/defschema LogInValidationSchema
   (assoc LogInSchema
-    (s/optional-key :errors) (validation-errors-schema LogInSchema)))
+    (s/optional-key :-errors) (validation-errors-schema LogInSchema)))
 
 (def log-in-validation
   (validateur/validation-set
@@ -32,7 +32,7 @@
 
 (s/defschema RegistrationValidationSchema
   (assoc RegistrationSchema
-    (s/optional-key :errors) (validation-errors-schema RegistrationSchema)))
+    (s/optional-key :-errors) (validation-errors-schema RegistrationSchema)))
 
 (def registration-validation
   (validateur/validation-set
@@ -53,7 +53,7 @@
 
 (s/defschema ResetPasswordValidationSchema
   (assoc RegistrationSchema
-    (s/optional-key :errors) (validation-errors-schema RegistrationSchema)))
+    (s/optional-key :-errors) (validation-errors-schema RegistrationSchema)))
 
 (def reset-password-validation
   (validateur/validation-set
@@ -73,7 +73,7 @@
 
 (s/defschema ChangePasswordValidationSchema
   (assoc ChangePasswordSchema
-    (s/optional-key :errors) (validation-errors-schema ChangePasswordSchema)))
+    (s/optional-key :-errors) (validation-errors-schema ChangePasswordSchema)))
 
 (def change-password-validation-by-token
   (validateur/validation-set

@@ -46,8 +46,8 @@
                           (if-let [user (user/get-by-credentials log-in-form)]
                             (-> (ok {:status :success :user (user/sanitize-for-public user)})
                                 (assoc :session (assoc session :identity (:id user))))
-                            (ok {:status :failed :log-in-form (update-in log-in-form [:errors :-general] #(conj (or %1 []) "Email and password doesn't match"))}))
-                          (ok {:status :failed :log-in-form (assoc log-in-form :errors (user-schema/log-in-validation log-in-form))})))
+                            (ok {:status :failed :log-in-form (update-in log-in-form [:-errors :-general] #(conj (or %1 []) "Email and password doesn't match"))}))
+                          (ok {:status :failed :log-in-form (assoc log-in-form :-errors (user-schema/log-in-validation log-in-form))})))
 
                   (POST* "/register" {session :session}
                          :summary "Register as a new user"
@@ -58,7 +58,7 @@
                            (let [user (user/create (dissoc registration-form :password-confirmation))]
                              (-> (ok {:status :success :user (user/sanitize-for-public user)})
                                  (assoc :session (assoc session :identity (:id user)))))
-                           (ok {:status :failed :registration-form (assoc registration-form :errors (user/registration-validation registration-form))})))
+                           (ok {:status :failed :registration-form (assoc registration-form :-errors (user/registration-validation registration-form))})))
 
                   (POST* "/reset-password" []
                          :summary "Reset the password of an existing account"
@@ -76,7 +76,7 @@
                                                        "templates/email/reset-password.txt.mustache" template-vars :text/plain
                                                        "templates/email/reset-password.html.mustache" template-vars :text/html)))
                              (ok {:status :success :reset-password-form reset-password-form}))
-                           (ok {:status :failed :reset-password-form (assoc reset-password-form :errors (user-schema/reset-password-validation reset-password-form))})))
+                           (ok {:status :failed :reset-password-form (assoc reset-password-form :-errors (user-schema/reset-password-validation reset-password-form))})))
 
                   (POST* "/change-password" {identity :identity}
                          :summary "Change the password for the logged in user or the specified token"
@@ -87,14 +87,14 @@
                              (if (user/check-password current-user (:current-password change-password-form))
                                (do (user/update-password current-user (:password change-password-form))
                                    (ok {:status :success}))
-                               (ok {:status :failed :change-password-form (assoc-in change-password-form [:errors :current-password] ["Your password doesn't match."])}))
-                             (ok {:status :failed :change-password-form (assoc change-password-form :errors (user-schema/change-password-validation-by-token change-password-form))}))
+                               (ok {:status :failed :change-password-form (assoc-in change-password-form [:-errors :current-password] ["Your password doesn't match."])}))
+                             (ok {:status :failed :change-password-form (assoc change-password-form :-errors (user-schema/change-password-validation-by-token change-password-form))}))
                            (if (validateur/valid? user-schema/change-password-validation-by-token change-password-form)
                              (if-let [current-user (db/get-user-by-reset-password-token (:token change-password-form))]
                                (do (user/update-password current-user (:password change-password-form))
                                    (ok {:status :success}))
-                               (ok {:status :failed :change-password-form (assoc-in change-password-form [:errors :-general] ["The reset token seems to be invalid or out of date. Please, start the reset password process again."])}))
-                             (ok {:status :failed :change-password-form (assoc change-password-form :errors (user-schema/change-password-validation-by-token change-password-form))}))))
+                               (ok {:status :failed :change-password-form (assoc-in change-password-form [:-errors :-general] ["The reset token seems to be invalid or out of date. Please, start the reset password process again."])}))
+                             (ok {:status :failed :change-password-form (assoc change-password-form :-errors (user-schema/change-password-validation-by-token change-password-form))}))))
 
                   #_(GET* "/plus" []
                           :return Long
