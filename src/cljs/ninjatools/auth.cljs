@@ -203,7 +203,7 @@
                        {:params        (dissoc reset-password-form :errors)
                         :handler       #(re-frame/dispatch [:got-reset-password html-form (clojure.walk/keywordize-keys %1)])
                         :error-handler util/report-unexpected-error})
-            db)
+            (assoc-in db [:reset-password-form :-processing] true))
         (assoc-in db [:reset-password-form :errors] (user-schema/reset-password-validation reset-password-form))))))
 
 (re-frame/register-handler
@@ -239,7 +239,8 @@
            [:div.text-danger {:free-form/error-message {:key :email}} [:p]]]]
          [:div.form-group
           [:div.col-sm-offset-2.col-sm-10
-           [:button.btn.btn-primary {:type :submit} "Reset Password"]]]]]])))
+           [:button.btn.btn-primary {:type :submit :disabled (:-processing @reset-password-form)}
+            (if (:-processing @reset-password-form) "Resetting password, please wait..." "Reset Password")]]]]]])))
 
 (defmethod layout/pages :reset-password [] [reset-password-page])
 
