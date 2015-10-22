@@ -14,7 +14,8 @@
                           [:register [["register"]]]
                           [:log-in [["login"]]]
                           [:reset-password [["reset-password"]]]
-                          [:change-password [["change-password"]]]]))
+                          [:change-password [["change-password"]]]
+                          [:fail [["fail"]]]]))
 
 (defn sanitize-silk-keywords [matched-route]
   (rename-keys matched-route {:domkm.silk/name    :name

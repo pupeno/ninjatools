@@ -83,7 +83,7 @@
   #'service-routes
   (context "/api" [] (route/not-found "Not Found"))         ; Make sure requests to /api/whatever that haven't been handled by the API return a 404.
   (wrap-routes (routes
-                 (GET "/fail" [] (throw (Exception. (str "Bogus error to test exception handling. Environment: " (:environment env)))))
+                 (GET "/server-fail" [] (throw (Exception. "Bogus error to test exception handling on the server, non-api.")))
                  (ANY "*" request (layout/render request)))
                middleware/wrap-csrf)
   (route/not-found "Not Found"))

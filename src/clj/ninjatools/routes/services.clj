@@ -106,6 +106,10 @@
                                (ok {:status :failed :change-password-form (assoc-in change-password-form [:-errors :-general] ["The reset token seems to be invalid or out of date. Please, start the reset password process again."])}))
                              (ok {:status :failed :change-password-form (assoc change-password-form :-errors (user-schema/change-password-validation-by-token change-password-form))}))))
 
+                  (GET* "/fail" []
+                        :summary "Test error reporting"
+                        (throw (Exception. "Bogus error to test exception handling on the server, api.")))
+
                   #_(GET* "/plus" []
                           :return Long
                           :query-params [x :- Long, {y :- Long 1}]
