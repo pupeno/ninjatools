@@ -107,7 +107,6 @@
 
 (defn wrap-base [handler]
   (-> handler
-      wrap-ssl
       wrap-dev
       wrap-auth
       wrap-formats
@@ -119,4 +118,5 @@
             (assoc-in [:session :secure] (not (or (env :dev) (env :test))))))
       wrap-context
       wrap-error-reporting
-      wrap-internal-error))
+      wrap-internal-error
+      wrap-ssl))
