@@ -6,7 +6,6 @@
             [to-jdbc-uri.core :refer [to-jdbc-uri]]
             [taoensso.timbre :as timbre]
             [environ.core :refer [env]]
-            [clojure.java.io :as io]
             [selmer.middleware :refer [wrap-error-page]]
             [prone.middleware :refer [wrap-exceptions]]
             [ring.util.response :refer [redirect]]
@@ -21,8 +20,7 @@
             [buddy.auth.accessrules :refer [restrict]]
             [buddy.auth :refer [authenticated?]]
             [ninjatools.layout :refer [*identity*]]
-            [ring.middleware.ssl :refer [wrap-forwarded-scheme wrap-hsts wrap-ssl-redirect]]
-            [clojure.java.jdbc :as jdbc])
+            [ring.middleware.ssl :refer [wrap-forwarded-scheme wrap-hsts wrap-ssl-redirect]])
   (:import [javax.servlet ServletContext]))
 
 (defn wrap-context [handler]
