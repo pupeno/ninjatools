@@ -5,8 +5,6 @@
     <output-test url="file://$MODULE_DIR$/target/classes" />
     <exclude-output />
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/../clojure/prerenderer/src/clj" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../clojure/prerenderer/src/cljs" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/dev-resources" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/env/dev/cljs" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/resources" isTestSource="false" />
@@ -38,7 +36,6 @@
     <orderEntry type="library" name="Leiningen: compojure:1.4.0" level="project" />
     <orderEntry type="library" name="Leiningen: conman:0.2.0" level="project" />
     <orderEntry type="library" name="Leiningen: environ:1.0.1" level="project" />
-    <orderEntry type="library" name="Leiningen: jarohen/yoyo:0.0.6-beta2" level="project" />
     <orderEntry type="library" name="Leiningen: jdbc-ring-session:0.3" level="project" />
     <orderEntry type="library" name="Leiningen: kibu/pushy:0.3.6" level="project" />
     <orderEntry type="library" name="Leiningen: lein-figwheel:0.4.0" level="project" />
@@ -81,6 +78,7 @@
     <orderEntry type="library" name="Leiningen: org.bouncycastle/bcprov-jdk15on:1.52" level="project" />
     <orderEntry type="library" name="Leiningen: clojurewerkz/scrypt:1.2.0" level="project" />
     <orderEntry type="library" name="Leiningen: com.lambdaworks/scrypt:1.4.0" level="project" />
+    <orderEntry type="library" name="Leiningen: funcool/cats:1.0.0" level="project" />
     <orderEntry type="library" name="Leiningen: com.cognitect/transit-cljs:0.8.225" level="project" />
     <orderEntry type="library" name="Leiningen: net.colourcoding/poppea:0.2.1" level="project" />
     <orderEntry type="library" name="Leiningen: org.apache.httpcomponents/httpasyncclient:4.1" level="project" />
@@ -111,9 +109,6 @@
     <orderEntry type="library" name="Leiningen: yesql:0.5.0" level="project" />
     <orderEntry type="library" name="Leiningen: commons-dbcp:1.4" level="project" />
     <orderEntry type="library" name="Leiningen: commons-pool:1.5.4" level="project" />
-    <orderEntry type="library" name="Leiningen: funcool/cats:0.6.1" level="project" />
-    <orderEntry type="library" name="Leiningen: org.clojure/tools.logging:0.3.1" level="project" />
-    <orderEntry type="library" name="Leiningen: org.clojure/tools.namespace:0.2.11" level="project" />
     <orderEntry type="library" name="Leiningen: com.taoensso/nippy:2.8.0" level="project" />
     <orderEntry type="library" name="Leiningen: commons-codec:1.10" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/java.jdbc:0.3.6" level="project" />
@@ -189,6 +184,7 @@
     <orderEntry type="library" name="Leiningen: org.clojure/data.priority-map:0.0.4" level="project" />
     <orderEntry type="library" name="Leiningen: camel-snake-kebab:0.3.2" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/java.classpath:0.2.2" level="project" />
+    <orderEntry type="library" name="Leiningen: org.clojure/tools.logging:0.3.1" level="project" />
     <orderEntry type="library" name="Leiningen: robert/bruce:0.7.1" level="project" />
     <orderEntry type="library" name="Leiningen: fipp:0.5.2" level="project" />
     <orderEntry type="library" name="Leiningen: org.clojure/data.finger-tree:0.0.2" level="project" />
@@ -238,6 +234,7 @@
     <orderEntry type="library" name="Leiningen: clj-stacktrace:0.2.8" level="project" />
     <orderEntry type="library" name="Leiningen: hiccup:1.0.5" level="project" />
     <orderEntry type="library" name="Leiningen: ns-tracker:0.3.0" level="project" />
+    <orderEntry type="library" name="Leiningen: org.clojure/tools.namespace:0.2.10" level="project" />
     <orderEntry type="library" name="Leiningen: ring/ring-servlet:1.4.0" level="project" />
     <orderEntry type="library" name="Leiningen: joda-time:2.8.2" level="project" />
     <orderEntry type="library" name="Leiningen: json-html:0.3.5" level="project" />
