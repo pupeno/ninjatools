@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: yeller-clojure-client:1.2.1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/yeller-clojure-client/yeller-clojure-client/1.2.1/yeller-clojure-client-1.2.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
