@@ -48,7 +48,7 @@
                        {:params        (dissoc registration-form :-errors)
                         :handler       #(re-frame/dispatch [:got-registered (clojure.walk/keywordize-keys %1)])
                         :error-handler util/report-unexpected-error})
-            db)
+            (assoc-in db [:registration-form :-processing] true))
         (assoc-in db [:registration-form :-errors] (user-schema/registration-validation registration-form))))))
 
 (re-frame/register-handler
@@ -80,7 +80,7 @@
                       {:params        (dissoc log-in-form :-errors)
                        :handler       #(re-frame/dispatch [:got-logged-in (clojure.walk/keywordize-keys %1)])
                        :error-handler util/report-unexpected-error})
-            db)
+            (assoc-in db [:log-in-form :-processing] true))
         (assoc-in db [:log-in-form :-errors] (user-schema/log-in-validation log-in-form))))))
 
 (re-frame/register-handler
@@ -143,7 +143,10 @@
            [:div.text-danger {:free-form/error-message {:ks [:password]}} [:p]]]]
          [:div.form-group
           [:div.col-sm-offset-2.col-sm-5
-           [:button.btn.btn-primary {:type :submit} "Log in"]]
+           [:button.btn.btn-primary {:type :submit :disabled (:-processing @log-in-form)}
+            (if (:-processing @log-in-form)
+              "Logging in, please wait..."
+              "Log in")]]
           [:div.col-sm-5.text-right
            [:p "Don't know your password? "
             [:a {:href (routing/url-for :reset-password)} "Reset Password"]]]]]]])))
@@ -179,7 +182,10 @@
            [:div.text-danger {:free-form/error-message {:key :password-confirmation}} [:p]]]]
          [:div.form-group
           [:div.col-sm-offset-2.col-sm-5
-           [:button.btn.btn-primary {:type :submit} "Register"]]
+           [:button.btn.btn-primary {:type :submit :disabled (:-processing @registration-form)}
+            (if (:-processing @registration-form)
+              "Registering, please wait..."
+              "Register")]]
           [:div.col-sm-5.text-right
            [:p "Already have an account? "
             [:a {:href (routing/url-for :log-in)} "Log in"]]]]]]])))
@@ -240,7 +246,9 @@
          [:div.form-group
           [:div.col-sm-offset-2.col-sm-10
            [:button.btn.btn-primary {:type :submit :disabled (:-processing @reset-password-form)}
-            (if (:-processing @reset-password-form) "Resetting password, please wait..." "Reset Password")]]]]]])))
+            (if (:-processing @reset-password-form)
+              "Resetting password, please wait..."
+              "Reset Password")]]]]]])))
 
 (defmethod layout/pages :reset-password [] [reset-password-page])
 
@@ -268,7 +276,7 @@
                                            (dissoc :-errors))
                         :handler       #(re-frame/dispatch [:got-change-password html-form (clojure.walk/keywordize-keys %1)])
                         :error-handler util/report-unexpected-error})
-            db)
+            (assoc-in db [:change-password-form :-processing] true))
         (assoc-in db [:change-password-form :-errors] (user-schema/change-password-validation-by-token change-password-form))))))
 
 (re-frame/register-handler
@@ -322,6 +330,9 @@
            [:div.text-danger {:free-form/error-message {:key :password-confirmation}} [:p]]]]
          [:div.form-group
           [:div.col-sm-offset-2.col-sm-10
-           [:button.btn.btn-primary {:type :submit} "Reset Password"]]]]]])))
+           [:button.btn.btn-primary {:type :submit :disabled (:-processing @change-password-form)}
+            (if (:-processing @change-password-form)
+              "Changing Password, please wait..."
+              "Change Password")]]]]]])))
 
 (defmethod layout/pages :change-password [] [change-password-page])
