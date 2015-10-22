@@ -63,95 +63,10 @@
             (alerts/add-alert :success "Thank you for registering, you are now also logged in with your new account.")))
       (assoc db :registration-form registration-form))))
 
-(re-frame/register-handler
-  :update-log-in-form
-  (fn [db [_ ks value]]
-    (let [db (assoc-in db (cons :log-in-form ks) value)]
-      (if (nil? (get-in db [:log-in-form :-errors]))
-        db
-        (assoc-in db [:log-in-form :-errors] (user-schema/log-in-validation (:log-in-form db)))))))
-
-(re-frame/register-handler
-  :log-in
-  (fn [db [_]]
-    (let [log-in-form (:log-in-form db)]
-      (if (validateur/valid? user-schema/log-in-validation log-in-form)
-        (do (ajax/PUT "/api/v1/log-in"
-                      {:params        (dissoc log-in-form :-errors)
-                       :handler       #(re-frame/dispatch [:got-logged-in (clojure.walk/keywordize-keys %1)])
-                       :error-handler util/report-unexpected-error})
-            (assoc-in db [:log-in-form :-processing] true))
-        (assoc-in db [:log-in-form :-errors] (user-schema/log-in-validation log-in-form))))))
-
-(re-frame/register-handler
-  :got-logged-in
-  (fn [db [_ {status :status log-in-form :log-in-form user :user}]]
-    (if (= status "success")
-      (do
-        (routing/redirect-to :home)
-        (-> db
-            (assoc :log-in-form {}
-                   :current-user user)
-            (alerts/add-alert :success "You are now logged in.")))
-      (assoc db :log-in-form log-in-form))))
-
-(re-frame/register-handler
-  :log-out
-  (fn [db [_]]
-    (ajax/PUT "/api/v1/log-out" {:handler       (fn [_] (re-frame/dispatch [:logged-out]))
-                                 :error-handler util/report-unexpected-error})
-    db))
-
-(re-frame/register-handler
-  :logged-out
-  (fn [db [_]]
-    (routing/redirect-to :home)
-    (-> db
-        (assoc :current-user nil)
-        (alerts/add-alert :success "You are now logged out."))))
-
 (re-frame/register-sub
   :registration-form
   (fn [db _]
     (ratom/reaction (:registration-form @db))))
-
-(re-frame/register-sub
-  :log-in-form
-  (fn [db _]
-    (ratom/reaction (:log-in-form @db))))
-
-(defn log-in-page []
-  (let [log-in-form (re-frame/subscribe [:log-in-form])]
-    (fn []
-      [:div
-       [:h1 "Log in"]
-       [forms/form @log-in-form (:-errors @log-in-form) :update-log-in-form
-        [:form.form-horizontal {:on-submit #(ui/dispatch % [:log-in])}
-         [:div.col-sm-offset-2.col-sm-10 {:free-form/error-message {:key :-general}} [:p.text-danger]]
-         [:div.form-group {:free-form/error-class {:key :email :error "has-error"}}
-          [:label.col-sm-2.control-label {:for :email} "Email"]
-          [:div.col-sm-10 [:input.form-control {:free-form/field {:key :email}
-                                                :type            :email
-                                                :id              :email
-                                                :placeholder     "sam@example.com"}]
-           [:div.text-danger {:free-form/error-message {:key :email}} [:p]]]]
-         [:div.form-group {:free-form/error-class {:ks [:password] :error "has-error"}}
-          [:label.col-sm-2.control-label {:for :password} "Password"]
-          [:div.col-sm-10 [:input.form-control {:free-form/field {:ks [:password]}
-                                                :type            :password
-                                                :id              :password}]
-           [:div.text-danger {:free-form/error-message {:ks [:password]}} [:p]]]]
-         [:div.form-group
-          [:div.col-sm-offset-2.col-sm-5
-           [:button.btn.btn-primary {:type :submit :disabled (:-processing @log-in-form)}
-            (if (:-processing @log-in-form)
-              "Logging in, please wait..."
-              "Log in")]]
-          [:div.col-sm-5.text-right
-           [:p "Don't know your password? "
-            [:a {:href (routing/url-for :reset-password)} "Reset Password"]]]]]]])))
-
-(defmethod layout/pages :log-in [] [log-in-page])
 
 (defn register-page []
   (let [registration-form (re-frame/subscribe [:registration-form])]
@@ -191,6 +106,91 @@
             [:a {:href (routing/url-for :log-in)} "Log in"]]]]]]])))
 
 (defmethod layout/pages :register [] [register-page])
+
+(re-frame/register-handler
+  :update-log-in-form
+  (fn [db [_ ks value]]
+    (let [db (assoc-in db (cons :log-in-form ks) value)]
+      (if (nil? (get-in db [:log-in-form :-errors]))
+        db
+        (assoc-in db [:log-in-form :-errors] (user-schema/log-in-validation (:log-in-form db)))))))
+
+(re-frame/register-handler
+  :log-in
+  (fn [db [_]]
+    (let [log-in-form (:log-in-form db)]
+      (if (validateur/valid? user-schema/log-in-validation log-in-form)
+        (do (ajax/PUT "/api/v1/log-in"
+                      {:params        (dissoc log-in-form :-errors)
+                       :handler       #(re-frame/dispatch [:got-logged-in (clojure.walk/keywordize-keys %1)])
+                       :error-handler util/report-unexpected-error})
+            (assoc-in db [:log-in-form :-processing] true))
+        (assoc-in db [:log-in-form :-errors] (user-schema/log-in-validation log-in-form))))))
+
+(re-frame/register-handler
+  :got-logged-in
+  (fn [db [_ {status :status log-in-form :log-in-form user :user}]]
+    (if (= status "success")
+      (do
+        (routing/redirect-to :home)
+        (-> db
+            (assoc :log-in-form {}
+                   :current-user user)
+            (alerts/add-alert :success "You are now logged in.")))
+      (assoc db :log-in-form log-in-form))))
+
+(re-frame/register-sub
+  :log-in-form
+  (fn [db _]
+    (ratom/reaction (:log-in-form @db))))
+
+(re-frame/register-handler
+  :log-out
+  (fn [db [_]]
+    (ajax/PUT "/api/v1/log-out" {:handler       (fn [_] (re-frame/dispatch [:logged-out]))
+                                 :error-handler util/report-unexpected-error})
+    db))
+
+(re-frame/register-handler
+  :logged-out
+  (fn [db [_]]
+    (routing/redirect-to :home)
+    (-> db
+        (assoc :current-user nil)
+        (alerts/add-alert :success "You are now logged out."))))
+
+(defn log-in-page []
+  (let [log-in-form (re-frame/subscribe [:log-in-form])]
+    (fn []
+      [:div
+       [:h1 "Log in"]
+       [forms/form @log-in-form (:-errors @log-in-form) :update-log-in-form
+        [:form.form-horizontal {:on-submit #(ui/dispatch % [:log-in])}
+         [:div.col-sm-offset-2.col-sm-10 {:free-form/error-message {:key :-general}} [:p.text-danger]]
+         [:div.form-group {:free-form/error-class {:key :email :error "has-error"}}
+          [:label.col-sm-2.control-label {:for :email} "Email"]
+          [:div.col-sm-10 [:input.form-control {:free-form/field {:key :email}
+                                                :type            :email
+                                                :id              :email
+                                                :placeholder     "sam@example.com"}]
+           [:div.text-danger {:free-form/error-message {:key :email}} [:p]]]]
+         [:div.form-group {:free-form/error-class {:ks [:password] :error "has-error"}}
+          [:label.col-sm-2.control-label {:for :password} "Password"]
+          [:div.col-sm-10 [:input.form-control {:free-form/field {:ks [:password]}
+                                                :type            :password
+                                                :id              :password}]
+           [:div.text-danger {:free-form/error-message {:ks [:password]}} [:p]]]]
+         [:div.form-group
+          [:div.col-sm-offset-2.col-sm-5
+           [:button.btn.btn-primary {:type :submit :disabled (:-processing @log-in-form)}
+            (if (:-processing @log-in-form)
+              "Logging in, please wait..."
+              "Log in")]]
+          [:div.col-sm-5.text-right
+           [:p "Don't know your password? "
+            [:a {:href (routing/url-for :reset-password)} "Reset Password"]]]]]]])))
+
+(defmethod layout/pages :log-in [] [log-in-page])
 
 (re-frame/register-handler
   :update-reset-password-form
