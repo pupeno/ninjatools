@@ -10,7 +10,11 @@
             [ninjatools.models.user :as user]
             [ninjatools.models.user-schema :as user-schema]
             [validateur.validation :as validateur]
-            [clojurewerkz.mailer.core :as mailer]))
+            [clojurewerkz.mailer.core :as mailer]
+            [yeller.clojure.client :as yeller]))
+
+(def yeller-client (yeller/client {:token       (:yeller-token env) ; TODO: move to a more generic place when we need to report errors from more than one place.
+                                   :environment (:environment env)}))
 
 #_(s/defschema Thingie {:id    Long
                         :hot   Boolean
@@ -19,6 +23,12 @@
                                  :type #{{:id String}}}]})
 
 (defapi service-routes
+        {:exceptions {:handlers {:compojure.api.exception/response-validation (fn [^Exception e data request]
+                                                                                (yeller/report yeller-client e {:data data :request request})
+                                                                                (compojure.api.exception/response-validation-handler e data request))
+                                 :compojure.api.exception/default             (fn [^Exception e data request]
+                                                                                (yeller/report yeller-client e {:data data :request request})
+                                                                                (compojure.api.exception/safe-handler e data request))}}}
         (ring.swagger.ui/swagger-ui "/api")
         ;JSON docs available at the /swagger.json route
         (swagger-docs {:info {:title "Ninja Tools API"}})
