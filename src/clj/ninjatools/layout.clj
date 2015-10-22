@@ -28,6 +28,8 @@
           :csrf-token *anti-forgery-token*
           :app-context *app-context*
           :identity *identity*
+          :yeller-token (:yeller-token env)
+          :environment (:environment env)
           #_:prerendered-content #_[:safe (prerenderer/render @js-engine (ring.util.request/request-url request) (:headers request))]))
       response
       (content-type "text/html; charset=utf-8")))
