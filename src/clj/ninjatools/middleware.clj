@@ -100,6 +100,11 @@
         wrap-ssl-redirect
         wrap-forwarded-scheme)))
 
+(defn wrap-error-reporting [handler]
+  (if (or (:dev env) (:test env))
+    handler
+    (yeller/wrap-ring handler {:token (:yeller-token env) :environment (:environment env)})))
+
 (defn wrap-base [handler]
   (-> handler
       wrap-ssl
@@ -113,5 +118,5 @@
             (assoc-in [:session :store] (jdbc-session-store/jdbc-store (to-jdbc-uri (env :database-url)) #_{:table :sessions})) ; TODO: switch to table sessions once this has been fixed: https://github.com/yogthos/jdbc-ring-session/issues/4
             (assoc-in [:session :secure] (not (or (env :dev) (env :test))))))
       wrap-context
-      (yeller/wrap-ring {:token (:yeller-token env) :environment (:environment env)})
+      wrap-error-reporting
       wrap-internal-error))

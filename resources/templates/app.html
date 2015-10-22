@@ -7,8 +7,10 @@
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.png"/>
     <script src="//js-yellerapp.a.ssl.fastly.net/yeller.js" type="text/javascript"></script>
     <script type="text/javascript">
-    Yeller.configure({token: '{{yeller-token}}',
-                      environment: '{{environment}}'});
+    if ('{{environment}}' != 'dev' && '{{environment}}' != 'test') {
+        Yeller.configure({token: '{{yeller-token}}',
+                          environment: '{{environment}}'});
+    }
     </script>
     {% style "/assets/bootstrap/css/bootstrap.min.css" %}
     {% style "/assets/bootstrap/css/bootstrap-theme.min.css" %}
