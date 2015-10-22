@@ -11,7 +11,7 @@
             [ninjatools.routing :as routing]
             [ninjatools.alerts :as alerts]
             [ninjatools.ui :as ui]
-            [ninjatools.util :as util]))
+            [ninjatools.util :as util :refer [dissoc-in]]))
 
 (re-frame/register-handler
   :get-current-user
@@ -47,7 +47,9 @@
         (do (ajax/POST "/api/v1/register"
                        {:params        (dissoc registration-form :-errors)
                         :handler       #(re-frame/dispatch [:got-registered (clojure.walk/keywordize-keys %1)])
-                        :error-handler util/report-unexpected-error})
+                        :error-handler (fn [error]
+                                         (re-frame/dispatch [:clean-up-processing [:registration-form]])
+                                         (util/report-unexpected-error error))})
             (assoc-in db [:registration-form :-processing] true))
         (assoc-in db [:registration-form :-errors] (user-schema/registration-validation registration-form))))))
 
@@ -123,7 +125,9 @@
         (do (ajax/PUT "/api/v1/log-in"
                       {:params        (dissoc log-in-form :-errors)
                        :handler       #(re-frame/dispatch [:got-logged-in (clojure.walk/keywordize-keys %1)])
-                       :error-handler util/report-unexpected-error})
+                       :error-handler (fn [error]
+                                        (re-frame/dispatch [:clean-up-processing [:log-in-form]])
+                                        (util/report-unexpected-error error))})
             (assoc-in db [:log-in-form :-processing] true))
         (assoc-in db [:log-in-form :-errors] (user-schema/log-in-validation log-in-form))))))
 
@@ -208,7 +212,9 @@
         (do (ajax/POST "/api/v1/reset-password"
                        {:params        (dissoc reset-password-form :-errors)
                         :handler       #(re-frame/dispatch [:got-reset-password html-form (clojure.walk/keywordize-keys %1)])
-                        :error-handler util/report-unexpected-error})
+                        :error-handler (fn [error]
+                                         (re-frame/dispatch [:clean-up-processing [:reset-password-form]])
+                                         (util/report-unexpected-error error))})
             (assoc-in db [:reset-password-form :-processing] true))
         (assoc-in db [:reset-password-form :-errors] (user-schema/reset-password-validation reset-password-form))))))
 
@@ -275,7 +281,9 @@
                                              (assoc change-password-form :token (get-in db [:current-route :url :query "token"])))
                                            (dissoc :-errors))
                         :handler       #(re-frame/dispatch [:got-change-password html-form (clojure.walk/keywordize-keys %1)])
-                        :error-handler util/report-unexpected-error})
+                        :error-handler (fn [error]
+                                         (re-frame/dispatch [:clean-up-processing [:change-password-form]])
+                                         (util/report-unexpected-error error))})
             (assoc-in db [:change-password-form :-processing] true))
         (assoc-in db [:change-password-form :-errors] (user-schema/change-password-validation-by-token change-password-form))))))
 
@@ -336,3 +344,8 @@
               "Change Password")]]]]]])))
 
 (defmethod layout/pages :change-password [] [change-password-page])
+
+(re-frame/register-handler
+  :clean-up-processing
+  (fn [db [_ ks]]
+    (dissoc-in db ks)))
