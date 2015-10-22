@@ -1,7 +1,7 @@
 ;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
 
 (ns ninjatools.handler
-  (:require [compojure.core :refer [defroutes routes wrap-routes ANY context]]
+  (:require [compojure.core :refer [defroutes routes wrap-routes ANY GET context]]
             [ninjatools.routes.services :refer [service-routes]]
             [ninjatools.middleware :as middleware]
             [ninjatools.db.core :as db]
@@ -62,7 +62,7 @@
     (alter-var-root (var mailer/*delivery-settings*) (constantly {:host (:email-host env)
                                                                   :user (:email-user env)
                                                                   :pass (:email-pass env)
-                                                                  :ssl true})))
+                                                                  :ssl  true})))
   (mailer/defaults! {:from "Ninja Tools <info@tools.screensaver.ninja>"})
   (timbre/info (str
                  "\n-=[ninjatools started successfully"
@@ -82,7 +82,9 @@
   #_(wrap-routes #'service-routes middleware/wrap-delay)    ; Use this instead of just the service-routes to simulate slow connections
   #'service-routes
   (context "/api" [] (route/not-found "Not Found"))         ; Make sure requests to /api/whatever that haven't been handled by the API return a 404.
-  (wrap-routes (routes (ANY "*" request (layout/render request)))
+  (wrap-routes (routes
+                 (GET "/fail" [] (throw (Exception. (str "Bogus error to test exception handling. Environment: " (:environment env)))))
+                 (ANY "*" request (layout/render request)))
                middleware/wrap-csrf)
   (route/not-found "Not Found"))
 
