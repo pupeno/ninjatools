@@ -15,6 +15,7 @@
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
             [ring.middleware.format :refer [wrap-restful-format]]
             [ring.middleware.anti-forgery :refer [wrap-anti-forgery]]
+            [yeller.clojure.ring :as yeller]
             [buddy.auth.middleware :refer [wrap-authentication]]
             [buddy.auth.backends.session :refer [session-backend]]
             [buddy.auth.accessrules :refer [restrict]]
@@ -112,4 +113,5 @@
             (assoc-in [:session :store] (jdbc-session-store/jdbc-store (to-jdbc-uri (env :database-url)) #_{:table :sessions})) ; TODO: switch to table sessions once this has been fixed: https://github.com/yogthos/jdbc-ring-session/issues/4
             (assoc-in [:session :secure] (not (or (env :dev) (env :test))))))
       wrap-context
+      (yeller/wrap-ring {:token (:yeller-token env) :environment (:environment env)})
       wrap-internal-error))

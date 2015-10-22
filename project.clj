@@ -44,6 +44,7 @@
                  [metosin/ring-swagger-ui "2.1.3"]
                  [org.immutant/web "2.1.0"]
                  [com.carouselapps/prerenderer "0.1.0"]
+                 [yeller-clojure-client "1.2.1"]
                  [com.lucasbradstreet/cljs-uuid-utils "1.0.2"]]
 
   :min-lein-version "2.0.0"
@@ -111,11 +112,13 @@
                              :injections   [(require 'pjstadig.humane-test-output)
                                             (pjstadig.humane-test-output/activate!)]
                              ;;when :nrepl-port is set the application starts the nREPL server on load
-                             :env          {:dev        true
-                                            :port       3000
-                                            :nrepl-port 7000}}
-             :project/test  {:env {:test       true
-                                   :port       3001
-                                   :nrepl-port 7001}}
+                             :env          {:environment "dev"
+                                            :dev         true
+                                            :port        3000
+                                            :nrepl-port  7000}}
+             :project/test  {:env {:environment "test"
+                                   :test        true
+                                   :port        3001
+                                   :nrepl-port  7001}}
              :profiles/dev  {}
              :profiles/test {}})
