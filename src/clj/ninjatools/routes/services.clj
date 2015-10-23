@@ -51,10 +51,9 @@
                   (PUT* "/tools-in-use" {session :session}
                         :summary "Update the tools currently marked as in-use."
                         :body [tool-ids #{s/Uuid}]
-                        (do
-                          (let [session (update session :tools-in-use #(clojure.set/union % tool-ids))]
-                            (assoc (ok (:tools-in-use session)) :session session))))
                         ; TODO: return
+                        (let [session (update session :tools-in-use #(clojure.set/union % tool-ids))]
+                          (assoc (ok (:tools-in-use session)) :session session)))
 
                   (GET* "/current-user" {current-user :current-user}
                         (if current-user
