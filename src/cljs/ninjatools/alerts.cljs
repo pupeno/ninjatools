@@ -23,7 +23,7 @@
 
 (defn remove-old-alerts
   ([db]
-   (remove-old-alerts db 60))
+   (remove-old-alerts db 20))
   ([db timeout]
    (update db :alerts
            (fn [alerts]
