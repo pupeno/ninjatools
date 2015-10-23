@@ -25,12 +25,10 @@
 (defapi service-routes
         ; Report errors to Yeller. Read more here: https://github.com/metosin/compojure-api#exception-handling and here: http://docs.yellerapp.com/platforms/clojure/getting_started.html
         {:exceptions {:handlers {:compojure.api.exception/response-validation (fn [^Exception e data request]
-                                                                                (when (not (or (:dev env) (:test env)))
-                                                                                  (yeller/report yeller-client e {:data data :request request}))
+                                                                                (util/report-error e (util/format-request-for-error request))
                                                                                 (compojure.api.exception/response-validation-handler e data request))
                                  :compojure.api.exception/default             (fn [^Exception e data request]
-                                                                                (when (not (or (:dev env) (:test env)))
-                                                                                  (yeller/report yeller-client e {:data data :request request}))
+                                                                                (util/report-error e (util/format-request-for-error request))
                                                                                 (compojure.api.exception/safe-handler e data request))}}}
         (ring.swagger.ui/swagger-ui "/api")
         ;JSON docs available at the /swagger.json route

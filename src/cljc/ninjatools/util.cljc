@@ -1,10 +1,35 @@
 ;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
 
-(ns ninjatools.util)
+(ns ninjatools.util
+  (:require
+    #?(:clj [yeller.clojure.client :as yeller])
+    #?(:clj [yeller.clojure.ring :as yeller-ring])
+    #?(:clj [environ.core :refer [env]])))
 
 (defn println-ret [val]
   (println val)
   val)
+
+#?(:clj
+   (def yeller-options {:token       (:yeller-token env)
+                        :environment (:environment env)}))
+
+#?(:clj
+   (def yeller-client (yeller/client yeller-options)))
+
+#?(:clj
+   (defn report-error
+     ([exception] (report-error exception {}))
+     ([exception extra]
+      (when (not (or (:dev env) (:test env)))
+        (let [exception (if (instance? String exception)
+                          (Exception. exception)
+                          exception)]
+          (yeller/report yeller-client exception extra))))))
+
+#?(:clj
+   (defn format-request-for-error [request]
+     (yeller-ring/format-extra yeller-options request)))
 
 #?(:cljs
    (defn log [& args]
