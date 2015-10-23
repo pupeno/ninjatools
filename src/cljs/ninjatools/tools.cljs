@@ -101,7 +101,7 @@
     (fn []
       [:div
        [:div "Select the tools you use"]
-       (if (empty? (:tools @current-available-tools))
+       (if (nil? (:tools @current-available-tools))
          [ui/loading]
          [:div
           [:ul (for [tool (:tools @current-available-tools)]
@@ -120,7 +120,7 @@
 (defn tools-page []
   (let [tools (re-frame/subscribe [:tools])]
     (fn []
-      (if (empty? (:by-id @tools))
+      (if (nil? (:by-id @tools))
         [ui/loading]
         [:div
          [:ul (for [tool (vals (:by-id @tools))]
