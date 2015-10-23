@@ -45,9 +45,9 @@
                         :path-params [id :- s/Uuid]
                         (ok (tool/get-integrations-for id)))
 
-                  (GET* "/current-user" {identity :identity}
-                        (if identity
-                          (ok (user/sanitize-for-public (db/get-user-by-id identity)))
+                  (GET* "/current-user" {current-user :current-user}
+                        (if current-user
+                          (ok (user/sanitize-for-public current-user))
                           (ok)))
                   (PUT* "/log-out" {session :session}
                         (assoc (ok) :session (dissoc session :identity)))
@@ -91,11 +91,11 @@
                              (ok {:status :success :reset-password-form reset-password-form}))
                            (ok {:status :failed :reset-password-form (assoc reset-password-form :-errors (user-schema/reset-password-validation reset-password-form))})))
 
-                  (PUT* "/change-password" {identity :identity}
+                  (PUT* "/change-password" {current-user :current-user}
                         :summary "Change the password for the logged in user or the specified token"
                         :body [change-password-form user-schema/ChangePasswordSchema]
                         ; TODO: return
-                        (if-let [current-user (when identity (db/get-user-by-id identity))]
+                        (if current-user
                           (if (validateur/valid? user-schema/change-password-validation-by-password change-password-form)
                             (if (user/check-password current-user (:current-password change-password-form))
                               (do (user/update-password current-user (:password change-password-form))
