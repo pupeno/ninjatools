@@ -86,13 +86,17 @@
   :current-available-tools
   (fn [db _]
     (ratom/reaction
-      (let [page-number (if-let [raw-page-number ((:query (:url (:current-route @db))) "p")]
+      (let [tools-not-in-use (filter #(not (contains? (:tools-in-use @db) (:id %)))
+                                     (vals (:by-id (:tools @db))))
+            tools-per-page 10
+            number-of-pages (Math.ceil (/ (count tools-not-in-use) tools-per-page))
+            page-number (if-let [raw-page-number ((:query (:url (:current-route @db))) "p")]
                           (js/parseInt raw-page-number)
-                          0)]
-        {:tools       (doall (take 10 (drop (* 10 page-number)
-                                            (filter #(not (contains? (:tools-in-use @db) (:id %)))
-                                                    (vals (:by-id (:tools @db)))))))
-         :page-number page-number}))))
+                          1)]
+        {:tools           (doall (take tools-per-page (drop (* tools-per-page (dec page-number))
+                                                            tools-not-in-use)))
+         :page-number     page-number
+         :number-of-pages number-of-pages}))))
 
 (defn home-page []
   (let [tools (re-frame/subscribe [:tools])
@@ -107,7 +111,10 @@
           [:ul (for [tool (:tools @current-available-tools)]
                  ^{:key (:id tool)}
                  [:li [:a {:on-click #(ui/dispatch % [:mark-tool-as-used (:id tool)])} (:name tool)]])]
-          [:div [:a {:href (str (routing/url-for :home) "?p=" (inc (:page-number @current-available-tools)))} "more tools"]]
+          [:div [:a {:href (str (routing/url-for :home) "?p=" (if (= (:page-number @current-available-tools) (:number-of-pages @current-available-tools))
+                                                                1
+                                                                (inc (:page-number @current-available-tools))))}
+                 "more tools"]]
           (if (not (empty? @tools-in-use))
             [:div
              [:div "Your tools"]
