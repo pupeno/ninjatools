@@ -44,7 +44,7 @@
                  [metosin/ring-swagger-ui "2.1.3"]
                  [org.immutant/web "2.1.0"]
                  [com.carouselapps/prerenderer "0.1.0"]
-                 [yeller-clojure-client "1.2.1"]
+                 [yeller-clojure-client "1.4.2"]
                  [com.lucasbradstreet/cljs-uuid-utils "1.0.2"]]
 
   :min-lein-version "2.0.0"
