@@ -23,7 +23,8 @@
             [ninjatools.layout :refer [*identity*]]
             [ring.middleware.ssl :refer [wrap-forwarded-scheme wrap-hsts wrap-ssl-redirect]]
             [ninjatools.db.core :as db]
-            [ninjatools.util :refer [dissoc-in]])
+            [ninjatools.util :refer [dissoc-in]]
+            [ninjatools.util :as util])
   (:import [javax.servlet ServletContext]))
 
 (defn wrap-context [handler]
@@ -90,7 +91,8 @@
       (if-let [current-user (when current-user-id (db/get-user-by-id current-user-id))]
         (binding [*identity* (get-in request [:session :identity])] ; This original line came from Luminus, when it was expected that views might want to access *identity*, which is not exected in a SPA, so, we may want to remove it. Not sure yet.
           (handler (assoc request :current-user current-user)))
-        (do (println "There's an identity in the session, but not user. This is broken.")
+        (do (util/report-error "There's an identity in the session but the user with that id cannot be found."
+                               (util/format-request-for-error request))
             (handler (-> request
                          (dissoc :identity)
                          (dissoc-in [:session :identity])))))
