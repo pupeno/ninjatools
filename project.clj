@@ -1,9 +1,8 @@
 ;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
 
 (defproject ninjatools "0.1.0-SNAPSHOT"
-
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+  :description "Find the tools you need that work with the tools you use."
+  :url "http://tools.screensaver.ninja"
 
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [selmer "0.9.2"]
