@@ -54,6 +54,12 @@
                         ; TODO: return
                         (let [session (update session :tools-in-use #(clojure.set/union % tool-ids))]
                           (assoc (ok (:tools-in-use session)) :session session)))
+                  (DELETE* "/tools-in-use/:tool-id" {session :session}
+                           :summary "Mark a tool as not being in-use."
+                           :path-params [tool-id :- s/Uuid]
+                           ; TODO: return
+                           (let [session (update-in session [:tools-in-use] disj tool-id)]
+                             (assoc (ok (:tools-in-use session)) :session session)))
 
                   (GET* "/current-user" {current-user :current-user}
                         (if current-user

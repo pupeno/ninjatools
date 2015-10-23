@@ -8,7 +8,7 @@
             [ninjatools.layout :as layout]
             [ninjatools.routing :as routing]
             [ninjatools.ui :as ui]
-            [ninjatools.util :as util]))
+            [ninjatools.util :as util :refer [dissoc-in]]))
 
 (defn add-tool [db tool]
   (-> db
@@ -86,6 +86,15 @@
                  :error-handler util/report-unexpected-error})
       db)))
 
+(re-frame/register-handler
+  :mark-tool-as-unused
+  (fn [db [_ tool-id]]
+    (let [db (update-in db [:tools-in-use] disj tool-id)]
+      (ajax/DELETE (str "/api/v1/tools-in-use/" tool-id)
+                   {:handler       #(re-frame/dispatch [:got-tools-in-use %1])
+                    :error-handler util/report-unexpected-error})
+      db)))
+
 (re-frame/register-sub
   :tools
   (fn [db _]
@@ -141,7 +150,8 @@
              [:div "Your tools"]
              [:ul (for [tool (doall (filter identity (map #(get-in @tools [:by-id %]) @tools-in-use)))]
                     ^{:key (:id tool)}
-                    [:li (:name tool)])]])])])))
+                    [:li (:name tool) " "
+                     [:a {:on-click #(ui/dispatch % [:mark-tool-as-unused (:id tool)])} "x"]])]])])])))
 
 (defmethod layout/pages :home [] [home-page])
 
