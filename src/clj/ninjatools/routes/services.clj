@@ -91,23 +91,23 @@
                              (ok {:status :success :reset-password-form reset-password-form}))
                            (ok {:status :failed :reset-password-form (assoc reset-password-form :-errors (user-schema/reset-password-validation reset-password-form))})))
 
-                  (POST* "/change-password" {identity :identity}
-                         :summary "Change the password for the logged in user or the specified token"
-                         :body [change-password-form user-schema/ChangePasswordSchema]
-                         ; TODO: return
-                         (if-let [current-user (when identity (db/get-user-by-id identity))]
-                           (if (validateur/valid? user-schema/change-password-validation-by-password change-password-form)
-                             (if (user/check-password current-user (:current-password change-password-form))
-                               (do (user/update-password current-user (:password change-password-form))
-                                   (ok {:status :success}))
-                               (ok {:status :failed :change-password-form (assoc-in change-password-form [:-errors :current-password] ["Your password doesn't match."])}))
-                             (ok {:status :failed :change-password-form (assoc change-password-form :-errors (user-schema/change-password-validation-by-token change-password-form))}))
-                           (if (validateur/valid? user-schema/change-password-validation-by-token change-password-form)
-                             (if-let [current-user (db/get-user-by-reset-password-token (:token change-password-form))]
-                               (do (user/update-password current-user (:password change-password-form))
-                                   (ok {:status :success}))
-                               (ok {:status :failed :change-password-form (assoc-in change-password-form [:-errors :-general] ["The reset token seems to be invalid or out of date. Please, start the reset password process again."])}))
-                             (ok {:status :failed :change-password-form (assoc change-password-form :-errors (user-schema/change-password-validation-by-token change-password-form))}))))
+                  (PUT* "/change-password" {identity :identity}
+                        :summary "Change the password for the logged in user or the specified token"
+                        :body [change-password-form user-schema/ChangePasswordSchema]
+                        ; TODO: return
+                        (if-let [current-user (when identity (db/get-user-by-id identity))]
+                          (if (validateur/valid? user-schema/change-password-validation-by-password change-password-form)
+                            (if (user/check-password current-user (:current-password change-password-form))
+                              (do (user/update-password current-user (:password change-password-form))
+                                  (ok {:status :success}))
+                              (ok {:status :failed :change-password-form (assoc-in change-password-form [:-errors :current-password] ["Your password doesn't match."])}))
+                            (ok {:status :failed :change-password-form (assoc change-password-form :-errors (user-schema/change-password-validation-by-token change-password-form))}))
+                          (if (validateur/valid? user-schema/change-password-validation-by-token change-password-form)
+                            (if-let [current-user (db/get-user-by-reset-password-token (:token change-password-form))]
+                              (do (user/update-password current-user (:password change-password-form))
+                                  (ok {:status :success}))
+                              (ok {:status :failed :change-password-form (assoc-in change-password-form [:-errors :-general] ["The reset token seems to be invalid or out of date. Please, start the reset password process again."])}))
+                            (ok {:status :failed :change-password-form (assoc change-password-form :-errors (user-schema/change-password-validation-by-token change-password-form))}))))
 
                   (GET* "/fail" []
                         :summary "Test error reporting"

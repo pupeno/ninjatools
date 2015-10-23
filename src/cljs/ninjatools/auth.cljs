@@ -275,15 +275,15 @@
                                user-schema/change-password-validation-by-password
                                user-schema/change-password-validation-by-token)
                              change-password-form)
-        (do (ajax/POST "/api/v1/change-password"
-                       {:params        (-> (if current-user
-                                             change-password-form
-                                             (assoc change-password-form :token (get-in db [:current-route :url :query "token"])))
-                                           (dissoc :-errors))
-                        :handler       #(re-frame/dispatch [:got-change-password html-form (clojure.walk/keywordize-keys %1)])
-                        :error-handler (fn [error]
-                                         (re-frame/dispatch [:clean-up-processing [:change-password-form]])
-                                         (util/report-unexpected-error error))})
+        (do (ajax/PUT "/api/v1/change-password"
+                      {:params        (-> (if current-user
+                                            change-password-form
+                                            (assoc change-password-form :token (get-in db [:current-route :url :query "token"])))
+                                          (dissoc :-errors))
+                       :handler       #(re-frame/dispatch [:got-change-password html-form (clojure.walk/keywordize-keys %1)])
+                       :error-handler (fn [error]
+                                        (re-frame/dispatch [:clean-up-processing [:change-password-form]])
+                                        (util/report-unexpected-error error))})
             (assoc-in db [:change-password-form :-processing] true))
         (assoc-in db [:change-password-form :-errors] (user-schema/change-password-validation-by-token change-password-form))))))
 
