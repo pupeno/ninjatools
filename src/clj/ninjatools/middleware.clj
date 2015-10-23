@@ -42,9 +42,9 @@
       (handler request))))
 
 (defn wrap-internal-error [handler]
-  (fn [req]
+  (fn [request]
     (try
-      (handler req)
+      (handler request)
       (catch Throwable t
         (timbre/error t)
         (error-page {:status  500
