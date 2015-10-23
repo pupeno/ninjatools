@@ -30,8 +30,8 @@
                  (fn [& args]
                    (let [args (if (< 1 (count args))
                                 args
-                                (cons (csk-extras/transform-keys csk/->snake_case (first args)) (rest args)))])
-                   (csk-extras/transform-keys csk/->kebab-case (apply yesql-query args))))))
+                                (cons (csk-extras/transform-keys csk/->snake_case (first args)) (rest args)))]
+                     (csk-extras/transform-keys csk/->kebab-case (apply yesql-query args)))))))
 (in-ns 'ninjatools.db.core)
 
 (def pool-spec
