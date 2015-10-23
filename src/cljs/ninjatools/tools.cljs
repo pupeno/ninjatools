@@ -17,7 +17,8 @@
 
 (defmethod routing/display-page :home [_current-route db]
   (when (empty? (get-in db [:tools :by-id]))
-    (re-frame/dispatch [:get-tools]))
+    (re-frame/dispatch [:get-tools])
+    (re-frame/dispatch [:get-tools-in-use]))
   db)
 
 (defmethod routing/display-page :tools [_current-route db]
@@ -44,6 +45,20 @@
       (reduce add-tool db tools))))
 
 (re-frame/register-handler
+  :get-tools-in-use
+  (fn [db [_]]
+    (ajax/GET "/api/v1/tools-in-use"
+              {:handler       #(re-frame/dispatch [:got-tools-in-use %1])
+               :error-handler util/report-unexpected-error})
+    db))
+
+(re-frame/register-handler
+  :got-tools-in-use
+  (fn [db [_ tools-in-use]]
+    (println tools-in-use)
+    (assoc db :tools-in-use (set tools-in-use))))
+
+(re-frame/register-handler
   :get-tool-with-integrations
   (fn [db [_ tool-slug tool-requested]]
     (if-let [tool (get-in db [:tools :by-slug tool-slug])]
@@ -65,7 +80,12 @@
 (re-frame/register-handler
   :mark-tool-as-used
   (fn [db [_ tool-id]]
-    (update-in db [:tools-in-use] conj tool-id)))
+    (let [db (update-in db [:tools-in-use] conj tool-id)]
+      (ajax/PUT "/api/v1/tools-in-use"
+                {:params        (:tools-in-use db)
+                 :handler       #(re-frame/dispatch [:got-tools-in-use %1])
+                 :error-handler util/report-unexpected-error})
+      db)))
 
 (re-frame/register-sub
   :tools
@@ -86,17 +106,19 @@
   :current-available-tools
   (fn [db _]
     (ratom/reaction
-      (let [tools-not-in-use (filter #(not (contains? (:tools-in-use @db) (:id %)))
-                                     (vals (:by-id (:tools @db))))
-            tools-per-page 10
-            number-of-pages (Math.ceil (/ (count tools-not-in-use) tools-per-page))
-            page-number (if-let [raw-page-number ((:query (:url (:current-route @db))) "p")]
-                          (js/parseInt raw-page-number)
-                          1)]
-        {:tools           (doall (take tools-per-page (drop (* tools-per-page (dec page-number))
-                                                            tools-not-in-use)))
-         :page-number     page-number
-         :number-of-pages number-of-pages}))))
+      (if (:tools @db)
+        (let [tools-not-in-use (filter #(not (contains? (:tools-in-use @db) (:id %)))
+                                       (vals (:by-id (:tools @db))))
+              tools-per-page 10
+              number-of-pages (Math.ceil (/ (count tools-not-in-use) tools-per-page))
+              page-number (if-let [raw-page-number ((:query (:url (:current-route @db))) "p")]
+                            (js/parseInt raw-page-number)
+                            1)]
+          {:tools           (doall (take tools-per-page (drop (* tools-per-page (dec page-number))
+                                                              tools-not-in-use)))
+           :page-number     page-number
+           :number-of-pages number-of-pages})
+        nil))))
 
 (defn home-page []
   (let [tools (re-frame/subscribe [:tools])
@@ -104,10 +126,10 @@
         tools-in-use (re-frame/subscribe [:tools-in-use])]
     (fn []
       [:div
-       [:div "Select the tools you use"]
        (if (nil? (:tools @current-available-tools))
          [ui/loading]
          [:div
+          [:div "Select the tools you use"]
           [:ul (for [tool (:tools @current-available-tools)]
                  ^{:key (:id tool)}
                  [:li [:a {:on-click #(ui/dispatch % [:mark-tool-as-used (:id tool)])} (:name tool)]])]
@@ -115,10 +137,10 @@
                                                                 1
                                                                 (inc (:page-number @current-available-tools))))}
                  "more tools"]]
-          (if (not (empty? @tools-in-use))
+          (when (and (:tools @current-available-tools) (not (empty? @tools-in-use)))
             [:div
              [:div "Your tools"]
-             [:ul (for [tool (doall (map #(get-in @tools [:by-id %]) @tools-in-use))]
+             [:ul (for [tool (doall (filter identity (map #(get-in @tools [:by-id %]) @tools-in-use)))]
                     ^{:key (:id tool)}
                     [:li (:name tool)])]])])])))
 

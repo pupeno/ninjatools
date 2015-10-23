@@ -31,6 +31,5 @@
      :registration-form    {}
      :reset-password-form  {}
      :change-password-form {}
-     :tools                {:by-id   {}
-                            :by-slug {}}
-     :tools-in-use         #{}}))
+     :tools                nil
+     :tools-in-use         nil}))
