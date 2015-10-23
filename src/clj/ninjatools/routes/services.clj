@@ -34,13 +34,17 @@
                   :tags ["v1"]
                   (GET* "/tools" []
                         :summary "Return all the tools."
+                        ; TODO: return
                         (ok (db/get-tools)))
                   (GET* "/tools/:id/integrations" []
                         :summary "Return all the integrated tools to a given tool."
                         :path-params [id :- s/Uuid]
+                        ; TODO: return
                         (ok (tool/get-integrations-for id)))
+
                   (GET* "/tools-in-use" {session :session current-user :current-user}
                         :summary "Get the set of ids of tools in use"
+                        ; TODO: return
                         (if current-user
                           (throw (Exception. "TODO"))
                           (ok (or (:tools-in-use session) #{}))))
@@ -50,6 +54,7 @@
                         (do
                           (let [session (update session :tools-in-use #(clojure.set/union % tool-ids))]
                             (assoc (ok (:tools-in-use session)) :session session))))
+                        ; TODO: return
 
                   (GET* "/current-user" {current-user :current-user}
                         (if current-user
