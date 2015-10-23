@@ -55,7 +55,6 @@
 (re-frame/register-handler
   :got-tools-in-use
   (fn [db [_ tools-in-use]]
-    (println tools-in-use)
     (assoc db :tools-in-use (set tools-in-use))))
 
 (re-frame/register-handler
