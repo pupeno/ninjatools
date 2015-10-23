@@ -6,8 +6,8 @@
             [to-jdbc-uri.core :refer [to-jdbc-uri]]
             [taoensso.timbre :as timbre]
             [environ.core :refer [env]]
-            [selmer.middleware :refer [wrap-error-page]]
-            [prone.middleware :refer [wrap-exceptions]]
+            [selmer.middleware :as selmer]
+            [prone.middleware :as prone]
             [ring.util.response :refer [redirect]]
             [ring.middleware.reload :as reload]
             [ring.middleware.webjars :refer [wrap-webjars]]
@@ -42,27 +42,14 @@
                 (:app-context env))]
       (handler request))))
 
-(defn wrap-internal-error [handler]
-  (fn [request]
-    (try
-      (handler request)
-      (catch Throwable t
-        (timbre/error t)
-        (error-page {:status  500
-                     :title   "Something very bad has happened!"
-                     :message "We've dispatched a team of highly trained gnomes to take care of the problem."})))))
-
 (defn wrap-delay [handler]
   (fn [request]
     (Thread/sleep 5000)
     (handler request)))
 
-(defn wrap-dev [handler]
+(defn wrap-reload [handler]
   (if (env :dev)
-    (-> handler
-        reload/wrap-reload
-        wrap-error-page
-        wrap-exceptions)
+    (reload/wrap-reload handler)
     handler))
 
 (defn wrap-csrf [handler]
@@ -111,14 +98,25 @@
         wrap-ssl-redirect
         wrap-forwarded-scheme)))
 
-(defn wrap-error-reporting [handler]
-  (if (or (:dev env) (:test env))
-    handler
-    (yeller/wrap-ring handler {:token (:yeller-token env) :environment (:environment env)})))
+(defn wrap-error [handler]
+  (if (env :dev)
+    (-> handler
+        reload/wrap-reload
+        selmer/wrap-error-page
+        prone/wrap-exceptions)
+    (fn [request]
+      (try
+        (if (env :test)
+          (handler request)
+          ((yeller/wrap-ring handler {:token (:yeller-token env) :environment (:environment env)}) request))
+        (catch Throwable t
+          (timbre/error t)
+          (error-page {:status  500
+                       :title   "Something very bad has happened!"
+                       :message "We've dispatched a team of highly trained gnomes to take care of the problem."}))))))
 
 (defn wrap-base [handler]
   (-> handler
-      wrap-dev
       wrap-auth
       wrap-formats
       wrap-webjars
@@ -128,6 +126,6 @@
             (assoc-in [:session :store] (jdbc-session-store/jdbc-store (to-jdbc-uri (env :database-url)) #_{:table :sessions})) ; TODO: switch to table sessions once this has been fixed: https://github.com/yogthos/jdbc-ring-session/issues/4
             (assoc-in [:session :secure] (not (or (env :dev) (env :test))))))
       wrap-context
-      wrap-error-reporting
-      wrap-internal-error
-      wrap-ssl))
+      wrap-ssl
+      wrap-error
+      wrap-reload))
