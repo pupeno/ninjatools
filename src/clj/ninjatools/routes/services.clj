@@ -11,10 +11,7 @@
             [ninjatools.models.user-schema :as user-schema]
             [validateur.validation :as validateur]
             [clojurewerkz.mailer.core :as mailer]
-            [yeller.clojure.client :as yeller]))
-
-(def yeller-client (yeller/client {:token       (:yeller-token env) ; TODO: move to a more generic place when we need to report errors from more than one place.
-                                   :environment (:environment env)}))
+            [ninjatools.util :as util]))
 
 #_(s/defschema Thingie {:id    Long
                         :hot   Boolean
