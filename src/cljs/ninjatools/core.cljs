@@ -32,4 +32,4 @@
      :reset-password-form  {}
      :change-password-form {}
      :tools                nil
-     :tools-in-use         nil}))
+     :used-tools           nil}))

@@ -42,24 +42,24 @@
                         ; TODO: return
                         (ok (tool/get-integrations-for id)))
 
-                  (GET* "/tools-in-use" {session :session current-user :current-user}
+                  (GET* "/used-tools" {session :session current-user :current-user}
                         :summary "Get the set of ids of tools in use"
                         ; TODO: return
                         (if current-user
                           (throw (Exception. "TODO"))
-                          (ok (or (:tools-in-use session) #{}))))
-                  (PUT* "/tools-in-use" {session :session}
+                          (ok (or (:used-tools session) #{}))))
+                  (PUT* "/used-tools" {session :session}
                         :summary "Update the tools currently marked as in-use."
                         :body [tool-ids #{s/Uuid}]
                         ; TODO: return
-                        (let [session (update session :tools-in-use #(clojure.set/union % tool-ids))]
-                          (assoc (ok (:tools-in-use session)) :session session)))
-                  (DELETE* "/tools-in-use/:tool-id" {session :session}
+                        (let [session (update session :used-tools #(clojure.set/union % tool-ids))]
+                          (assoc (ok (:used-tools session)) :session session)))
+                  (DELETE* "/used-tools/:tool-id" {session :session}
                            :summary "Mark a tool as not being in-use."
                            :path-params [tool-id :- s/Uuid]
                            ; TODO: return
-                           (let [session (update-in session [:tools-in-use] disj tool-id)]
-                             (assoc (ok (:tools-in-use session)) :session session)))
+                           (let [session (update-in session [:used-tools] disj tool-id)]
+                             (assoc (ok (:used-tools session)) :session session)))
 
                   (GET* "/current-user" {current-user :current-user}
                         (if current-user

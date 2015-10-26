@@ -18,7 +18,7 @@
 (defmethod routing/display-page :home [_current-route db]
   (when (empty? (get-in db [:tools :by-id]))
     (re-frame/dispatch [:get-tools])
-    (re-frame/dispatch [:get-tools-in-use]))
+    (re-frame/dispatch [:get-used-tools]))
   db)
 
 (defmethod routing/display-page :tools [_current-route db]
@@ -45,17 +45,17 @@
       (reduce add-tool db tools))))
 
 (re-frame/register-handler
-  :get-tools-in-use
+  :get-used-tools
   (fn [db [_]]
-    (ajax/GET "/api/v1/tools-in-use"
-              {:handler       #(re-frame/dispatch [:got-tools-in-use %1])
+    (ajax/GET "/api/v1/used-tools"
+              {:handler       #(re-frame/dispatch [:got-used-tools %1])
                :error-handler util/report-unexpected-error})
     db))
 
 (re-frame/register-handler
-  :got-tools-in-use
-  (fn [db [_ tools-in-use]]
-    (assoc db :tools-in-use (set tools-in-use))))
+  :got-used-tools
+  (fn [db [_ used-tools]]
+    (assoc db :used-tools (set used-tools))))
 
 (re-frame/register-handler
   :get-tool-with-integrations
@@ -79,19 +79,19 @@
 (re-frame/register-handler
   :mark-tool-as-used
   (fn [db [_ tool-id]]
-    (let [db (update-in db [:tools-in-use] conj tool-id)]
-      (ajax/PUT "/api/v1/tools-in-use"
-                {:params        (:tools-in-use db)
-                 :handler       #(re-frame/dispatch [:got-tools-in-use %1])
+    (let [db (update-in db [:used-tools] conj tool-id)]
+      (ajax/PUT "/api/v1/used-tools"
+                {:params        (:used-tools db)
+                 :handler       #(re-frame/dispatch [:got-used-tools %1])
                  :error-handler util/report-unexpected-error})
       db)))
 
 (re-frame/register-handler
   :mark-tool-as-unused
   (fn [db [_ tool-id]]
-    (let [db (update-in db [:tools-in-use] disj tool-id)]
-      (ajax/DELETE (str "/api/v1/tools-in-use/" tool-id)
-                   {:handler       #(re-frame/dispatch [:got-tools-in-use %1])
+    (let [db (update-in db [:used-tools] disj tool-id)]
+      (ajax/DELETE (str "/api/v1/used-tools/" tool-id)
+                   {:handler       #(re-frame/dispatch [:got-used-tools %1])
                     :error-handler util/report-unexpected-error})
       db)))
 
@@ -101,9 +101,9 @@
     (ratom/reaction (:tools @db))))
 
 (re-frame/register-sub
-  :tools-in-use
+  :used-tools
   (fn [db _]
-    (ratom/reaction (:tools-in-use @db))))
+    (ratom/reaction (:used-tools @db))))
 
 (re-frame/register-sub
   :current-tool
@@ -115,7 +115,7 @@
   (fn [db _]
     (ratom/reaction
       (if (:tools @db)
-        (let [tools-not-in-use (filter #(not (contains? (:tools-in-use @db) (:id %)))
+        (let [tools-not-in-use (filter #(not (contains? (:used-tools @db) (:id %)))
                                        (vals (:by-id (:tools @db))))
               tools-per-page 10
               number-of-pages (Math.ceil (/ (count tools-not-in-use) tools-per-page))
@@ -131,7 +131,7 @@
 (defn home-page []
   (let [tools (re-frame/subscribe [:tools])
         current-available-tools (re-frame/subscribe [:current-available-tools])
-        tools-in-use (re-frame/subscribe [:tools-in-use])]
+        used-tools (re-frame/subscribe [:used-tools])]
     (fn []
       [:div
        (if (nil? (:tools @current-available-tools))
@@ -145,10 +145,10 @@
                                                                 1
                                                                 (inc (:page-number @current-available-tools))))}
                  "more tools"]]
-          (when (and (:tools @current-available-tools) (not (empty? @tools-in-use)))
+          (when (and (:tools @current-available-tools) (not (empty? @used-tools)))
             [:div
              [:div "Your tools"]
-             [:ul (for [tool (doall (filter identity (map #(get-in @tools [:by-id %]) @tools-in-use)))]
+             [:ul (for [tool (doall (filter identity (map #(get-in @tools [:by-id %]) @used-tools)))]
                     ^{:key (:id tool)}
                     [:li (:name tool) " "
                      [:a {:on-click #(ui/dispatch % [:mark-tool-as-unused (:id tool)])} "x"]])]])])])))
