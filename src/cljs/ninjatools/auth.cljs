@@ -10,6 +10,7 @@
             [ninjatools.layout :as layout]
             [ninjatools.routing :as routing]
             [ninjatools.alerts :as alerts]
+            [ninjatools.db :as db]
             [ninjatools.ui :as ui]
             [ninjatools.util :as util :refer [dissoc-in]]))
 
@@ -159,8 +160,7 @@
   :logged-out
   (fn [db [_]]
     (routing/redirect-to :home)
-    (-> db
-        (assoc :current-user nil)
+    (-> db/initial-db
         (alerts/add-alert :success "You are now logged out."))))
 
 (defn log-in-page []

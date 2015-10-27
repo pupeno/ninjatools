@@ -5,6 +5,7 @@
             [re-frame.core :as re-frame]
             [ninjatools.routing :as routing]
             [ninjatools.layout :as layout]
+            ninjatools.db
             ninjatools.auth
             ninjatools.alerts
             ninjatools.tools
@@ -19,17 +20,3 @@
   (routing/start!)
   (re-frame/dispatch-sync [:initialize-db])
   (mount-root))
-
-(re-frame/register-handler
-  :initialize-db
-  (fn [_ _]
-    (re-frame/dispatch [:get-current-user])
-    {:current-route        nil
-     :alerts               (sorted-map)
-     :current-user         nil
-     :log-in-form          {}
-     :registration-form    {}
-     :reset-password-form  {}
-     :change-password-form {}
-     :tools                nil
-     :used-tools           nil}))

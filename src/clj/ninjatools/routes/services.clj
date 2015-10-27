@@ -74,7 +74,7 @@
                           (ok (user/sanitize-for-public current-user))
                           (ok)))
                   (PUT* "/log-out" {session :session}
-                        (assoc (ok) :session (dissoc session :identity)))
+                        (assoc (ok) :session nil))
                   (PUT* "/log-in" {session :session}
                         :summary "Log in as a user"
                         :body [log-in-form user-schema/LogInSchema]
