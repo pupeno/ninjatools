@@ -44,6 +44,7 @@
                  [org.immutant/web "2.1.0"]
                  [com.carouselapps/prerenderer "0.1.0"]
                  [yeller-clojure-client "1.4.2"]
+                 [binaryage/devtools "0.4.0"]
                  [com.lucasbradstreet/cljs-uuid-utils "1.0.2"]]
 
   :min-lein-version "2.0.0"
