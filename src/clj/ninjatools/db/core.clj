@@ -3,7 +3,6 @@
 (ns ninjatools.db.core
   (:require
     [cheshire.core :refer [generate-string parse-string]]
-    [taoensso.timbre :as timbre]
     [clojure.java.jdbc :as jdbc]
     [conman.core :as conman]
     [to-jdbc-uri.core :refer [to-jdbc-uri]]
@@ -12,8 +11,7 @@
            org.postgresql.jdbc4.Jdbc4Array
            clojure.lang.IPersistentMap
            clojure.lang.IPersistentVector
-           [java.sql BatchUpdateException
-                     Date
+           [java.sql Date
                      Timestamp
                      PreparedStatement]))
 
@@ -43,7 +41,6 @@
 
 (defn connect! []
   (conman/connect! conn (assoc pool-spec :jdbc-url (to-jdbc-uri (env :database-url)))))
-
 
 (defn disconnect! []
   (conman/disconnect! conn))
