@@ -50,10 +50,10 @@
                           (ok (or (:used-tools session) #{}))))
                   (PUT* "/used-tools" {session :session}
                         :summary "Update the tools currently marked as in-use."
-                        :body [tool-ids #{s/Uuid}]
+                        :body [tool-id s/Uuid]
                         ; TODO: return
-                        (let [session (update session :used-tools #(clojure.set/union % tool-ids))]
-                          (assoc (ok (:used-tools session)) :session session)))
+                        (let [session (update session :used-tools conj tool-id)]
+                          (assoc (ok (:used-tools session)) :session session))
                   (DELETE* "/used-tools/:tool-id" {session :session}
                            :summary "Mark a tool as not being in-use."
                            :path-params [tool-id :- s/Uuid]

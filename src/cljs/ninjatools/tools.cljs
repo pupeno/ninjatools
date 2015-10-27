@@ -81,7 +81,7 @@
   (fn [db [_ tool-id]]
     (let [db (update-in db [:used-tools] conj tool-id)]
       (ajax/PUT "/api/v1/used-tools"
-                {:params        (:used-tools db)
+                {:params        tool-id
                  :handler       #(re-frame/dispatch [:got-used-tools %1])
                  :error-handler util/report-unexpected-error})
       db)))
