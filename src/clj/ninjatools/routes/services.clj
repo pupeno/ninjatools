@@ -11,7 +11,8 @@
             [ninjatools.models.user-schema :as user-schema]
             [validateur.validation :as validateur]
             [clojurewerkz.mailer.core :as mailer]
-            [ninjatools.util :as util]))
+            [ninjatools.util :as util]
+            [conman.core :as conman]))
 
 #_(s/defschema Thingie {:id    Long
                         :hot   Boolean
@@ -46,14 +47,21 @@
                         :summary "Get the set of ids of tools in use"
                         ; TODO: return
                         (if current-user
-                          (throw (Exception. "TODO"))
+                          (ok (map :tool-id (db/get-used-tools {:user-id (:id current-user)})))
                           (ok (or (:used-tools session) #{}))))
-                  (PUT* "/used-tools" {session :session}
+                  (PUT* "/used-tools" {session :session current-user :current-user}
                         :summary "Update the tools currently marked as in-use."
                         :body [tool-id s/Uuid]
                         ; TODO: return
-                        (let [session (update session :used-tools conj tool-id)]
-                          (assoc (ok (:used-tools session)) :session session))
+                        (if current-user
+                          (conman/with-transaction [t-conn db/conn]
+                            (let [used-tools (db/get-used-tools {:user-id (:id current-user)})]
+                              (when (not (some #{tool-id} (map :id used-tools)))
+                                (db/add-used-tool<! {:user-id (:id current-user)
+                                                     :tool-id tool-id}))
+                              (ok (set (conj (map :id used-tools) tool-id)))))
+                          (let [session (update session :used-tools conj tool-id)]
+                            (assoc (ok (:used-tools session)) :session session))))
                   (DELETE* "/used-tools/:tool-id" {session :session}
                            :summary "Mark a tool as not being in-use."
                            :path-params [tool-id :- s/Uuid]

@@ -68,3 +68,15 @@ SET password = :password,
     reset_password_token = NULL,
     reset_password_token_expires_at = NULL
 WHERE id = :id
+
+-- name: get-used-tools
+SELECT *
+FROM tools
+JOIN used_tools ON used_tools.tool_id = tools.id
+WHERE used_tools.user_id = :user_id
+
+-- name: add-used-tool<!
+INSERT INTO used_tools
+(user_id, tool_id)
+VALUES (:user_id, :tool_id)
+
