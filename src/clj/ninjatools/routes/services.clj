@@ -20,6 +20,10 @@
                         :chief [{:name String
                                  :type #{{:id String}}}]})
 
+(defn log-in-user [user session]
+  (-> (ok {:status :success :user (user/sanitize-for-public user)})
+      (assoc :session (assoc session :identity (:id user)))))
+
 (defapi service-routes
         ; Report errors to Yeller. Read more here: https://github.com/metosin/compojure-api#exception-handling and here: http://docs.yellerapp.com/platforms/clojure/getting_started.html
         {:exceptions {:handlers {:compojure.api.exception/response-validation (fn [^Exception e data request]
@@ -81,8 +85,7 @@
                         ; TODO: :return
                         (if (validateur/valid? user-schema/log-in-validation log-in-form)
                           (if-let [user (user/get-by-credentials log-in-form)]
-                            (-> (ok {:status :success :user (user/sanitize-for-public user)})
-                                (assoc :session (assoc session :identity (:id user))))
+                            (log-in-user user session)
                             (ok {:status :failed :log-in-form (update-in log-in-form [:-errors :-general] #(conj (or %1 []) "Email and password doesn't match"))}))
                           (ok {:status :failed :log-in-form (assoc log-in-form :-errors (user-schema/log-in-validation log-in-form))})))
 
@@ -93,8 +96,7 @@
                          ;        :registration user-schema/RegistrationValidationSchema}
                          (if (validateur/valid? user/registration-validation registration-form)
                            (let [user (user/create (dissoc registration-form :password-confirmation))]
-                             (-> (ok {:status :success :user (user/sanitize-for-public user)})
-                                 (assoc :session (assoc session :identity (:id user)))))
+                             (log-in-user user session))
                            (ok {:status :failed :registration-form (assoc registration-form :-errors (user/registration-validation registration-form))})))
 
                   (POST* "/reset-password" []
