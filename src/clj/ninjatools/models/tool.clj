@@ -12,8 +12,8 @@
   (let [tool (fill-in-fields tool)]
     (db/create-tool<! tool)))
 
-(defn get-integrations-for [tool_id]
-  (as-> (db/get-integrations-for {:tool_id tool_id}) integrations
-        (mapcat (fn [i] [(:tool_a_id i) (:tool_b_id i)]) integrations)
+(defn get-integrations-for [tool-id]
+  (as-> (db/get-integrations-for {:tool-id tool-id}) integrations
+        (mapcat (fn [i] [(:tool-a-id i) (:tool-b-id i)]) integrations)
         (set integrations)
-        (disj integrations tool_id)))
+        (disj integrations tool-id)))
