@@ -21,8 +21,12 @@
                                  :type #{{:id String}}}]})
 
 (defn log-in-user [user session]
+  (when (:used-tools session)
+    (tool/add-used-tools (:id user) (:used-tools session)))
   (-> (ok {:status :success :user (user/sanitize-for-public user)})
-      (assoc :session (assoc session :identity (:id user)))))
+      (assoc :session (-> session
+                          (assoc :identity (:id user))
+                          (dissoc :used-tools)))))
 
 (defapi service-routes
         ; Report errors to Yeller. Read more here: https://github.com/metosin/compojure-api#exception-handling and here: http://docs.yellerapp.com/platforms/clojure/getting_started.html
@@ -58,12 +62,7 @@
                         :body [tool-id s/Uuid]
                         ; TODO: return
                         (if current-user
-                          (conman/with-transaction [t-conn db/conn]
-                            (let [used-tools (db/get-used-tools {:user-id (:id current-user)})]
-                              (when (not (some #{tool-id} (map :id used-tools)))
-                                (db/add-used-tool<! {:user-id (:id current-user)
-                                                     :tool-id tool-id}))
-                              (ok (set (conj (map :id used-tools) tool-id)))))
+                          (ok (tool/add-used-tool (:id current-user) tool-id))
                           (let [session (update session :used-tools conj tool-id)]
                             (assoc (ok (:used-tools session)) :session session))))
                   (DELETE* "/used-tools/:tool-id" {session :session}
