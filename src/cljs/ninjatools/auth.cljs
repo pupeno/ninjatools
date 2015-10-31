@@ -138,9 +138,8 @@
     (if (= status "success")
       (do
         (re-frame/dispatch [:redirect-to :home])
-        (-> db
-            (assoc :log-in-form {}
-                   :current-user user)
+        (-> db/initial-db
+            (assoc :current-user user)
             (alerts/add-alert :success "You are now logged in.")))
       (assoc db :log-in-form log-in-form))))
 
@@ -158,7 +157,7 @@
 
 (re-frame/register-handler
   :logged-out
-  (fn [db [_]]
+  (fn [_db [_]]
     (routing/redirect-to :home)
     (-> db/initial-db
         (alerts/add-alert :success "You are now logged out."))))
