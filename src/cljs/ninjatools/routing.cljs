@@ -29,21 +29,27 @@
 (defn routing-event [matched-route]
   [:set-current-route matched-route])
 
+(defn dispatch-route [parsed-path]
+  (re-frame/dispatch [:ui-interaction])
+  (re-frame/dispatch (routing-event parsed-path)))
+
 (def history (atom nil))
 
 (defn start! []
   (when (nil? @history)
-    (reset! history (pushy/pushy (fn [matched-route]
-                                   (re-frame/dispatch [:ui-interaction])
-                                   (re-frame/dispatch (routing-event matched-route)))
-                                 parse-path)))
+    (reset! history (pushy/pushy dispatch-route parse-path)))
   (pushy/start! @history))
 
 (def url-for (partial silk/depart routes))
 
 (defn redirect-to [& args]
   (when @history
-    (pushy/set-token! @history (apply url-for args))))
+    (let [path (apply url-for args)
+          self-redirect (= path (pushy/get-token @history))]
+      (pushy/set-token! @history path)
+      (when self-redirect                                   ; If we are re-directing to itself, we need to re-trigger routing manually.
+        (when-let [parsed-path (parse-path path)]
+          (dispatch-route parsed-path))))))
 
 (re-frame/register-handler
   :redirect-to
