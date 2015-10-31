@@ -59,7 +59,7 @@
   (fn [db [_ {status :status registration-form :registration-form user :user}]]
     (if (= status "success")
       (do
-        (routing/redirect-to :home)
+        (re-frame/dispatch [:redirect-to :home])
         (-> db
             (assoc :registration-form {}
                    :current-user user)
@@ -137,7 +137,7 @@
   (fn [db [_ {status :status log-in-form :log-in-form user :user}]]
     (if (= status "success")
       (do
-        (routing/redirect-to :home)
+        (re-frame/dispatch [:redirect-to :home])
         (-> db
             (assoc :log-in-form {}
                    :current-user user)
@@ -294,7 +294,7 @@
       (do
         (if (:current-user db)
           (.reset html-form)
-          (routing/redirect-to :log-in))
+          (re-frame/dispatch [:redirect-to :log-in]))
         (-> db
             (assoc :change-password-form {})
             (alerts/add-alert :success

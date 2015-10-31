@@ -45,6 +45,12 @@
   (when @history
     (pushy/set-token! @history (apply url-for args))))
 
+(re-frame/register-handler
+  :redirect-to
+  (fn [db [& args]]
+    (apply redirect-to (drop 1 args))
+    db))
+
 (defmulti display-page :name)
 (defmethod display-page :default [_current-route db]
   db)
