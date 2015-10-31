@@ -52,9 +52,9 @@
   (doall (for [tool tools]
            (println "Created tool: " (tool/create tool))))
   (doall (for [integration integrations
-               :let [[tool_a tool_b] (map db/get-tool-by-name (sort integration))]]
+               :let [[tool-a tool-b] (map db/get-tool-by-name (sort integration))]]
            (do
-             (println "Creating integration between " tool_a " and " tool_b)
-             (db/create-integration<! {:tool_a_id (:id tool_a)
-                                       :tool_b_id (:id tool_b)
+             (println "Creating integration between " tool-a " and " tool-b)
+             (db/create-integration<! {:tool-a-id (:id tool-a)
+                                       :tool-b-id (:id tool-b)
                                        :comment   ""})))))
