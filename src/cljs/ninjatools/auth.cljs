@@ -71,9 +71,9 @@
   (fn [db _]
     (ratom/reaction (:registration-form @db))))
 
-(defn register-page []
+(defmethod layout/pages :register [_]
   (let [registration-form (re-frame/subscribe [:registration-form])]
-    (fn []
+    (fn [_]
       [:div
        [:h1 "Register"]
        [forms/form @registration-form (:-errors @registration-form) :update-registration-form
@@ -107,8 +107,6 @@
           [:div.col-sm-5.text-right
            [:p "Already have an account? "
             [:a {:href (routing/url-for :log-in)} "Log in"]]]]]]])))
-
-(defmethod layout/pages :register [] [register-page])
 
 (re-frame/register-handler
   :update-log-in-form
@@ -162,9 +160,9 @@
     (-> db/initial-db
         (alerts/add-alert :success "You are now logged out."))))
 
-(defn log-in-page []
+(defmethod layout/pages :log-in [_]
   (let [log-in-form (re-frame/subscribe [:log-in-form])]
-    (fn []
+    (fn [_]
       [:div
        [:h1 "Log in"]
        [forms/form @log-in-form (:-errors @log-in-form) :update-log-in-form
@@ -192,8 +190,6 @@
           [:div.col-sm-5.text-right
            [:p "Don't know your password? "
             [:a {:href (routing/url-for :reset-password)} "Reset Password"]]]]]]])))
-
-(defmethod layout/pages :log-in [] [log-in-page])
 
 (re-frame/register-handler
   :update-reset-password-form
@@ -233,9 +229,9 @@
   (fn [db _]
     (ratom/reaction (:reset-password-form @db))))
 
-(defn reset-password-page []
+(defmethod layout/pages :reset-password [_]
   (let [reset-password-form (re-frame/subscribe [:reset-password-form])]
-    (fn []
+    (fn [_]
       [:div
        [:h1 "Reset Password"]
        [forms/form @reset-password-form (:-errors @reset-password-form) :update-reset-password-form
@@ -254,8 +250,6 @@
             (if (:-processing @reset-password-form)
               "Resetting password, please wait..."
               "Reset Password")]]]]]])))
-
-(defmethod layout/pages :reset-password [] [reset-password-page])
 
 (re-frame/register-handler
   :update-change-password-form
@@ -307,10 +301,10 @@
   (fn [db _]
     (ratom/reaction (:change-password-form @db))))
 
-(defn change-password-page []
+(defmethod layout/pages :change-password [_]
   (let [change-password-form (re-frame/subscribe [:change-password-form])
         current-password (re-frame/subscribe [:current-user])]
-    (fn []
+    (fn [_]
       [:div
        [:h1 "Change Password"]
        [forms/form @change-password-form (:-errors @change-password-form) :update-change-password-form
@@ -341,8 +335,6 @@
             (if (:-processing @change-password-form)
               "Changing Password, please wait..."
               "Change Password")]]]]]])))
-
-(defmethod layout/pages :change-password [] [change-password-page])
 
 (re-frame/register-handler
   :clean-up-processing

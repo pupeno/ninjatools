@@ -128,11 +128,11 @@
            :number-of-pages number-of-pages})
         nil))))
 
-(defn home-page []
+(defmethod layout/pages :home [_]
   (let [tools (re-frame/subscribe [:tools])
         current-available-tools (re-frame/subscribe [:current-available-tools])
         used-tools (re-frame/subscribe [:used-tools])]
-    (fn []
+    (fn [_]
       [:div
        (if (nil? (:tools @current-available-tools))
          [ui/loading]
@@ -153,11 +153,9 @@
                     [:li (:name tool) " "
                      [:a {:on-click #(ui/dispatch % [:mark-tool-as-unused (:id tool)])} "x"]])]])])])))
 
-(defmethod layout/pages :home [] [home-page])
-
-(defn tools-page []
+(defmethod layout/pages :tools [_]
   (let [tools (re-frame/subscribe [:tools])]
-    (fn []
+    (fn [_]
       (if (nil? (:by-id @tools))
         [ui/loading]
         [:div
@@ -166,17 +164,13 @@
          [:div [:a {:on-click #(ui/dispatch % [:get-tools])}
                 "Refresh tools"]]]))))
 
-(defmethod layout/pages :tools [] [tools-page])
-
-(defn tool-page []
+(defmethod layout/pages :tool [_]
   (let [current-tool (re-frame/subscribe [:current-tool])
         tools (re-frame/subscribe [:tools])]
-    (fn []
+    (fn [_]
       (if @current-tool
         [:div
          [:h1 (:name @current-tool)]
          [:ul (for [integrated-tool (vals (select-keys (:by-id @tools) (:integration-ids @current-tool)))]
                 ^{:key (:id integrated-tool)} [:li [:a {:href (routing/url-for :tool {:slug (:slug integrated-tool)})} (:name integrated-tool)]])]]
         [ui/loading]))))
-
-(defmethod layout/pages :tool [] [tool-page])
