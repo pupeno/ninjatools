@@ -72,7 +72,7 @@
 
 (defmethod layout/pages :register [_]
   (let [registration-form (re-frame/subscribe [:registration-form])]
-    (fn []
+    (fn [_]
       [:div
        [:h1 "Register"]
        [forms/form @registration-form (:-errors @registration-form) :update-registration-form
@@ -163,7 +163,7 @@
 
 (defmethod layout/pages :log-in [_]
   (let [log-in-form (re-frame/subscribe [:log-in-form])]
-    (fn []
+    (fn [_]
       [:div
        [:h1 "Log in"]
        [forms/form @log-in-form (:-errors @log-in-form) :update-log-in-form
@@ -232,7 +232,7 @@
 
 (defmethod layout/pages :reset-password [_]
   (let [reset-password-form (re-frame/subscribe [:reset-password-form])]
-    (fn []
+    (fn [_]
       [:div
        [:h1 "Reset Password"]
        [forms/form @reset-password-form (:-errors @reset-password-form) :update-reset-password-form
@@ -305,7 +305,7 @@
 (defmethod layout/pages :change-password [_]
   (let [change-password-form (re-frame/subscribe [:change-password-form])
         current-password (re-frame/subscribe [:current-user])]
-    (fn []
+    (fn [_]
       [:div
        [:h1 "Change Password"]
        [forms/form @change-password-form (:-errors @change-password-form) :update-change-password-form

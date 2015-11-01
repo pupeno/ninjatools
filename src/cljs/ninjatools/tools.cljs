@@ -98,7 +98,7 @@
   (let [tools (re-frame/subscribe [:tools])
         current-available-tools (re-frame/subscribe [:current-available-tools])
         tools-in-use (re-frame/subscribe [:tools-in-use])]
-    (fn []
+    (fn [_]
       [:div
        [:div "Select the tools you use"]
        (if (empty? (:tools @current-available-tools))
@@ -117,7 +117,7 @@
 
 (defmethod layout/pages :tools [_]
   (let [tools (re-frame/subscribe [:tools])]
-    (fn []
+    (fn [_]
       (if (empty? (:by-id @tools))
         [ui/loading]
         [:div
@@ -129,7 +129,7 @@
 (defmethod layout/pages :tool [_]
   (let [current-tool (re-frame/subscribe [:current-tool])
         tools (re-frame/subscribe [:tools])]
-    (fn []
+    (fn [_]
       (if @current-tool
         [:div
          [:h1 (:name @current-tool)]

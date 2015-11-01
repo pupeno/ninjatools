@@ -7,7 +7,7 @@
             [ninjatools.util :as util]))
 
 (defmethod layout/pages :about [_]
-  (fn []
+  (fn [_]
     [:div "This is the About Page."]))
 
 (re-frame/register-handler
@@ -17,7 +17,7 @@
     db))
 
 (defmethod layout/pages :fail [_]
-  (fn []
+  (fn [_]
     [:div
      [:h1 "Page to test error reporting"]
      [:p [:a.btn.btn-default {:on-click #(throw (js/Error "Bogus error to test exception handling on the client"))} "Client Fail!"]]
