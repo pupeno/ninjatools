@@ -57,4 +57,4 @@
        [nav-bar]
        [:main.container
         [alerts/view]
-        [pages @current-route]]])))
+        ^{:key @current-route} [pages @current-route]]])))
