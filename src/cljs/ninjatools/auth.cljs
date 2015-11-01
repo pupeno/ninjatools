@@ -70,7 +70,7 @@
   (fn [db _]
     (ratom/reaction (:registration-form @db))))
 
-(defmethod layout/pages :register []
+(defmethod layout/pages :register [_]
   (let [registration-form (re-frame/subscribe [:registration-form])]
     (fn []
       [:div
@@ -161,7 +161,7 @@
         (assoc :current-user nil)
         (alerts/add-alert :success "You are now logged out."))))
 
-(defmethod layout/pages :log-in []
+(defmethod layout/pages :log-in [_]
   (let [log-in-form (re-frame/subscribe [:log-in-form])]
     (fn []
       [:div
@@ -230,7 +230,7 @@
   (fn [db _]
     (ratom/reaction (:reset-password-form @db))))
 
-(defmethod layout/pages :reset-password []
+(defmethod layout/pages :reset-password [_]
   (let [reset-password-form (re-frame/subscribe [:reset-password-form])]
     (fn []
       [:div
@@ -302,7 +302,7 @@
   (fn [db _]
     (ratom/reaction (:change-password-form @db))))
 
-(defmethod layout/pages :change-password []
+(defmethod layout/pages :change-password [_]
   (let [change-password-form (re-frame/subscribe [:change-password-form])
         current-password (re-frame/subscribe [:current-user])]
     (fn []

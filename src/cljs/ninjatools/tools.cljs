@@ -94,7 +94,7 @@
                                                     (vals (:by-id (:tools @db)))))))
          :page-number page-number}))))
 
-(defmethod layout/pages :home []
+(defmethod layout/pages :home [_]
   (let [tools (re-frame/subscribe [:tools])
         current-available-tools (re-frame/subscribe [:current-available-tools])
         tools-in-use (re-frame/subscribe [:tools-in-use])]
@@ -115,7 +115,7 @@
                     ^{:key (:id tool)}
                     [:li (:name tool)])]])])])))
 
-(defmethod layout/pages :tools []
+(defmethod layout/pages :tools [_]
   (let [tools (re-frame/subscribe [:tools])]
     (fn []
       (if (empty? (:by-id @tools))
@@ -126,7 +126,7 @@
          [:div [:a {:on-click #(ui/dispatch % [:get-tools])}
                 "Refresh tools"]]]))))
 
-(defmethod layout/pages :tool []
+(defmethod layout/pages :tool [_]
   (let [current-tool (re-frame/subscribe [:current-tool])
         tools (re-frame/subscribe [:tools])]
     (fn []

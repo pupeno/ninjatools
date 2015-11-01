@@ -6,7 +6,7 @@
             [ninjatools.layout :as layout]
             [ninjatools.util :as util]))
 
-(defmethod layout/pages :about []
+(defmethod layout/pages :about [_]
   (fn []
     [:div "This is the About Page."]))
 
@@ -16,7 +16,7 @@
     (ajax/GET "/api/v1/fail" {:error-handler util/report-unexpected-error})
     db))
 
-(defmethod layout/pages :fail []
+(defmethod layout/pages :fail [_]
   (fn []
     [:div
      [:h1 "Page to test error reporting"]
