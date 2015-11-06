@@ -80,3 +80,17 @@ INSERT INTO used_tools
 (user_id, tool_id)
 VALUES (:user_id, :tool_id)
 
+-- name: get-features
+SELECT *
+FROM features
+
+-- name: get-wanted-features
+SELECT *
+FROM features
+JOIN wanted_features ON wanted_features.feature_id = features.id
+WHERE wanted_features.user_id = :user_id
+
+-- name: add-wanted-feature<!
+INSERT INTO wanted_features
+(user_id, feature_id)
+VALUES (:user_id, :feature_id)

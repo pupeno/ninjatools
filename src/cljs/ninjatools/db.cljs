@@ -11,7 +11,9 @@
                  :reset-password-form  {}
                  :change-password-form {}
                  :tools                nil
-                 :used-tools           nil})
+                 :features             nil
+                 :used-tools           nil
+                 :wanted-features      nil})
 
 (re-frame/register-handler
   :initialize-db

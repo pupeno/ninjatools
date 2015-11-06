@@ -7,6 +7,7 @@
             [environ.core :refer [env]]
             [ninjatools.db.core :as db]
             [ninjatools.models.tool :as tool]
+            [ninjatools.models.feature :as feature]
             [ninjatools.models.user :as user]
             [ninjatools.models.user-schema :as user-schema]
             [validateur.validation :as validateur]
@@ -23,6 +24,8 @@
 (defn log-in-user [user session]
   (when (:used-tools session)
     (tool/add-used-tools (:id user) (:used-tools session)))
+  (when (:wanted-features session)
+    (feature/add-wanted-features (:id user) (:wanted-features session)))
   (-> (ok {:status :success :user (user/sanitize-for-public user)})
       (assoc :session (-> session
                           (assoc :identity (:id user))
@@ -51,6 +54,10 @@
                         ; TODO: return
                         (ok (tool/get-integrations-for id)))
 
+                  (GET* "/features" []
+                        :summary "Return all the features."
+                        (ok (db/get-features)))
+
                   (GET* "/used-tools" {session :session current-user :current-user}
                         :summary "Get the set of ids of tools in use"
                         ; TODO: return
@@ -63,7 +70,7 @@
                         ; TODO: return
                         (if current-user
                           (ok (tool/add-used-tool (:id current-user) tool-id))
-                          (let [session (update session :used-tools conj tool-id)]
+                          (let [session (update session :used-tools #(conj (or %1 #{}) %2) tool-id)]
                             (assoc (ok (:used-tools session)) :session session))))
                   (DELETE* "/used-tools/:tool-id" {session :session}
                            :summary "Mark a tool as not being in-use."
@@ -71,6 +78,27 @@
                            ; TODO: return
                            (let [session (update-in session [:used-tools] disj tool-id)]
                              (assoc (ok (:used-tools session)) :session session)))
+
+                  (GET* "/wanted-features" {session :session current-user :current-user}
+                        :summary "Get the set of ids of wanted features"
+                        ; TODO: return
+                        (if current-user
+                          (ok (map :feature-id (db/get-wanted-features {:user-id (:id current-user)})))
+                          (ok (or (:wanted-features session) #{}))))
+                  (PUT* "/wanted-features" {session :session current-user :current-user}
+                        :summary "Update the features currently marked as in-use."
+                        :body [feature-id s/Uuid]
+                        ; TODO: return
+                        (if current-user
+                          (ok (feature/add-wanted-feature (:id current-user) feature-id))
+                          (let [session (update session :wanted-features #(conj (or %1 #{}) %2) feature-id)]
+                            (assoc (ok (:wanted-features session)) :session session))))
+                  (DELETE* "/wanted-features/:feature-id" {session :session}
+                           :summary "Mark a feature as not being in-use."
+                           :path-params [feature-id :- s/Uuid]
+                           ; TODO: return
+                           (let [session (update-in session [:wanted-features] disj feature-id)]
+                             (assoc (ok (:wanted-features session)) :session session)))
 
                   (GET* "/current-user" {current-user :current-user}
                         (if current-user
