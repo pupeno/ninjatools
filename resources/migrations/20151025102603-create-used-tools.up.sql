@@ -8,5 +8,3 @@ CREATE TABLE used_tools
  updated_at TIMESTAMP WITHOUT TIME ZONE DEFAULT (NOW() AT TIME ZONE 'utc'));
 --;;
 CREATE UNIQUE INDEX used_tools_user_id_tool_id ON used_tools (user_id, tool_id);
-
-
