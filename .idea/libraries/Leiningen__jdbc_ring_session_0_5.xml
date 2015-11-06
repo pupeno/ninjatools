@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: jdbc-ring-session:0.5">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/jdbc-ring-session/jdbc-ring-session/0.5/jdbc-ring-session-0.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

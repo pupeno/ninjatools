@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: migratus:0.8.7">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/migratus/migratus/0.8.7/migratus-0.8.7.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

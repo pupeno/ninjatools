@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: yesql:0.5.1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/yesql/yesql/0.5.1/yesql-0.5.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

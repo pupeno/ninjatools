@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Leiningen: cljsjs/react-with-addons:0.14.0-1">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/cljsjs/react-with-addons/0.14.0-1/react-with-addons-0.14.0-1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
