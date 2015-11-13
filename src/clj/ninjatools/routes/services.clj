@@ -72,12 +72,16 @@
                           (ok (tool/add-used-tool (:id current-user) tool-id))
                           (let [session (update session :used-tools #(conj (or %1 #{}) %2) tool-id)]
                             (assoc (ok (:used-tools session)) :session session))))
-                  (DELETE* "/used-tools/:tool-id" {session :session}
+                  (DELETE* "/used-tools/:tool-id" {session :session current-user :current-user}
                            :summary "Mark a tool as not being in-use."
                            :path-params [tool-id :- s/Uuid]
                            ; TODO: return
-                           (let [session (update-in session [:used-tools] disj tool-id)]
-                             (assoc (ok (:used-tools session)) :session session)))
+                           (if current-user
+                             (do (db/delete-used-tool! {:user-id (:id current-user)
+                                                        :tool-id tool-id})
+                                 (ok (map :tool-id (db/get-used-tools {:user-id (:id current-user)}))))
+                             (let [session (update-in session [:used-tools] disj tool-id)]
+                               (assoc (ok (:used-tools session)) :session session))))
 
                   (GET* "/wanted-features" {session :session current-user :current-user}
                         :summary "Get the set of ids of wanted features"
@@ -93,12 +97,16 @@
                           (ok (feature/add-wanted-feature (:id current-user) feature-id))
                           (let [session (update session :wanted-features #(conj (or %1 #{}) %2) feature-id)]
                             (assoc (ok (:wanted-features session)) :session session))))
-                  (DELETE* "/wanted-features/:feature-id" {session :session}
+                  (DELETE* "/wanted-features/:feature-id" {session :session current-user :current-user}
                            :summary "Mark a feature as not being in-use."
                            :path-params [feature-id :- s/Uuid]
                            ; TODO: return
-                           (let [session (update-in session [:wanted-features] disj feature-id)]
-                             (assoc (ok (:wanted-features session)) :session session)))
+                           (if current-user
+                             (do (db/delete-wanted-feature! {:user-id    (:id current-user)
+                                                             :feature-id feature-id})
+                                 (ok (map :feature-id (db/get-wanted-features {:user-id (:id current-user)}))))
+                             (let [session (update-in session [:wanted-features] disj feature-id)]
+                               (assoc (ok (:wanted-features session)) :session session))))
 
                   (GET* "/current-user" {current-user :current-user}
                         (if current-user

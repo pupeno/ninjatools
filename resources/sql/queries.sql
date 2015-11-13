@@ -80,6 +80,11 @@ INSERT INTO used_tools
 (user_id, tool_id)
 VALUES (:user_id, :tool_id)
 
+-- name: delete-used-tool!
+DELETE FROM used_tools
+WHERE user_id = :user_id
+  AND tool_id = :tool_id
+
 -- name: get-features
 SELECT *
 FROM features
@@ -94,3 +99,8 @@ WHERE wanted_features.user_id = :user_id
 INSERT INTO wanted_features
 (user_id, feature_id)
 VALUES (:user_id, :feature_id)
+
+-- name: delete-wanted-feature!
+DELETE FROM wanted_features
+WHERE user_id = :user_id
+  AND feature_id = :feature_id
