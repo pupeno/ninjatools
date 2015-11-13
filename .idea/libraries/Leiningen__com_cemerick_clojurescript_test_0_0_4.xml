@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Leiningen: com.cemerick/clojurescript.test:0.0.4">
-    <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/com/cemerick/clojurescript.test/0.0.4/clojurescript.test-0.0.4.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

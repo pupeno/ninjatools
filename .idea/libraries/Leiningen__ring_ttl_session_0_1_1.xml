@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Leiningen: ring-ttl-session:0.1.1">
-    <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/ring-ttl-session/ring-ttl-session/0.1.1/ring-ttl-session-0.1.1.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

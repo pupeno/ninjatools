@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="Leiningen: to-jdbc-uri:0.2.0">
-    <CLASSES>
-      <root url="jar://$MAVEN_REPOSITORY$/to-jdbc-uri/to-jdbc-uri/0.2.0/to-jdbc-uri-0.2.0.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
