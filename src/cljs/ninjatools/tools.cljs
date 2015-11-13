@@ -150,7 +150,7 @@
       db)))
 
 (re-frame/register-handler
-  :mark-feature-as-unwanted=
+  :mark-feature-as-unwanted
   (fn [db [_ feature-id]]
     (let [db (update-in db [:wanted-features] disj feature-id)]
       (ajax/DELETE (str "/api/v1/wanted-features/" feature-id)
