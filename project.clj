@@ -112,10 +112,12 @@
                              :injections   [(require 'pjstadig.humane-test-output)
                                             (pjstadig.humane-test-output/activate!)]
                              ;;when :nrepl-port is set the application starts the nREPL server on load
-                             :env          {:environment "dev"
-                                            :dev         true
-                                            :port        3000
-                                            :nrepl-port  7000}}
+                             :env          {:environment  "dev"
+                                            :dev          true
+                                            :port         3000
+                                            :nrepl-port   7000
+                                            :database-url "jdbc:postgresql://localhost/ninjatools_dev"
+                                            :yeller-token ""}}
              :project/test  {:env {:environment "test"
                                    :test        true
                                    :port        3001
