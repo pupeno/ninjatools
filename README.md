@@ -25,11 +25,20 @@ You will need [Leiningen][1] 2.0 or above installed.
 
 [1]: https://github.com/technomancy/leiningen
 
+    brew install heroku
+    git remote add staging git@heroku.com:ninjatools-staging.git
+    lein run migrate
+    ./bin/download-database.sh
+
 ## Running
 
-To start a web server for the application, run:
+To start a web server for the application, run at the same time:
 
-    lein ring server
+    lein run
+
+    lein figwheel
+
+Open http://ninjatools.lvh.me:3000/
 
 ## License
 
