@@ -21,6 +21,8 @@ and then diff the two directories and copy what you want.
 
 ## Prerequisites
 
+    mv profiles.example.clj Add profiles.clj
+
 You will need [Leiningen][1] 2.0 or above installed.
 
 [1]: https://github.com/technomancy/leiningen
