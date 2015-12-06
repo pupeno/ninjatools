@@ -25,8 +25,8 @@
 (deftest test-users
   (is (= 1 (db/create-user!
              {:id         "1"
-              :first_name "Sam"
-              :last_name  "Smith"
+              :first-name "Sam"
+              :last-name  "Smith"
               :email      "sam.smith@example.com"
               :pass       "pass"})))
   (is (= [{:id         "1"
