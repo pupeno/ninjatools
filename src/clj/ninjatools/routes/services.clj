@@ -29,7 +29,8 @@
   (-> (ok {:status :success :user (user/sanitize-for-public user)})
       (assoc :session (-> session
                           (assoc :identity (:id user))
-                          (dissoc :used-tools)))))
+                          (dissoc :used-tools)
+                          (dissoc :wanted-features)))))
 
 (defapi service-routes
         ; Report errors to Yeller. Read more here: https://github.com/metosin/compojure-api#exception-handling and here: http://docs.yellerapp.com/platforms/clojure/getting_started.html
