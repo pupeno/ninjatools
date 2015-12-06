@@ -21,15 +21,21 @@ and then diff the two directories and copy what you want.
 
 ## Prerequisites
 
+    mv profiles.example.clj Add profiles.clj
+
 You will need [Leiningen][1] 2.0 or above installed.
 
 [1]: https://github.com/technomancy/leiningen
 
 ## Running
 
-To start a web server for the application, run:
+To start a web server for the application, run at the same time:
 
-    lein ring server
+    lein run
+
+    lein figwheel
+
+Open http://ninjatools.lvh.me:3000/
 
 ## License
 
