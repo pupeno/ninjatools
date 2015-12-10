@@ -35,7 +35,7 @@
                  [cljsjs/react-with-addons "0.14.0-1"]
                  [com.domkm/silk "0.1.1"]
                  [kibu/pushy "0.3.6"]
-                 [re-frame/re-frame "0.6.0.alpha1"]
+                 [re-frame/re-frame "0.6.0"]
                  [com.carouselapps/free-form "0.1.1"]
                  [org.clojure/core.async "0.2.371"]
                  [cljs-ajax "0.5.1"]
