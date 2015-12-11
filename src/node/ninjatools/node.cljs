@@ -9,13 +9,13 @@
             [ninjatools.layout :as views])
   (:require-macros [cljs.core.async.macros :refer [go-loop]]))
 
-
 (defn render-and-send [page-path send-to-browser]
   (let [matched-route (routes/parse-path page-path)
         event (routes/routing-event matched-route)]
     (if (nil? matched-route)
       (throw (js/Error. (str "Unrecognized path: " page-path)))
-      (do (re-frame/dispatch-sync event)
+      (do (re-frame/dispatch-sync [:initialize-db])
+          (re-frame/dispatch-sync event)
           (re-frame-prerenderer/render-by-timeout [views/main-panel] send-to-browser)))))
 
 (set! *main-cli-fn* (prerenderer/create render-and-send "Ninja Tools"))
