@@ -36,7 +36,7 @@
                  [com.domkm/silk "0.1.1"]
                  [kibu/pushy "0.3.6"]
                  [re-frame/re-frame "0.6.0"]
-                 [com.carouselapps/free-form "0.1.1"]
+                 [com.carouselapps/free-form "0.2.0-SNAPSHOT"]
                  [org.clojure/core.async "0.2.371"]
                  [cljs-ajax "0.5.1"]
                  [metosin/compojure-api "0.23.1"]

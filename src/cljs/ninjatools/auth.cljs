@@ -81,20 +81,20 @@
          [:div.col-sm-offset-2.col-sm-10 {:free-form/error-message {:key :-general}} [:p.text-danger]]
          [:div.form-group {:free-form/error-class {:key :email :error "has-error"}}
           [:label.col-sm-2.control-label {:for :email} "Email"]
-          [:div.col-sm-10 [:input.form-control {:free-form/field {:key :email}
+          [:div.col-sm-10 [:input.form-control {:free-form/input {:key :email}
                                                 :type            :email
                                                 :id              :email
                                                 :placeholder     "sam@example.com"}]
            [:div.text-danger {:free-form/error-message {:key :email}} [:p]]]]
          [:div.form-group {:free-form/error-class {:ks [:password] :error "has-error"}}
           [:label.col-sm-2.control-label {:for :password} "Password"]
-          [:div.col-sm-10 [:input.form-control {:free-form/field {:ks [:password]}
+          [:div.col-sm-10 [:input.form-control {:free-form/input {:ks [:password]}
                                                 :type            :password
                                                 :id              :password}]
            [:div.text-danger {:free-form/error-message {:ks [:password]}} [:p]]]]
          [:div.form-group {:free-form/error-class {:key :password-confirmation :error "has-error"}}
           [:label.col-sm-2.control-label {:for :password-confirmation} "Password confirmation"]
-          [:div.col-sm-10 [:input.form-control {:free-form/field {:key :password-confirmation}
+          [:div.col-sm-10 [:input.form-control {:free-form/input {:key :password-confirmation}
                                                 :type            :password
                                                 :id              :password-confirmation}]
            [:div.text-danger {:free-form/error-message {:key :password-confirmation}} [:p]]]]
@@ -170,14 +170,14 @@
          [:div.col-sm-offset-2.col-sm-10 {:free-form/error-message {:key :-general}} [:p.text-danger]]
          [:div.form-group {:free-form/error-class {:key :email :error "has-error"}}
           [:label.col-sm-2.control-label {:for :email} "Email"]
-          [:div.col-sm-10 [:input.form-control {:free-form/field {:key :email}
+          [:div.col-sm-10 [:input.form-control {:free-form/input {:key :email}
                                                 :type            :email
                                                 :id              :email
                                                 :placeholder     "sam@example.com"}]
            [:div.text-danger {:free-form/error-message {:key :email}} [:p]]]]
          [:div.form-group {:free-form/error-class {:ks [:password] :error "has-error"}}
           [:label.col-sm-2.control-label {:for :password} "Password"]
-          [:div.col-sm-10 [:input.form-control {:free-form/field {:ks [:password]}
+          [:div.col-sm-10 [:input.form-control {:free-form/input {:ks [:password]}
                                                 :type            :password
                                                 :id              :password}]
            [:div.text-danger {:free-form/error-message {:ks [:password]}} [:p]]]]
@@ -239,7 +239,7 @@
          [:div.col-sm-offset-2.col-sm-10 {:free-form/error-message {:key :-general}} [:p.text-danger]]
          [:div.form-group {:free-form/error-class {:key :email :error "has-error"}}
           [:label.col-sm-2.control-label {:for :email} "Email"]
-          [:div.col-sm-10 [:input.form-control {:free-form/field {:key :email}
+          [:div.col-sm-10 [:input.form-control {:free-form/input {:key :email}
                                                 :type            :email
                                                 :id              :email
                                                 :placeholder     "sam@example.com"}]
@@ -313,19 +313,19 @@
          (when @current-password
            [:div.form-group {:free-form/error-class {:ks [:current-password] :error "has-error"}}
             [:label.col-sm-2.control-label {:for :current-password} "Current Password"]
-            [:div.col-sm-10 [:input.form-control {:free-form/field {:ks [:current-password]}
+            [:div.col-sm-10 [:input.form-control {:free-form/input {:ks [:current-password]}
                                                   :type            :password
                                                   :id              :current-password}]
              [:div.text-danger {:free-form/error-message {:ks [:current-password]}} [:p]]]])
          [:div.form-group {:free-form/error-class {:ks [:password] :error "has-error"}}
           [:label.col-sm-2.control-label {:for :password} "New Password"]
-          [:div.col-sm-10 [:input.form-control {:free-form/field {:ks [:password]}
+          [:div.col-sm-10 [:input.form-control {:free-form/input {:ks [:password]}
                                                 :type            :password
                                                 :id              :password}]
            [:div.text-danger {:free-form/error-message {:ks [:password]}} [:p]]]]
          [:div.form-group {:free-form/error-class {:key :password-confirmation :error "has-error"}}
           [:label.col-sm-2.control-label {:for :password-confirmation} "Password Confirmation"]
-          [:div.col-sm-10 [:input.form-control {:free-form/field {:key :password-confirmation}
+          [:div.col-sm-10 [:input.form-control {:free-form/input {:key :password-confirmation}
                                                 :type            :password
                                                 :id              :password-confirmation}]
            [:div.text-danger {:free-form/error-message {:key :password-confirmation}} [:p]]]]
