@@ -57,7 +57,11 @@
             [migratus-lein "0.1.5"]
             [lein-cljsbuild "1.0.6"]
             [lein-npm "0.6.1"]]
-  :clean-targets ^{:protect false} [:target-path [:clj :cljsbuild :builds :app :compiler :output-dir] [:clj :cljsbuild :builds :app :compiler :output-to]]
+  :clean-targets ^{:protect false} [:target-path
+                                    [:cljsbuild :builds :app :compiler :output-dir]
+                                    [:cljsbuild :builds :app :compiler :output-to]
+                                    [:cljsbuild :builds :server-side :compiler :output-dir]
+                                    [:cljsbuild :builds :server-side :compiler :output-to]]
   :source-paths ["src/clj" "src/cljc"]
   :test-paths ["test/clj"]
   :cljsbuild {:builds {:app         {:source-paths ["src/cljs" "src/cljc"]
