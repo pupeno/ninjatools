@@ -18,3 +18,5 @@ resources/public/js
 .idea/dictionaries
 
 node_modules
+
+production.dump
