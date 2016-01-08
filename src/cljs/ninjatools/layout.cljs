@@ -9,7 +9,6 @@
             [ninjatools.ui :as ui]))
 
 
-;; --------------------
 (defmulti pages :name)
 
 (defmethod pages nil [_]                                    ; While the app is loading, the current-route is nil for an instant. Without this we would be showing :default, which is a page not found error.
