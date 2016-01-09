@@ -232,9 +232,7 @@
                       [:span feature]
                       [:ul (for [tool suggested-tools]
                            ^{:key (:id tool)}
-                           [:li (:name tool) ": " (s/join ", " (map :name (vals (select-keys (:by-id @tools) (:integration-ids tool)))))])]])]
-             ])
-          ])])))
+                           [:li (:name tool) ": " (s/join ", " (map :name (vals (select-keys (:by-id @tools) (:integration-ids tool)))))])]])]])])])))
 
 (defmethod layout/pages :tools [_]
   (let [tools (re-frame/subscribe [:tools])]
