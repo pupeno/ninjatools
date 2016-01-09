@@ -13,7 +13,8 @@
                  :tools                nil
                  :features             nil
                  :used-tools           nil
-                 :wanted-features      nil})
+                 :wanted-features      nil
+                 :suggested-tools      nil})
 
 (re-frame/register-handler
   :initialize-db
