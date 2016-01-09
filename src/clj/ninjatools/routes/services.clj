@@ -55,6 +55,13 @@
                         ; TODO: return
                         (ok (tool/get-integrations-for id)))
 
+                  (GET* "/suggested-tools" {session :session current-user :current-user}
+                        :summary "Return suggested tools based on used tools and wanted features."
+                        ; TODO: return
+                        (if current-user
+                          (ok (tool/get-suggested-tools (:id current-user)))
+                          (ok (tool/get-suggested-tools (:wanted-features session) (:used-tools session)))))
+
                   (GET* "/features" []
                         :summary "Return all the features."
                         (ok (db/get-features)))
