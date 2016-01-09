@@ -61,6 +61,9 @@
 (defn get-user-by-reset-password-token [token]
   (first (get-user-by-reset-password-token- {:token token})))
 
+(defn get-tools-for-wanted-feature [feature-id tool-ids]
+  (-get-tools-for-wanted-feature {:feature-id feature-id :tool-ids tool-ids}))
+
 (defn to-date [sql-date]
   (-> sql-date (.getTime) (java.util.Date.)))
 
