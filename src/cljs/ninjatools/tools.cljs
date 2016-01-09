@@ -1,7 +1,8 @@
 ;;;; Copyright © 2015 Carousel Apps, Ltd. All rights reserved.
 
 (ns ninjatools.tools
-  (:require [clojure.walk :as walk]
+  (:require [clojure.string :as s]
+            [clojure.walk :as walk]
             [reagent.ratom :as ratom :include-macros true]
             [re-frame.core :as re-frame]
             [ajax.core :as ajax]
@@ -82,6 +83,7 @@
 (re-frame/register-handler
   :got-used-tools
   (fn [db [_ used-tools]]
+    (re-frame/dispatch [:get-suggested-tools])
     (assoc db :used-tools (set used-tools))))
 
 (re-frame/register-handler
@@ -137,6 +139,7 @@
 (re-frame/register-handler
   :got-wanted-features
   (fn [db [_ wanted-features]]
+    (re-frame/dispatch [:get-suggested-tools])
     (assoc db :wanted-features (set wanted-features))))
 
 (re-frame/register-handler
@@ -186,7 +189,8 @@
         features (re-frame/subscribe [:features])
         current-available-tools (re-frame/subscribe [:current-available-tools])
         used-tools (re-frame/subscribe [:used-tools])
-        wanted-features (re-frame/subscribe [:wanted-features])]
+        wanted-features (re-frame/subscribe [:wanted-features])
+        suggested-tools (re-frame/subscribe [:suggested-tools])]
     (fn [_]
       [:div
        (if (nil? (:tools @current-available-tools))
@@ -218,7 +222,19 @@
              [:ul (for [feature (doall (filter identity (map #(get-in @features [:by-id %]) @wanted-features)))]
                     ^{:key (:id feature)}
                     [:li (:name feature) " "
-                     [:a {:on-click #(ui/dispatch % [:mark-feature-as-unwanted (:id feature)])} "x"]])]])])])))
+                     [:a {:on-click #(ui/dispatch % [:mark-feature-as-unwanted (:id feature)])} "x"]])]])
+          [:h1 "Suggested tools"]
+          (when (not (empty? @suggested-tools))
+            [:div
+             [:ul (for [[feature suggested-tools] (group-by :feature @suggested-tools)]
+                    ^{:key feature}
+                    [:div
+                      [:span feature]
+                      [:ul (for [tool suggested-tools]
+                           ^{:key (:id tool)}
+                           [:li (:name tool) ": " (s/join ", " (map :name (vals (select-keys (:by-id @tools) (:integration-ids tool)))))])]])]
+             ])
+          ])])))
 
 (defmethod layout/pages :tools [_]
   (let [tools (re-frame/subscribe [:tools])]
@@ -269,3 +285,21 @@
          [:ul (for [integrated-tool (vals (select-keys (:by-id @tools) (:integration-ids @current-tool)))]
                 ^{:key (:id integrated-tool)} [:li [:a {:href (routing/url-for :tool {:slug (:slug integrated-tool)})} (:name integrated-tool)]])]]
         [ui/loading]))))
+
+(re-frame/register-sub
+  :suggested-tools
+  (fn [db _]
+    (ratom/reaction (:suggested-tools @db))))
+
+(re-frame/register-handler
+  :get-suggested-tools
+  (fn [db [_ feature_id tool_ids]]
+    (ajax/GET "/api/v1/suggested-tools"
+              {:handler       #(re-frame/dispatch [:got-suggested-tools %1])
+               :error-handler util/report-unexpected-error})
+    db))
+
+(re-frame/register-handler
+  :got-suggested-tools
+  (fn [db [_ suggested-tools]]
+    (assoc db :suggested-tools (set (map walk/keywordize-keys suggested-tools)))))
