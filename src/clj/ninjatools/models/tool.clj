@@ -37,12 +37,11 @@
   (fn [feature-id]
     (map
       #(assoc % :integration-ids (clojure.set/intersection tool-ids (get-integrations-for (:id %))))
-      (db/get-tools-for-wanted-feature feature-id (vec tool-ids)))
-  ))
+      (db/get-tools-for-wanted-feature feature-id (vec tool-ids)))))
 
 (defn get-suggested-tools
-  ([user-id] (let [feature-ids (map :feature-id (db/get-wanted-features {:user-id user-id}))
-                   tool-ids (set (map :tool-id (db/get-used-tools {:user-id user-id})))]
-               (get-suggested-tools feature-ids tool-ids)))
-  ([feature-ids tool-ids] (mapcat (get-suggested-tools-for-feature tool-ids) feature-ids))
-  )
+  ([user-id]
+   (let [feature-ids (map :feature-id (db/get-wanted-features {:user-id user-id}))
+         tool-ids (set (map :tool-id (db/get-used-tools {:user-id user-id})))]
+     (get-suggested-tools feature-ids tool-ids)))
+  ([feature-ids tool-ids] (mapcat (get-suggested-tools-for-feature tool-ids) feature-ids)))

@@ -107,9 +107,9 @@ WHERE user_id = :user_id
 
 -- name: -get-tools-for-wanted-feature
 -- Returns tools for a wanted feature (:feature_id), but only the ones that integrate with any of the used tools (:tool_ids)
-SELECT t.id, t.name, f.name AS feature FROM tools t
-JOIN tools_features tf ON t.id = tf.tool_id
-JOIN features f ON f.id = tf.feature_id AND f.id = :feature_id
-LEFT JOIN integrations i1 ON t.id = i1.tool_a_id AND i1.tool_b_id IN (:tool_ids)
-LEFT JOIN integrations i2 ON t.id = i2.tool_b_id AND i2.tool_a_id IN (:tool_ids)
+SELECT tools.id, tools.name, features.name AS feature FROM tools
+JOIN tools_features ON tools.id = tools_features.tool_id
+JOIN features ON features.id = tools_features.feature_id AND features.id = :feature_id
+LEFT JOIN integrations i1 ON tools.id = i1.tool_a_id AND i1.tool_b_id IN (:tool_ids)
+LEFT JOIN integrations i2 ON tools.id = i2.tool_b_id AND i2.tool_a_id IN (:tool_ids)
 WHERE (i1.tool_b_id IS NOT NULL OR i2.tool_a_id IS NOT NULL)
